@@ -1,14 +1,27 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 
 export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+  const galleryImages = [
+    'pet1.png',
+    'pet2.png',
+    'pet3.png',
+    'pet4.png',
+    'pet5.png',
+    'pet9.png',
+    'pet7.png',
+    'pet8.png',
+  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
       {/* Navigation */}
-      <nav className="fixed top-0 w-full bg-white/90 backdrop-blur-md z-50 shadow-sm">
+      <nav className="fixed top-4 w-full bg-white/90 backdrop-blur-md z-50 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-2">
@@ -17,11 +30,19 @@ export default function Home() {
             </div>
             
             {/* Desktop Menu */}
-            <div className="hidden md:flex space-x-8">
+            <div className="hidden md:flex items-center space-x-8">
               <a href="#services" className="text-gray-700 hover:text-purple-600 transition-colors">Services</a>
+              <a href="#gallery" className="text-gray-700 hover:text-purple-600 transition-colors">Gallery</a>
               <a href="#boarding" className="text-gray-700 hover:text-purple-600 transition-colors">Boarding</a>
               <a href="#about" className="text-gray-700 hover:text-purple-600 transition-colors">About</a>
               <a href="#contact" className="text-gray-700 hover:text-purple-600 transition-colors">Contact</a>
+              <a 
+                href="tel:727-753-9302" 
+                className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-full font-semibold transition-colors flex items-center space-x-2"
+              >
+                <span>📞</span>
+                <span>727-753-9302</span>
+              </a>
             </div>
 
             {/* Mobile Menu Button */}
@@ -43,9 +64,17 @@ export default function Home() {
             <div className="md:hidden pb-4">
               <div className="flex flex-col space-y-2">
                 <a href="#services" className="text-gray-700 hover:text-purple-600 px-2 py-1">Services</a>
+                <a href="#gallery" className="text-gray-700 hover:text-purple-600 px-2 py-1">Gallery</a>
                 <a href="#boarding" className="text-gray-700 hover:text-purple-600 px-2 py-1">Boarding</a>
                 <a href="#about" className="text-gray-700 hover:text-purple-600 px-2 py-1">About</a>
                 <a href="#contact" className="text-gray-700 hover:text-purple-600 px-2 py-1">Contact</a>
+                <a 
+                  href="tel:727-753-9302" 
+                  className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-full font-semibold transition-colors flex items-center space-x-2 mx-2 mt-2"
+                >
+                  <span>📞</span>
+                  <span>727-753-9302</span>
+                </a>
               </div>
             </div>
           )}
@@ -53,13 +82,12 @@ export default function Home() {
       </nav>
 
       {/* Hero Section */}
-      <section className="pt-24 pb-20 px-4 sm:px-6 lg:px-8">
+      <section className="pt-40 pb-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-5xl sm:text-6xl font-bold text-purple-900 mb-6">
-            🐾 Pupperazi Pet Spa
+          <h1 className="text-5xl sm:text-6xl font-bold text-purple-900 mb-6 mt-8">
+            Every Pet Deserves the Red Carpet Treatment
           </h1>
           <p className="text-2xl text-gray-700 mb-8 font-light">
-            Because Every Pet Deserves the Red Carpet Treatment
           </p>
           <div className="text-xl text-purple-800 mb-12 space-y-2">
             <p className="font-semibold">Groom, Play, or Stay.</p>
@@ -111,6 +139,108 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Gallery Section */}
+      <section id="gallery" className="py-20 bg-gradient-to-br from-purple-50 to-blue-50">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-purple-900 mb-6">
+              📸 Our Paw-some Work
+            </h2>
+            <p className="text-xl text-gray-700 mb-4">
+              See the magic happen! Check out our furry clients living their best groomed life.
+            </p>
+            <p className="text-lg text-purple-800 font-semibold">
+              Every photo tells a tail of transformation! 🐾✨
+            </p>
+          </div>
+
+          {/* Gallery Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {galleryImages.map((image, index) => (
+              <div 
+                key={index}
+                className="group cursor-pointer"
+                onClick={() => setSelectedImage(image)}
+              >
+                <div className="relative overflow-hidden rounded-3xl bg-white p-3 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 hover:rotate-1">
+                  {/* Fun decorative paw prints */}
+                  <div className="absolute top-2 right-2 text-purple-300 opacity-50 group-hover:opacity-100 transition-opacity">
+                    🐾
+                  </div>
+                  <div className="absolute bottom-2 left-2 text-blue-300 opacity-50 group-hover:opacity-100 transition-opacity">
+                    🐾
+                  </div>
+                  
+                  {/* Photo frame with gradient border */}
+                  <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-purple-200 via-pink-200 to-blue-200 p-1">
+                    <div className="relative aspect-square overflow-hidden rounded-xl bg-white">
+                      <Image
+                        src={`/gallery/${image}`}
+                        alt={`Pet grooming showcase ${index + 1}`}
+                        fill
+                        className="object-cover group-hover:scale-110 transition-transform duration-300"
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                      />
+                      
+                      {/* Hover overlay */}
+                      <div className="absolute inset-0 bg-purple-600/0 group-hover:bg-purple-600/20 transition-colors duration-300 flex items-center justify-center">
+                        <div className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                          <span className="text-2xl">👀</span>
+                          <p className="text-sm font-semibold mt-1">View</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Fun caption */}
+                  <div className="mt-3 text-center">
+                    <p className="text-sm text-purple-700 font-medium">
+                      Ready for the red carpet! ⭐
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Fun call to action */}
+          <div className="text-center mt-12">
+            <div className="bg-white p-6 rounded-2xl shadow-lg inline-block">
+              <p className="text-lg text-gray-700 mb-4">
+                Want your pup to be our next star? 🌟
+              </p>
+              <button className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-full font-semibold transition-colors">
+                Book Your Pet's Photoshoot Session!
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Modal for enlarged image */}
+      {selectedImage && (
+        <div 
+          className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4"
+          onClick={() => setSelectedImage(null)}
+        >
+          <div className="relative max-w-4xl max-h-full">
+            <button 
+              onClick={() => setSelectedImage(null)}
+              className="absolute top-4 right-4 text-white bg-purple-600 hover:bg-purple-700 rounded-full w-10 h-10 flex items-center justify-center z-10"
+            >
+              ✕
+            </button>
+            <Image
+              src={`/gallery/${selectedImage}`}
+              alt="Pet grooming showcase enlarged"
+              width={800}
+              height={600}
+              className="max-w-full max-h-full object-contain rounded-2xl"
+            />
+          </div>
+        </div>
+      )}
 
       {/* Services Section */}
       <section id="services" className="py-20 bg-gradient-to-br from-purple-50 to-blue-50">
