@@ -176,10 +176,10 @@ export default function Home() {
       <section className="pt-40 pb-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-5xl sm:text-6xl font-bold text-purple-900 mb-6 mt-8">
-            Dog Grooming in Palm Harbor, FL
+            Every Pet Deserves the Red Carpet Treatment
           </h1>
           <p className="text-2xl text-gray-700 mb-8 font-light">
-            Every Pet Deserves the Red Carpet Treatment
+            Dog Grooming in Palm Harbor, FL
           </p>
           <div className="text-xl text-purple-800 mb-12 space-y-2">
             <p className="font-semibold">Top-Quality Baths, Haircuts, Nail Trims & More</p>
@@ -305,8 +305,11 @@ export default function Home() {
                 <p className="text-lg text-gray-700 mb-4">
                   Want your pup to be our next star? 🌟
                 </p>
-                <button className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-full font-semibold transition-colors">
-                  Book Your Pet's Photoshoot Session!
+                <button 
+                  onClick={() => window.open('/booking', '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes')}
+                  className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-full font-semibold transition-colors"
+                >
+                  Book Your Appointment
                 </button>
               </div>
             </div>
