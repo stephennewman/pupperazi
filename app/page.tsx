@@ -187,7 +187,10 @@ export default function Home() {
               At Pupperazi Pet Spa, we pamper your pup with professional grooming services in Palm Harbor, FL. Complete with bubbles, belly rubs, and boutique boarding.
             </p>
           </div>
-          <button className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-4 rounded-full text-lg font-semibold transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+          <button 
+            onClick={() => window.open('/booking', '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes')}
+            className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-4 rounded-full text-lg font-semibold transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+          >
             Schedule My Appointment
           </button>
         </div>
@@ -616,7 +619,10 @@ export default function Home() {
                   <p className="text-lg mb-6">
                     Spots fill up fast—especially around the howl-idays!
                   </p>
-                  <button className="bg-white text-purple-600 px-8 py-4 rounded-full font-semibold text-lg hover:bg-gray-100 transition-colors shadow-lg">
+                  <button 
+                    onClick={() => window.open('/booking', '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes')}
+                    className="bg-white text-purple-600 px-8 py-4 rounded-full font-semibold text-lg hover:bg-gray-100 transition-colors shadow-lg"
+                  >
                     Schedule My Appointment
                   </button>
                   <p className="text-sm mt-4 opacity-90">
