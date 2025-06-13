@@ -1,102 +1,441 @@
-import Image from "next/image";
+'use client';
+
+import { useState } from 'react';
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+      {/* Navigation */}
+      <nav className="fixed top-0 w-full bg-white/90 backdrop-blur-md z-50 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-4">
+            <div className="flex items-center space-x-2">
+              <span className="text-2xl">🐾</span>
+              <h1 className="text-2xl font-bold text-purple-900">Pupperazi Pet Spa</h1>
+            </div>
+            
+            {/* Desktop Menu */}
+            <div className="hidden md:flex space-x-8">
+              <a href="#services" className="text-gray-700 hover:text-purple-600 transition-colors">Services</a>
+              <a href="#boarding" className="text-gray-700 hover:text-purple-600 transition-colors">Boarding</a>
+              <a href="#about" className="text-gray-700 hover:text-purple-600 transition-colors">About</a>
+              <a href="#contact" className="text-gray-700 hover:text-purple-600 transition-colors">Contact</a>
+            </div>
+
+            {/* Mobile Menu Button */}
+            <button 
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="md:hidden p-2"
+            >
+              <span className="sr-only">Open menu</span>
+              <div className="w-6 h-6 flex flex-col justify-center items-center">
+                <span className={`block w-6 h-0.5 bg-gray-600 transition-all ${isMenuOpen ? 'rotate-45 translate-y-1' : ''}`}></span>
+                <span className={`block w-6 h-0.5 bg-gray-600 transition-all ${isMenuOpen ? 'opacity-0' : 'my-1'}`}></span>
+                <span className={`block w-6 h-0.5 bg-gray-600 transition-all ${isMenuOpen ? '-rotate-45 -translate-y-1' : ''}`}></span>
+              </div>
+            </button>
+          </div>
+
+          {/* Mobile Menu */}
+          {isMenuOpen && (
+            <div className="md:hidden pb-4">
+              <div className="flex flex-col space-y-2">
+                <a href="#services" className="text-gray-700 hover:text-purple-600 px-2 py-1">Services</a>
+                <a href="#boarding" className="text-gray-700 hover:text-purple-600 px-2 py-1">Boarding</a>
+                <a href="#about" className="text-gray-700 hover:text-purple-600 px-2 py-1">About</a>
+                <a href="#contact" className="text-gray-700 hover:text-purple-600 px-2 py-1">Contact</a>
+              </div>
+            </div>
+          )}
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+      </nav>
+
+      {/* Hero Section */}
+      <section className="pt-24 pb-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto text-center">
+          <h1 className="text-5xl sm:text-6xl font-bold text-purple-900 mb-6">
+            🐾 Pupperazi Pet Spa
+          </h1>
+          <p className="text-2xl text-gray-700 mb-8 font-light">
+            Because Every Pet Deserves the Red Carpet Treatment
+          </p>
+          <div className="text-xl text-purple-800 mb-12 space-y-2">
+            <p className="font-semibold">Groom, Play, or Stay.</p>
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+              At Pupperazi, we roll out the paw-parazzi experience your furry friend deserves—complete with bubbles, belly rubs, and boutique boarding.
+            </p>
+          </div>
+          <button className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-4 rounded-full text-lg font-semibold transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+            Schedule My Appointment
+          </button>
+        </div>
+      </section>
+
+      {/* About Section */}
+      <section id="about" className="py-20 bg-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-purple-900 mb-6">
+              🎬 A Star Is Groomed
+            </h2>
+            <p className="text-xl text-gray-700 mb-4 font-semibold">
+              Where Wellness Meets Wagging Tails
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div>
+              <p className="text-lg text-gray-700 mb-6">
+                At Pupperazi Pet Spa, your pet isn't just another appointment—they're our VIP (Very Important Pet). We're all about holistic health and tail-wagging happiness, blending expert grooming with natural wellness to keep your pet looking fetching and feeling fabulous.
+              </p>
+              <p className="text-lg text-purple-800 font-semibold">
+                From shampoo to chew toys, we've got every paw covered.
+              </p>
+            </div>
+            
+            <div className="bg-gradient-to-br from-purple-100 to-blue-100 p-8 rounded-2xl">
+              <h3 className="text-xl font-bold text-purple-900 mb-4">🧠 The Philosophy Behind the Fur</h3>
+              <p className="text-gray-700 mb-4">We believe wellness should wag from the inside out. That's why we focus on:</p>
+              <ul className="space-y-2 text-gray-700">
+                <li>• Holistic grooming</li>
+                <li>• Natural care & nutrition</li>
+                <li>• Reducing anxiety & stress</li>
+                <li>• Empowering pet parents with real, practical advice</li>
+              </ul>
+              <p className="text-purple-800 font-semibold mt-4">
+                Your pet's health is our mission. Their happiness? Our passion.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Services Section */}
+      <section id="services" className="py-20 bg-gradient-to-br from-purple-50 to-blue-50">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-purple-900 mb-6">
+              ✂️ Grooming That Deserves a Standing Ovation
+            </h2>
+            <p className="text-xl text-gray-700">
+              Whether it's a quick wash or a glam makeover, our services are designed for comfort, care, and style.
+            </p>
+          </div>
+
+          {/* Signature Services */}
+          <div className="mb-16">
+            <h3 className="text-2xl font-bold text-purple-900 mb-8 text-center">🧼 Signature Services</h3>
+            <div className="grid md:grid-cols-3 gap-8">
+              <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow">
+                <h4 className="text-xl font-bold text-purple-800 mb-4">Bath Time Bliss</h4>
+                <p className="text-gray-700">
+                  Includes ear cleaning, nail trim, pad & sanitary trim, brushout, blow dry, and anal gland expression.
+                </p>
+              </div>
+              
+              <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow">
+                <h4 className="text-xl font-bold text-purple-800 mb-4">Mini Makeover</h4>
+                <p className="text-gray-700">
+                  Everything in the bath, plus a face, feet & tail tidy-up. Think of it as a "paw-dicure" and "fur-facial."
+                </p>
+              </div>
+              
+              <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow">
+                <h4 className="text-xl font-bold text-purple-800 mb-4">Full Glam Groom</h4>
+                <p className="text-gray-700">
+                  All of the above, with a full-body haircut of your choosing. The red carpet look for your pup's next big paw-formance.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Quick Wash */}
+          <div className="bg-white p-8 rounded-2xl shadow-lg mb-8">
+            <h3 className="text-2xl font-bold text-purple-900 mb-6">🚿 Wash 'N Go Baths</h3>
+            <p className="text-lg text-gray-700 mb-6">
+              For when your pup needs a quick spritz, not the full spa treatment.
+            </p>
+            
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+              <div className="text-center p-4 bg-purple-50 rounded-lg">
+                <p className="font-semibold text-purple-900">Under 25 lbs</p>
+                <p className="text-2xl font-bold text-purple-600">$15</p>
+              </div>
+              <div className="text-center p-4 bg-purple-50 rounded-lg">
+                <p className="font-semibold text-purple-900">26–50 lbs</p>
+                <p className="text-2xl font-bold text-purple-600">$17</p>
+              </div>
+              <div className="text-center p-4 bg-purple-50 rounded-lg">
+                <p className="font-semibold text-purple-900">51–100 lbs</p>
+                <p className="text-2xl font-bold text-purple-600">$20</p>
+              </div>
+              <div className="text-center p-4 bg-purple-50 rounded-lg">
+                <p className="font-semibold text-purple-900">Over 100 lbs</p>
+                <p className="text-2xl font-bold text-purple-600">Call</p>
+              </div>
+            </div>
+            
+            <p className="text-gray-600 text-center">
+              Includes: sudsy bath, ear cleaning, and towel dry. They'll leave slightly damp but totally adorable.
+            </p>
+          </div>
+
+          {/* Add-ons */}
+          <div className="bg-white p-8 rounded-2xl shadow-lg">
+            <h3 className="text-2xl font-bold text-purple-900 mb-6">🧼 Add-On Spa Specials</h3>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="flex justify-between items-center p-3 bg-purple-50 rounded-lg">
+                <span className="font-semibold text-purple-900">Nail Trim</span>
+                <span className="text-purple-600 font-bold">$10</span>
+              </div>
+              <div className="flex justify-between items-center p-3 bg-purple-50 rounded-lg">
+                <span className="font-semibold text-purple-900">Nail Trim + Dremel</span>
+                <span className="text-purple-600 font-bold">$18</span>
+              </div>
+              <div className="flex justify-between items-center p-3 bg-purple-50 rounded-lg">
+                <span className="font-semibold text-purple-900">Anal Glands</span>
+                <span className="text-purple-600 font-bold">$5</span>
+              </div>
+              <div className="flex justify-between items-center p-3 bg-purple-50 rounded-lg">
+                <span className="font-semibold text-purple-900">Teeth Brushing</span>
+                <span className="text-purple-600 font-bold">$5</span>
+              </div>
+              <div className="flex justify-between items-center p-3 bg-purple-50 rounded-lg">
+                <span className="font-semibold text-purple-900">Brushout/Blow Dry</span>
+                <span className="text-purple-600 font-bold">$10/5min</span>
+              </div>
+            </div>
+            <p className="text-center text-gray-600 mt-4 italic">
+              All the extras for when you want your pet to feel extra.
+            </p>
+          </div>
+
+          <div className="text-center mt-8">
+            <p className="text-lg text-purple-800 font-semibold">
+              🕒 Appointments are spaced to reduce stress and crate time. We call you when your pet is ready for pickup—usually within 2–3 hours.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Boarding Section */}
+      <section id="boarding" className="py-20 bg-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-purple-900 mb-6">
+              🏨 The Pawsh Pet Hotel
+            </h2>
+            <p className="text-xl text-gray-700">
+              Sleepovers That Feel Like Staycations
+            </p>
+            <p className="text-lg text-gray-600 mt-4">
+              Going away? We'll treat your pup like royalty while you're out of town.
+            </p>
+          </div>
+
+          <div className="grid lg:grid-cols-2 gap-12">
+            {/* What's Included */}
+            <div className="bg-gradient-to-br from-blue-50 to-purple-50 p-8 rounded-2xl">
+              <h3 className="text-2xl font-bold text-purple-900 mb-6">🛏️ Every overnight guest enjoys:</h3>
+              <ul className="space-y-3 text-gray-700">
+                <li className="flex items-start">
+                  <span className="text-purple-600 mr-2">•</span>
+                  Comfy bedding in a private pen
+                </li>
+                <li className="flex items-start">
+                  <span className="text-purple-600 mr-2">•</span>
+                  Minimum of 4 potty breaks a day
+                </li>
+                <li className="flex items-start">
+                  <span className="text-purple-600 mr-2">•</span>
+                  15 minutes of solo walk or playtime
+                </li>
+                <li className="flex items-start">
+                  <span className="text-purple-600 mr-2">•</span>
+                  Filtered water, fresh blankets, and TLC from our staff
+                </li>
+                <li className="flex items-start">
+                  <span className="text-purple-600 mr-2">•</span>
+                  Medication administration if needed
+                </li>
+              </ul>
+              <p className="text-purple-800 font-semibold mt-6">
+                📸 Want a daily pup-date? Just say the word!
+              </p>
+            </div>
+
+            {/* Pricing */}
+            <div>
+              <h3 className="text-2xl font-bold text-purple-900 mb-6">💲 Overnight Rates</h3>
+              <div className="space-y-4 mb-8">
+                <div className="flex justify-between items-center p-4 bg-purple-50 rounded-lg">
+                  <span className="font-semibold text-purple-900">1 Dog</span>
+                  <span className="text-2xl font-bold text-purple-600">$35/night</span>
+                </div>
+                <div className="flex justify-between items-center p-4 bg-purple-50 rounded-lg">
+                  <span className="font-semibold text-purple-900">2 Dogs (same room)</span>
+                  <span className="text-2xl font-bold text-purple-600">$50/night</span>
+                </div>
+                <div className="flex justify-between items-center p-4 bg-purple-50 rounded-lg">
+                  <span className="font-semibold text-purple-900">3 Dogs (same room)</span>
+                  <span className="text-2xl font-bold text-purple-600">$60/night</span>
+                </div>
+              </div>
+
+              <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-lg mb-6">
+                <p className="text-yellow-800 font-semibold">
+                  🎄 Book early for holidays! We fill up faster than a bowl of treats.
+                </p>
+              </div>
+
+              <div className="bg-red-50 border-l-4 border-red-400 p-4 rounded-lg">
+                <p className="text-red-800 text-sm">
+                  ⚠️ We're a boutique facility—not a doggie Alcatraz. We can't accommodate escape artists, excessive barkers, or pups recently recovering from illness. We don't require vaccinations but expect healthy pets only.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Team Section */}
+      <section className="py-20 bg-gradient-to-br from-purple-50 to-blue-50">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-purple-900 mb-6">
+              👯‍♀️ Meet the Dream Team
+            </h2>
+            <p className="text-xl text-gray-700">
+              Passionate. Paw-sitive. Pet-obsessed.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8 mb-12">
+            <div className="bg-white p-6 rounded-2xl shadow-lg text-center">
+              <div className="w-20 h-20 bg-purple-200 rounded-full mx-auto mb-4 flex items-center justify-center">
+                <span className="text-2xl">👩‍💼</span>
+              </div>
+              <h3 className="text-xl font-bold text-purple-900 mb-2">Melissa Schiedenhelm</h3>
+              <p className="text-purple-600 font-semibold">Co-Owner</p>
+            </div>
+
+            <div className="bg-white p-6 rounded-2xl shadow-lg text-center">
+              <div className="w-20 h-20 bg-purple-200 rounded-full mx-auto mb-4 flex items-center justify-center">
+                <span className="text-2xl">✂️</span>
+              </div>
+              <h3 className="text-xl font-bold text-purple-900 mb-2">Rachael Patnode</h3>
+              <p className="text-purple-600 font-semibold">Co-Owner & Grooming Manager</p>
+            </div>
+
+            <div className="bg-white p-6 rounded-2xl shadow-lg text-center">
+              <div className="w-20 h-20 bg-purple-200 rounded-full mx-auto mb-4 flex items-center justify-center">
+                <span className="text-2xl">⭐</span>
+              </div>
+              <h3 className="text-xl font-bold text-purple-900 mb-2">Tracy Arts</h3>
+              <p className="text-purple-600 font-semibold">Pet Stylist Extraordinaire</p>
+              <p className="text-sm text-gray-600 mt-2">(20+ years experience!)</p>
+            </div>
+          </div>
+
+          <div className="text-center">
+            <p className="text-lg text-gray-700">
+              We've been part of Pupperazi since 2011 and 2012. What started as a job became a journey—and now, we proudly carry the torch of love, care, and wagging tails.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <section id="contact" className="py-20 bg-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-purple-900 mb-6">
+              📍 Get in Touch
+            </h2>
+          </div>
+
+          <div className="grid lg:grid-cols-2 gap-12">
+            {/* Contact Info */}
+            <div className="space-y-8">
+              <div className="bg-gradient-to-br from-purple-50 to-blue-50 p-6 rounded-2xl">
+                <h3 className="text-xl font-bold text-purple-900 mb-4">Contact Information</h3>
+                <div className="space-y-3">
+                  <p className="flex items-center text-gray-700">
+                    <span className="text-purple-600 mr-3">📍</span>
+                    3454 Tampa Rd, Palm Harbor, FL 34684
+                  </p>
+                  <p className="flex items-center text-gray-700">
+                    <span className="text-purple-600 mr-3">📞</span>
+                    727-753-9302
+                  </p>
+                  <p className="flex items-center text-gray-700">
+                    <span className="text-purple-600 mr-3">✉️</span>
+                    PupperaziPetSpa@gmail.com
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-gradient-to-br from-blue-50 to-purple-50 p-6 rounded-2xl">
+                <h3 className="text-xl font-bold text-purple-900 mb-4">Spa Hours</h3>
+                <div className="space-y-2 text-gray-700">
+                  <p><span className="font-semibold">Tuesday – Friday:</span> 8:00 AM – 5:30 PM</p>
+                  <p><span className="font-semibold">Saturday:</span> 8:00 AM – 5:00 PM</p>
+                  <p><span className="font-semibold">Sunday & Monday:</span> Closed (snuggle days 🐾)</p>
+                </div>
+              </div>
+            </div>
+
+            {/* CTA */}
+            <div className="space-y-8">
+              <div className="bg-purple-600 text-white p-8 rounded-2xl text-center">
+                <h3 className="text-2xl font-bold mb-4">🐾 Ready to Book?</h3>
+                <p className="text-lg mb-6">
+                  Spots fill up fast—especially around the howl-idays!
+                </p>
+                <button className="bg-white text-purple-600 px-8 py-4 rounded-full font-semibold text-lg hover:bg-gray-100 transition-colors shadow-lg">
+                  Schedule My Appointment
+                </button>
+                <p className="text-sm mt-4 opacity-90">
+                  Click above to book online 24/7 or give us a call.
+                </p>
+              </div>
+
+              <div className="bg-gray-50 p-6 rounded-2xl">
+                <h3 className="text-xl font-bold text-purple-900 mb-4">💬 Still Sniffing Around?</h3>
+                <p className="text-gray-700">
+                  Drop us a message. We're happy to answer questions, give you a tour, or talk you out of giving your dog a home haircut. (Trust us. We've seen some things.)
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-purple-900 text-white py-12">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="flex items-center justify-center space-x-2 mb-4">
+            <span className="text-3xl">🐾</span>
+            <h3 className="text-2xl font-bold">Pupperazi Pet Spa</h3>
+          </div>
+          <p className="text-purple-200 mb-6">
+            Because Every Pet Deserves the Red Carpet Treatment
+          </p>
+          <div className="flex flex-wrap justify-center gap-6 text-sm text-purple-200">
+            <span>3454 Tampa Rd, Palm Harbor, FL 34684</span>
+            <span>•</span>
+            <span>727-753-9302</span>
+            <span>•</span>
+            <span>PupperaziPetSpa@gmail.com</span>
+          </div>
+          <div className="mt-8 pt-8 border-t border-purple-800">
+            <p className="text-purple-300">
+              © 2025 Pupperazi Pet Spa. All rights reserved. We roll out the paw-parazzi experience! 🎬
+            </p>
+          </div>
+        </div>
       </footer>
     </div>
   );
