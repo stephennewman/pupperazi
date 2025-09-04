@@ -3,8 +3,8 @@ import { Resend } from 'resend';
 import { z } from 'zod';
 import { customerOperations, petOperations, appointmentOperations, appointmentServiceOperations } from '@/lib/database-supabase';
 
-// Initialize Resend with API key
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Initialize Resend with API key (only if available)
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
 interface Customer {
   id: number;
@@ -179,6 +179,11 @@ export async function POST(request: NextRequest) {
 }
 
 async function sendConfirmationEmails(bookingId: string, data: any) {
+  if (!resend) {
+    console.log('Resend not configured, skipping email sending');
+    return;
+  }
+  
   const { selectedServices, selectedDate, selectedTime, petInfo, ownerInfo, preferences } = data;
 
   // Calculate total duration

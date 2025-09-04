@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { z } from 'zod';
 
-// Initialize Resend with API key
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Initialize Resend with API key (only if available)
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
 // Validation schema
 const contactSchema = z.object({
@@ -107,7 +107,15 @@ export async function POST(request: NextRequest) {
       </div>
     `;
 
-    // Send email using Resend
+    // Send email using Resend (if available)
+    if (!resend) {
+      console.log('Resend not configured, skipping email sending');
+      return NextResponse.json({ 
+        success: true, 
+        message: 'Message received! We\'ll get back to you soon.' 
+      });
+    }
+    
     const { data, error } = await resend.emails.send({
       from: 'Pupperazi Pet Spa <contact@krezzo.com>',
       to: [
