@@ -233,7 +233,7 @@ async function sendConfirmationEmails(bookingId: string, data: any) {
         <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #dee2e6;">
           <p style="color: #6c757d; font-size: 12px; margin: 0;">
             Questions? Call us at (727) 753-9302<br>
-            <em>Because every pet deserves the red carpet treatment! 🐾✨</em>
+            <em>Where luxury meets comfort for your beloved companion 🐾✨</em>
           </p>
         </div>
       </div>

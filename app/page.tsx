@@ -56,7 +56,7 @@ export default function Home() {
     },
     "servedCuisine": [],
     "priceRange": "$15-$60",
-    "description": "Pupperazi Pet Spa offers top-quality dog grooming in Palm Harbor, FL. Pamper your pup with baths, haircuts, nail trims, boarding and more. Because every pet deserves the red carpet treatment!",
+    "description": "Pupperazi Pet Spa offers boutique-style dog grooming in Palm Harbor, FL. Pamper your pup with premium baths, haircuts, nail trims, boarding and more. Where luxury meets comfort for your beloved companion.",
     "hasOfferCatalog": {
       "@type": "OfferCatalog",
       "name": "Pet Grooming Services",
@@ -176,7 +176,7 @@ export default function Home() {
       <section className="pt-40 pb-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-5xl sm:text-6xl font-bold text-purple-900 mb-6 mt-8">
-            Every Pet Deserves the Red Carpet Treatment
+            Where Luxury Meets Comfort for Your Beloved Companion
           </h1>
           <p className="text-2xl text-gray-700 mb-8 font-light">
             Dog Grooming in Palm Harbor, FL
@@ -206,7 +206,7 @@ export default function Home() {
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <h2 className="text-4xl font-bold text-purple-900 mb-6">
-                🎬 A Star Is Groomed
+                ✨ Boutique Grooming Experience
               </h2>
               <p className="text-xl text-gray-700 mb-4 font-semibold">
                 Where Wellness Meets Wagging Tails
@@ -302,7 +302,7 @@ export default function Home() {
             <div className="text-center mt-12">
               <div className="bg-white p-6 rounded-2xl shadow-lg inline-block">
                 <p className="text-lg text-gray-700 mb-4">
-                  Want your pup to be our next star? 🌟
+                  Ready to give your pup the boutique treatment? ✨
                 </p>
                 <button 
                   onClick={() => window.open('/booking', '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes')}
@@ -375,7 +375,7 @@ export default function Home() {
                 <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow">
                   <h4 className="text-xl font-bold text-purple-800 mb-4">Full Glam Groom</h4>
                   <p className="text-gray-700">
-                    All of the above, with a full-body haircut of your choosing. The red carpet look for your pup's next big paw-formance.
+                    All of the above, with a full-body haircut of your choosing. The perfect boutique look for your pup's special moments.
                   </p>
                 </div>
               </div>
@@ -652,7 +652,7 @@ export default function Home() {
               <h3 className="text-2xl font-bold">Pupperazi Pet Spa</h3>
             </div>
             <p className="text-blue-100 mb-6">
-              Because Every Pet Deserves the Red Carpet Treatment
+              Where Luxury Meets Comfort for Your Beloved Companion
             </p>
             <div className="flex flex-wrap justify-center gap-6 text-sm text-blue-100">
               <span>3454 Tampa Rd, Palm Harbor, FL 34684</span>
