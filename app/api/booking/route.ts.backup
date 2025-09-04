@@ -1,0 +1,580 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { Resend } from 'resend';
+import { z } from 'zod';
+import { statements, db } from '@/lib/database';
+
+// Initialize Resend with API key
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+// Validation schema
+const bookingSchema = z.object({
+  // Service information
+  selectedServices: z.array(z.object({
+    id: z.string(),
+    name: z.string(),
+    duration: z.number(),
+    price: z.string(),
+    description: z.string(),
+    category: z.enum(['grooming', 'bath', 'addon', 'boarding'])
+  })).min(1, 'At least one service must be selected'),
+
+  // Date and time
+  selectedDate: z.string().min(1, 'Date is required'),
+  selectedTime: z.string().min(1, 'Time is required'),
+
+  // Pet information
+  petInfo: z.object({
+    name: z.string().min(1, 'Pet name is required'),
+    breed: z.string().min(1, 'Pet breed is required'),
+    size: z.string().optional(),
+    notes: z.string().optional()
+  }),
+
+  // Owner information
+  ownerInfo: z.object({
+    firstName: z.string().min(1, 'First name is required'),
+    lastName: z.string().min(1, 'Last name is required'),
+    email: z.string().email('Valid email is required'),
+    phone: z.string().min(1, 'Phone number is required'),
+    address: z.string().optional(),
+    emergencyContact: z.string().optional()
+  }),
+
+  // Preferences
+  preferences: z.object({
+    contactMethod: z.enum(['email', 'phone', 'either']),
+    reminderPreference: z.enum(['email', 'text', 'both']),
+    marketingConsent: z.boolean()
+  })
+});
+
+export async function POST(request: NextRequest) {
+  try {
+    // Parse and validate the request body
+    const body = await request.json();
+    const validatedData = bookingSchema.parse(body);
+
+    const {
+      selectedServices,
+      selectedDate,
+      selectedTime,
+      petInfo,
+      ownerInfo,
+      preferences
+    } = validatedData;
+
+    // Calculate total duration
+    const totalDuration = selectedServices.reduce((total: number, service: any) => total + service.duration, 0);
+
+    // Use database transaction for data integrity
+    const transaction = db.transaction(() => {
+      // Check if customer exists, create if not
+      let customer = statements.getCustomerByEmail.get(ownerInfo.email);
+
+      if (!customer) {
+        const customerResult = statements.createCustomer.run(
+          ownerInfo.firstName,
+          ownerInfo.lastName,
+          ownerInfo.email,
+          ownerInfo.phone,
+          ownerInfo.address || null,
+          ownerInfo.emergencyContact || null,
+          preferences.marketingConsent ? 1 : 0
+        );
+        customer = { id: customerResult.lastInsertRowid };
+      }
+
+      // Check if pet exists for this customer, create if not
+      const existingPets = statements.getPetsByCustomerId.all(customer.id);
+      let pet = existingPets.find(p => p.name === petInfo.name && p.breed === petInfo.breed);
+
+      if (!pet) {
+        const petResult = statements.createPet.run(
+          customer.id,
+          petInfo.name,
+          petInfo.breed,
+          petInfo.size || 'medium',
+          petInfo.notes || null
+        );
+        pet = { id: petResult.lastInsertRowid };
+      }
+
+      // Generate booking ID
+      const bookingId = `PP-${Date.now().toString(36).toUpperCase()}`;
+
+      // Create appointment
+      statements.createAppointment.run(
+        bookingId,
+        customer.id,
+        pet.id,
+        selectedDate,
+        selectedTime,
+        'confirmed', // Auto-confirm bookings
+        null, // No appointment-level notes yet
+        totalDuration
+      );
+
+      // Add services to appointment
+      for (const service of selectedServices) {
+        statements.addServiceToAppointment.run(bookingId, service.id, 1);
+      }
+
+      return bookingId;
+    });
+
+    const bookingId = transaction();
+
+    // Send emails after successful database transaction
+    await sendConfirmationEmails(bookingId, validatedData);
+
+    return NextResponse.json({
+      success: true,
+      message: 'Appointment booked successfully! Check your email for confirmation.',
+      bookingId,
+      appointmentDetails: {
+        id: bookingId,
+        pet: petInfo,
+        owner: ownerInfo,
+        services: selectedServices,
+        date: selectedDate,
+        time: selectedTime,
+        duration: totalDuration
+      }
+    });
+
+  } catch (error) {
+    console.error('Booking error:', error);
+
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        {
+          error: 'Please check your booking information.',
+          details: error.issues.map(err => ({
+            field: err.path.join('.'),
+            message: err.message
+          }))
+        },
+        { status: 400 }
+      );
+    }
+
+    return NextResponse.json(
+      { error: 'Booking failed. Please try again or contact us directly.' },
+      { status: 500 }
+    );
+  }
+}
+
+async function sendConfirmationEmails(bookingId: string, data: any) {
+  const { selectedServices, selectedDate, selectedTime, petInfo, ownerInfo, preferences } = data;
+
+  // Calculate total duration
+  const totalDuration = selectedServices.reduce((total: number, service: any) => total + service.duration, 0);
+
+  // Format services for email
+  const servicesList = selectedServices.map((service: any) =>
+    `• ${service.name} (${service.price}) - ${service.duration}min`
+  ).join('\n');
+
+  // Customer confirmation email
+  const customerEmailHtml = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
+        <h1 style="color: white; margin: 0; font-size: 24px;">🎉 Appointment Confirmed!</h1>
+        <p style="color: #e8eaf6; margin: 10px 0 0 0; font-size: 14px;">Pupperazi Pet Spa</p>
+      </div>
+
+      <div style="background: white; padding: 30px; border-radius: 0 0 10px 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+        <div style="text-align: center; margin-bottom: 30px;">
+          <h2 style="color: #333; margin: 0 0 10px 0;">Thank you, ${ownerInfo.firstName}!</h2>
+          <p style="color: #666; margin: 0;">Your appointment has been successfully booked</p>
+        </div>
+
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 25px;">
+          <h3 style="color: #333; margin: 0 0 15px 0; font-size: 18px;">📅 Appointment Details</h3>
+          <div style="line-height: 1.6;">
+            <p style="margin: 5px 0;"><strong>Pet:</strong> ${petInfo.name} (${petInfo.breed})</p>
+            <p style="margin: 5px 0;"><strong>Date:</strong> ${new Date(selectedDate).toLocaleDateString('en-US', {
+              weekday: 'long',
+              month: 'long',
+              day: 'numeric',
+              year: 'numeric'
+            })}</p>
+            <p style="margin: 5px 0;"><strong>Time:</strong> ${selectedTime}</p>
+            <p style="margin: 5px 0;"><strong>Duration:</strong> ${Math.floor(totalDuration/60)}h ${totalDuration%60}m</p>
+          </div>
+        </div>
+
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 25px;">
+          <h3 style="color: #333; margin: 0 0 15px 0; font-size: 18px;">✂️ Services Booked</h3>
+          <div style="line-height: 1.6; font-family: monospace; background: white; padding: 15px; border-radius: 5px;">
+            ${servicesList}
+          </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #dee2e6;">
+          <p style="color: #6c757d; font-size: 12px; margin: 0;">
+            Questions? Call us at (727) 753-9302<br>
+            <em>Because every pet deserves the red carpet treatment! 🐾✨</em>
+          </p>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Business notification email
+  const businessEmailHtml = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
+        <h1 style="color: white; margin: 0; font-size: 24px;">🐾 New Appointment Booked!</h1>
+        <p style="color: #e8eaf6; margin: 10px 0 0 0; font-size: 14px;">Pupperazi Pet Spa</p>
+      </div>
+
+      <div style="background: white; padding: 30px; border-radius: 0 0 10px 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 25px;">
+          <h2 style="color: #333; margin: 0 0 15px 0; font-size: 20px;">📅 Appointment Summary</h2>
+          <div style="line-height: 1.6;">
+            <p style="margin: 5px 0;"><strong>Booking ID:</strong> ${bookingId}</p>
+            <p style="margin: 5px 0;"><strong>Customer:</strong> ${ownerInfo.firstName} ${ownerInfo.lastName}</p>
+            <p style="margin: 5px 0;"><strong>Pet:</strong> ${petInfo.name} (${petInfo.breed})</p>
+            <p style="margin: 5px 0;"><strong>Date & Time:</strong> ${selectedDate} at ${selectedTime}</p>
+            <p style="margin: 5px 0;"><strong>Duration:</strong> ${Math.floor(totalDuration/60)}h ${totalDuration%60}m</p>
+          </div>
+        </div>
+
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 25px;">
+          <h3 style="color: #333; margin: 0 0 15px 0; font-size: 18px;">👤 Customer Information</h3>
+          <div style="line-height: 1.6;">
+            <p style="margin: 5px 0;"><strong>Name:</strong> ${ownerInfo.firstName} ${ownerInfo.lastName}</p>
+            <p style="margin: 5px 0;"><strong>Email:</strong> <a href="mailto:${ownerInfo.email}">${ownerInfo.email}</a></p>
+            <p style="margin: 5px 0;"><strong>Phone:</strong> <a href="tel:${ownerInfo.phone}">${ownerInfo.phone}</a></p>
+          </div>
+        </div>
+
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 25px;">
+          <h3 style="color: #333; margin: 0 0 15px 0; font-size: 18px;">✂️ Services Details</h3>
+          <div style="line-height: 1.6; font-family: monospace; background: white; padding: 15px; border-radius: 5px;">
+            ${servicesList}
+          </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #dee2e6;">
+          <p style="color: #6c757d; font-size: 12px; margin: 0;">
+            Appointment booked via Pupperazi Pet Spa online booking system<br>
+            Timestamp: ${new Date().toLocaleString('en-US', {
+              timeZone: 'America/New_York',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit',
+              timeZoneName: 'short'
+            })}
+          </p>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Send emails
+  const [customerEmail, businessEmail] = await Promise.all([
+    resend.emails.send({
+      from: 'Pupperazi Pet Spa <contact@krezzo.com>',
+      to: ownerInfo.email,
+      subject: `Appointment Confirmed - ${petInfo.name} on ${selectedDate}`,
+      html: customerEmailHtml,
+      replyTo: 'PupperaziPetSpa@gmail.com'
+    }),
+    resend.emails.send({
+      from: 'Pupperazi Pet Spa <contact@krezzo.com>',
+      to: ['PupperaziPetSpa@gmail.com'],
+      subject: `New Booking: ${ownerInfo.firstName} ${ownerInfo.lastName} - ${petInfo.name}`,
+      html: businessEmailHtml,
+      replyTo: ownerInfo.email
+    })
+  ]);
+
+  if (customerEmail.error || businessEmail.error) {
+    console.error('Email sending errors:', {
+      customer: customerEmail.error,
+      business: businessEmail.error
+    });
+    throw new Error('Email delivery failed');
+  }
+
+  console.log('Booking emails sent successfully:', {
+    customer: customerEmail.data?.id,
+    business: businessEmail.data?.id
+  });
+}
+
+
+
+    const {
+      selectedServices,
+      selectedDate,
+      selectedTime,
+      petInfo,
+      ownerInfo,
+      preferences
+    } = validatedData;
+
+    // Calculate total duration and price
+    const totalDuration = selectedServices.reduce((total, service) => total + service.duration, 0);
+
+    // Format services for email
+    const servicesList = selectedServices.map(service =>
+      `• ${service.name} (${service.price}) - ${service.duration}min`
+    ).join('\n');
+
+    // Create customer confirmation email
+    const customerEmailHtml = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
+          <h1 style="color: white; margin: 0; font-size: 24px;">🎉 Appointment Confirmed!</h1>
+          <p style="color: #e8eaf6; margin: 10px 0 0 0; font-size: 14px;">Pupperazi Pet Spa</p>
+        </div>
+
+        <div style="background: white; padding: 30px; border-radius: 0 0 10px 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+          <div style="text-align: center; margin-bottom: 30px;">
+            <h2 style="color: #333; margin: 0 0 10px 0;">Thank you, ${ownerInfo.firstName}!</h2>
+            <p style="color: #666; margin: 0;">Your appointment has been successfully booked</p>
+          </div>
+
+          <!-- Appointment Details -->
+          <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 25px;">
+            <h3 style="color: #333; margin: 0 0 15px 0; font-size: 18px;">📅 Appointment Details</h3>
+            <div style="line-height: 1.6;">
+              <p style="margin: 5px 0;"><strong>Pet:</strong> ${petInfo.name} (${petInfo.breed})</p>
+              <p style="margin: 5px 0;"><strong>Date:</strong> ${new Date(selectedDate).toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              })}</p>
+              <p style="margin: 5px 0;"><strong>Time:</strong> ${selectedTime}</p>
+              <p style="margin: 5px 0;"><strong>Duration:</strong> ${Math.floor(totalDuration/60)}h ${totalDuration%60}m</p>
+              ${petInfo.size ? `<p style="margin: 5px 0;"><strong>Size:</strong> ${petInfo.size}</p>` : ''}
+            </div>
+          </div>
+
+          <!-- Services -->
+          <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 25px;">
+            <h3 style="color: #333; margin: 0 0 15px 0; font-size: 18px;">✂️ Services Booked</h3>
+            <div style="line-height: 1.6; font-family: monospace; background: white; padding: 15px; border-radius: 5px;">
+              ${servicesList}
+            </div>
+          </div>
+
+          <!-- Contact Information -->
+          <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 25px;">
+            <h3 style="color: #333; margin: 0 0 15px 0; font-size: 18px;">📞 Contact Information</h3>
+            <div style="line-height: 1.6;">
+              <p style="margin: 5px 0;"><strong>Name:</strong> ${ownerInfo.firstName} ${ownerInfo.lastName}</p>
+              <p style="margin: 5px 0;"><strong>Email:</strong> ${ownerInfo.email}</p>
+              <p style="margin: 5px 0;"><strong>Phone:</strong> ${ownerInfo.phone}</p>
+              ${ownerInfo.address ? `<p style="margin: 5px 0;"><strong>Address:</strong> ${ownerInfo.address}</p>` : ''}
+              ${ownerInfo.emergencyContact ? `<p style="margin: 5px 0;"><strong>Emergency Contact:</strong> ${ownerInfo.emergencyContact}</p>` : ''}
+            </div>
+          </div>
+
+          <!-- Special Notes -->
+          ${petInfo.notes ? `
+          <div style="background: #fff3cd; padding: 20px; border-radius: 8px; margin-bottom: 25px; border-left: 4px solid #ffc107;">
+            <h3 style="color: #856404; margin: 0 0 10px 0; font-size: 16px;">📝 Special Notes</h3>
+            <p style="color: #856404; margin: 0; line-height: 1.5;">${petInfo.notes}</p>
+          </div>
+          ` : ''}
+
+          <!-- Next Steps -->
+          <div style="background: #d4edda; padding: 20px; border-radius: 8px; margin-bottom: 25px; border-left: 4px solid #28a745;">
+            <h3 style="color: #155724; margin: 0 0 15px 0; font-size: 16px;">🎯 What Happens Next?</h3>
+            <ol style="color: #155724; margin: 0; padding-left: 20px;">
+              <li style="margin-bottom: 8px;">We'll send you a confirmation call/text within 24 hours</li>
+              <li style="margin-bottom: 8px;">You'll receive a reminder ${preferences.reminderPreference === 'both' ? 'via email and text' : preferences.reminderPreference === 'email' ? 'via email' : 'via text'} 24 hours before your appointment</li>
+              <li style="margin-bottom: 8px;">Please arrive 10 minutes early for your appointment</li>
+              <li>We'll contact you at ${preferences.contactMethod === 'email' ? 'your email' : preferences.contactMethod === 'phone' ? 'your phone' : 'your preferred contact method'} with any updates</li>
+            </ol>
+          </div>
+
+          <!-- Business Information -->
+          <div style="background: #e9ecef; padding: 20px; border-radius: 8px; margin-bottom: 25px;">
+            <h3 style="color: #495057; margin: 0 0 15px 0; font-size: 16px;">🏢 Pupperazi Pet Spa</h3>
+            <div style="color: #6c757d; line-height: 1.6;">
+              <p style="margin: 5px 0;">📍 3454 Tampa Rd, Palm Harbor, FL 34684</p>
+              <p style="margin: 5px 0;">📞 (727) 753-9302</p>
+              <p style="margin: 5px 0;">✉️ PupperaziPetSpa@gmail.com</p>
+              <p style="margin: 5px 0;">🕒 Tue-Fri: 8AM-5:30PM | Sat: 8AM-5PM</p>
+            </div>
+          </div>
+
+          <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #dee2e6;">
+            <p style="color: #6c757d; font-size: 12px; margin: 0;">
+              Questions? Call us at (727) 753-9302 or reply to this email<br>
+              <em>Because every pet deserves the red carpet treatment! 🐾✨</em>
+            </p>
+          </div>
+        </div>
+      </div>
+    `;
+
+    // Create business notification email
+    const businessEmailHtml = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
+          <h1 style="color: white; margin: 0; font-size: 24px;">🐾 New Appointment Booked!</h1>
+          <p style="color: #e8eaf6; margin: 10px 0 0 0; font-size: 14px;">Pupperazi Pet Spa</p>
+        </div>
+
+        <div style="background: white; padding: 30px; border-radius: 0 0 10px 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+          <!-- Appointment Summary -->
+          <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 25px;">
+            <h2 style="color: #333; margin: 0 0 15px 0; font-size: 20px;">📅 Appointment Summary</h2>
+            <div style="line-height: 1.6;">
+              <p style="margin: 5px 0;"><strong>Customer:</strong> ${ownerInfo.firstName} ${ownerInfo.lastName}</p>
+              <p style="margin: 5px 0;"><strong>Pet:</strong> ${petInfo.name} (${petInfo.breed})</p>
+              <p style="margin: 5px 0;"><strong>Date & Time:</strong> ${selectedDate} at ${selectedTime}</p>
+              <p style="margin: 5px 0;"><strong>Duration:</strong> ${Math.floor(totalDuration/60)}h ${totalDuration%60}m</p>
+              <p style="margin: 5px 0;"><strong>Services:</strong> ${selectedServices.length} service(s)</p>
+            </div>
+          </div>
+
+          <!-- Services Details -->
+          <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 25px;">
+            <h3 style="color: #333; margin: 0 0 15px 0; font-size: 18px;">✂️ Services Details</h3>
+            <div style="line-height: 1.6; font-family: monospace; background: white; padding: 15px; border-radius: 5px;">
+              ${servicesList}
+            </div>
+          </div>
+
+          <!-- Customer Information -->
+          <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 25px;">
+            <h3 style="color: #333; margin: 0 0 15px 0; font-size: 18px;">👤 Customer Information</h3>
+            <div style="line-height: 1.6;">
+              <p style="margin: 5px 0;"><strong>Name:</strong> ${ownerInfo.firstName} ${ownerInfo.lastName}</p>
+              <p style="margin: 5px 0;"><strong>Email:</strong> <a href="mailto:${ownerInfo.email}">${ownerInfo.email}</a></p>
+              <p style="margin: 5px 0;"><strong>Phone:</strong> <a href="tel:${ownerInfo.phone}">${ownerInfo.phone}</a></p>
+              <p style="margin: 5px 0;"><strong>Contact Preference:</strong> ${preferences.contactMethod}</p>
+              <p style="margin: 5px 0;"><strong>Reminders:</strong> ${preferences.reminderPreference}</p>
+              ${ownerInfo.address ? `<p style="margin: 5px 0;"><strong>Address:</strong> ${ownerInfo.address}</p>` : ''}
+              ${ownerInfo.emergencyContact ? `<p style="margin: 5px 0;"><strong>Emergency Contact:</strong> ${ownerInfo.emergencyContact}</p>` : ''}
+            </div>
+          </div>
+
+          <!-- Pet Information -->
+          <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 25px;">
+            <h3 style="color: #333; margin: 0 0 15px 0; font-size: 18px;">🐕 Pet Information</h3>
+            <div style="line-height: 1.6;">
+              <p style="margin: 5px 0;"><strong>Name:</strong> ${petInfo.name}</p>
+              <p style="margin: 5px 0;"><strong>Breed:</strong> ${petInfo.breed}</p>
+              ${petInfo.size ? `<p style="margin: 5px 0;"><strong>Size:</strong> ${petInfo.size}</p>` : ''}
+              ${petInfo.notes ? `<p style="margin: 5px 0;"><strong>Notes:</strong> ${petInfo.notes}</p>` : ''}
+            </div>
+          </div>
+
+          <!-- Action Items -->
+          <div style="background: #d4edda; padding: 20px; border-radius: 8px; margin-bottom: 25px; border-left: 4px solid #28a745;">
+            <h3 style="color: #155724; margin: 0 0 15px 0; font-size: 16px;">✅ Action Items</h3>
+            <ul style="color: #155724; margin: 0; padding-left: 20px;">
+              <li style="margin-bottom: 8px;">Call customer to confirm appointment: <a href="tel:${ownerInfo.phone}" style="color: #155724; text-decoration: underline;">${ownerInfo.phone}</a></li>
+              <li style="margin-bottom: 8px;">Review pet notes and prepare accordingly</li>
+              <li style="margin-bottom: 8px;">Add appointment to internal calendar</li>
+              <li>Set up reminder for 24 hours before appointment</li>
+            </ul>
+          </div>
+
+          <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #dee2e6;">
+            <p style="color: #6c757d; font-size: 12px; margin: 0;">
+              Appointment booked via Pupperazi Pet Spa online booking system<br>
+              Timestamp: ${new Date().toLocaleString('en-US', {
+                timeZone: 'America/New_York',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                timeZoneName: 'short'
+              })}
+            </p>
+          </div>
+        </div>
+      </div>
+    `;
+
+    // Send customer confirmation email
+    const customerEmail = await resend.emails.send({
+      from: 'Pupperazi Pet Spa <contact@krezzo.com>',
+      to: ownerInfo.email,
+      subject: `Appointment Confirmed - ${petInfo.name} on ${selectedDate}`,
+      html: customerEmailHtml,
+      replyTo: 'PupperaziPetSpa@gmail.com'
+    });
+
+    // Send business notification email
+    const businessEmail = await resend.emails.send({
+      from: 'Pupperazi Pet Spa <contact@krezzo.com>',
+      to: [
+        'PupperaziPetSpa@gmail.com',
+        process.env.ADMIN_EMAIL || 'admin@pupperazi.com'
+      ],
+      subject: `New Booking: ${ownerInfo.firstName} ${ownerInfo.lastName} - ${petInfo.name}`,
+      html: businessEmailHtml,
+      replyTo: ownerInfo.email
+    });
+
+    if (customerEmail.error || businessEmail.error) {
+      console.error('Email sending errors:', {
+        customer: customerEmail.error,
+        business: businessEmail.error
+      });
+      return NextResponse.json(
+        { error: 'Booking saved but email delivery failed. Please contact us to confirm.' },
+        { status: 500 }
+      );
+    }
+
+    console.log('Booking emails sent successfully:', {
+      customer: customerEmail.data?.id,
+      business: businessEmail.data?.id
+    });
+
+    // Generate booking ID
+    const bookingId = `PP-${Date.now().toString(36).toUpperCase()}`;
+
+    return NextResponse.json({
+      success: true,
+      message: 'Appointment booked successfully! Check your email for confirmation.',
+      bookingId,
+      appointmentDetails: {
+        id: bookingId,
+        pet: petInfo,
+        owner: ownerInfo,
+        services: selectedServices,
+        date: selectedDate,
+        time: selectedTime,
+        duration: totalDuration
+      }
+    });
+
+  } catch (error) {
+    console.error('Booking error:', error);
+
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        {
+          error: 'Please check your booking information.',
+          details: error.issues.map(err => ({
+            field: err.path.join('.'),
+            message: err.message
+          }))
+        },
+        { status: 400 }
+      );
+    }
+
+    return NextResponse.json(
+      { error: 'Booking failed. Please try again or contact us directly.' },
+      { status: 500 }
+    );
+  }
+}

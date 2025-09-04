@@ -115,31 +115,31 @@ export default function Home() {
         <nav className="fixed top-4 w-full bg-white/90 backdrop-blur-md z-50 shadow-sm">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center py-4">
-              <div className="flex items-center space-x-2">
+              <a href="/" className="flex items-center space-x-2 cursor-pointer">
                 <span className="text-2xl">🐾</span>
                 <h1 className="text-2xl font-bold text-purple-900">Pupperazi Pet Spa</h1>
-              </div>
+              </a>
               
               {/* Desktop Menu */}
               <div className="hidden md:flex items-center space-x-8">
-                <a href="#services" className="text-gray-700 hover:text-purple-600 transition-colors">Services</a>
-                <a href="#gallery" className="text-gray-700 hover:text-purple-600 transition-colors">Gallery</a>
-                <a href="#boarding" className="text-gray-700 hover:text-purple-600 transition-colors">Boarding</a>
-                <a href="#about" className="text-gray-700 hover:text-purple-600 transition-colors">About</a>
-                <a href="#contact" className="text-gray-700 hover:text-purple-600 transition-colors">Contact</a>
-                <a 
-                  href="tel:727-753-9302" 
-                  className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-full font-semibold transition-colors flex items-center space-x-2"
+                <a href="#services" className="text-gray-700 transition-colors cursor-pointer" style={{color: '#2D5A87'}} onMouseEnter={(e) => e.currentTarget.style.color = '#3D6B9F'} onMouseLeave={(e) => e.currentTarget.style.color = '#2D5A87'}>Services</a>
+                <a href="#gallery" className="text-gray-700 transition-colors cursor-pointer" style={{color: '#2D5A87'}} onMouseEnter={(e) => e.currentTarget.style.color = '#3D6B9F'} onMouseLeave={(e) => e.currentTarget.style.color = '#2D5A87'}>Gallery</a>
+                <a href="#boarding" className="text-gray-700 transition-colors cursor-pointer" style={{color: '#2D5A87'}} onMouseEnter={(e) => e.currentTarget.style.color = '#3D6B9F'} onMouseLeave={(e) => e.currentTarget.style.color = '#2D5A87'}>Boarding</a>
+                <a href="#about" className="text-gray-700 transition-colors cursor-pointer" style={{color: '#2D5A87'}} onMouseEnter={(e) => e.currentTarget.style.color = '#3D6B9F'} onMouseLeave={(e) => e.currentTarget.style.color = '#2D5A87'}>About</a>
+                <a href="#contact" className="text-gray-700 transition-colors cursor-pointer" style={{color: '#2D5A87'}} onMouseEnter={(e) => e.currentTarget.style.color = '#3D6B9F'} onMouseLeave={(e) => e.currentTarget.style.color = '#2D5A87'}>Contact</a>
+                <a
+                  href="tel:727-753-9302"
+                  className="px-4 py-2 rounded-full font-semibold transition-colors cursor-pointer"
+                  style={{backgroundColor: '#2D5A87', color: 'white'}}
                 >
-                  <span>📞</span>
-                  <span>727-753-9302</span>
+                  727-753-9302
                 </a>
               </div>
 
               {/* Mobile Menu Button */}
               <button 
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="md:hidden p-2"
+                className="md:hidden p-2 cursor-pointer"
               >
                 <span className="sr-only">Open menu</span>
                 <div className="w-6 h-6 flex flex-col justify-center items-center">
@@ -154,17 +154,17 @@ export default function Home() {
             {isMenuOpen && (
               <div className="md:hidden pb-4">
                 <div className="flex flex-col space-y-2">
-                  <a href="#services" className="text-gray-700 hover:text-purple-600 px-2 py-1">Services</a>
-                  <a href="#gallery" className="text-gray-700 hover:text-purple-600 px-2 py-1">Gallery</a>
-                  <a href="#boarding" className="text-gray-700 hover:text-purple-600 px-2 py-1">Boarding</a>
-                  <a href="#about" className="text-gray-700 hover:text-purple-600 px-2 py-1">About</a>
-                  <a href="#contact" className="text-gray-700 hover:text-purple-600 px-2 py-1">Contact</a>
-                  <a 
-                    href="tel:727-753-9302" 
-                    className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-full font-semibold transition-colors flex items-center space-x-2 mx-2 mt-2"
+                  <a href="#services" className="px-2 py-1 cursor-pointer transition-colors" style={{color: '#2D5A87'}} onMouseEnter={(e) => e.currentTarget.style.color = '#3D6B9F'} onMouseLeave={(e) => e.currentTarget.style.color = '#2D5A87'}>Services</a>
+                  <a href="#gallery" className="px-2 py-1 cursor-pointer transition-colors" style={{color: '#2D5A87'}} onMouseEnter={(e) => e.currentTarget.style.color = '#3D6B9F'} onMouseLeave={(e) => e.currentTarget.style.color = '#2D5A87'}>Gallery</a>
+                  <a href="#boarding" className="px-2 py-1 cursor-pointer transition-colors" style={{color: '#2D5A87'}} onMouseEnter={(e) => e.currentTarget.style.color = '#3D6B9F'} onMouseLeave={(e) => e.currentTarget.style.color = '#2D5A87'}>Boarding</a>
+                  <a href="#about" className="px-2 py-1 cursor-pointer transition-colors" style={{color: '#2D5A87'}} onMouseEnter={(e) => e.currentTarget.style.color = '#3D6B9F'} onMouseLeave={(e) => e.currentTarget.style.color = '#2D5A87'}>About</a>
+                  <a href="#contact" className="px-2 py-1 cursor-pointer transition-colors" style={{color: '#2D5A87'}} onMouseEnter={(e) => e.currentTarget.style.color = '#3D6B9F'} onMouseLeave={(e) => e.currentTarget.style.color = '#2D5A87'}>Contact</a>
+                  <a
+                    href="tel:727-753-9302"
+                    className="px-4 py-2 rounded-full font-semibold transition-colors cursor-pointer mx-2 mt-2"
+                    style={{backgroundColor: '#2D5A87', color: 'white'}}
                   >
-                    <span>📞</span>
-                    <span>727-753-9302</span>
+                    727-753-9302
                   </a>
                 </div>
               </div>
@@ -187,12 +187,17 @@ export default function Home() {
               At Pupperazi Pet Spa, we pamper your pup with professional grooming services in Palm Harbor, FL. Complete with bubbles, belly rubs, and boutique boarding.
             </p>
           </div>
-          <button 
-            onClick={() => window.open('/booking', '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes')}
-            className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-4 rounded-full text-lg font-semibold transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-1"
-          >
-            Schedule My Appointment
-          </button>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <button
+              onClick={() => window.open('/booking', '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes')}
+              className="px-8 py-4 rounded-full text-lg font-semibold transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-1 cursor-pointer text-gray-800"
+              style={{backgroundColor: '#C8E5F0', color: '#2D5A87'}}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#B5D9E8'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#C8E5F0'}
+            >
+              Book Appointment
+            </button>
+          </div>
         </div>
       </section>
 
@@ -288,12 +293,6 @@ export default function Home() {
                       </div>
                     </div>
                     
-                    {/* Fun caption */}
-                    <div className="mt-3 text-center">
-                      <p className="text-sm text-purple-700 font-medium">
-                        Ready for the red carpet! ⭐
-                      </p>
-                    </div>
                   </div>
                 </div>
               ))}
@@ -307,7 +306,10 @@ export default function Home() {
                 </p>
                 <button 
                   onClick={() => window.open('/booking', '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes')}
-                  className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-full font-semibold transition-colors"
+                  className="px-6 py-3 rounded-full font-semibold transition-colors cursor-pointer"
+                  style={{backgroundColor: '#C8E5F0', color: '#2D5A87'}}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#B5D9E8'}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#C8E5F0'}
                 >
                   Book Your Appointment
                 </button>
@@ -319,13 +321,13 @@ export default function Home() {
         {/* Modal for enlarged image */}
         {selectedImage && (
           <div 
-            className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4"
+            className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 cursor-pointer"
             onClick={() => setSelectedImage(null)}
           >
             <div className="relative max-w-4xl max-h-full">
               <button 
                 onClick={() => setSelectedImage(null)}
-                className="absolute top-4 right-4 text-white bg-purple-600 hover:bg-purple-700 rounded-full w-10 h-10 flex items-center justify-center z-10"
+                className="absolute top-4 right-4 text-white bg-purple-600 hover:bg-purple-700 rounded-full w-10 h-10 flex items-center justify-center z-10 cursor-pointer"
               >
                 ✕
               </button>
@@ -584,60 +586,58 @@ export default function Home() {
               </h2>
             </div>
 
-            <div className="grid lg:grid-cols-2 gap-12">
-              {/* Contact Info */}
-              <div className="space-y-8">
-                <div className="bg-gradient-to-br from-purple-50 to-blue-50 p-6 rounded-2xl">
-                  <h3 className="text-xl font-bold text-purple-900 mb-4">Contact Information</h3>
-                  <div className="space-y-3">
-                    <p className="flex items-center text-gray-700">
-                      <span className="text-purple-600 mr-3">📍</span>
-                      3454 Tampa Rd, Palm Harbor, FL 34684
-                    </p>
-                    <p className="flex items-center text-gray-700">
-                      <span className="text-purple-600 mr-3">📞</span>
-                      727-753-9302
-                    </p>
-                    <p className="flex items-center text-gray-700">
-                      <span className="text-purple-600 mr-3">✉️</span>
-                      PupperaziPetSpa@gmail.com
-                    </p>
+            <div className="max-w-4xl mx-auto">
+              <div className="grid md:grid-cols-2 gap-12">
+                {/* Contact Info */}
+                <div className="space-y-8">
+                  <div className="bg-gradient-to-br from-purple-50 to-blue-50 p-6 rounded-2xl">
+                    <h3 className="text-xl font-bold text-purple-900 mb-4">Contact Information</h3>
+                    <div className="space-y-3">
+                      <p className="flex items-center text-gray-700">
+                        <span className="text-purple-600 mr-3">📍</span>
+                        3454 Tampa Rd, Palm Harbor, FL 34684
+                      </p>
+                      <p className="flex items-center text-gray-700">
+                        <span className="text-purple-600 mr-3">📞</span>
+                        727-753-9302
+                      </p>
+                      <p className="flex items-center text-gray-700">
+                        <span className="text-purple-600 mr-3">✉️</span>
+                        PupperaziPetSpa@gmail.com
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="bg-gradient-to-br from-blue-50 to-purple-50 p-6 rounded-2xl">
+                    <h3 className="text-xl font-bold text-purple-900 mb-4">Spa Hours</h3>
+                    <div className="space-y-2 text-gray-700">
+                      <p><span className="font-semibold">Tuesday – Friday:</span> 8:00 AM – 5:30 PM</p>
+                      <p><span className="font-semibold">Saturday:</span> 8:00 AM – 5:00 PM</p>
+                      <p><span className="font-semibold">Sunday & Monday:</span> Closed (snuggle days 🐾)</p>
+                    </div>
                   </div>
                 </div>
 
-                <div className="bg-gradient-to-br from-blue-50 to-purple-50 p-6 rounded-2xl">
-                  <h3 className="text-xl font-bold text-purple-900 mb-4">Spa Hours</h3>
-                  <div className="space-y-2 text-gray-700">
-                    <p><span className="font-semibold">Tuesday – Friday:</span> 8:00 AM – 5:30 PM</p>
-                    <p><span className="font-semibold">Saturday:</span> 8:00 AM – 5:00 PM</p>
-                    <p><span className="font-semibold">Sunday & Monday:</span> Closed (snuggle days 🐾)</p>
+                {/* CTA */}
+                <div className="space-y-8">
+                  <div className="text-white p-8 rounded-2xl text-center" style={{backgroundColor: '#3D6B9F'}}>
+                    <h3 className="text-2xl font-bold mb-4">🐾 Ready to Book?</h3>
+                    <p className="text-lg mb-6">
+                      Spots fill up fast—especially around the howl-idays!
+                    </p>
+                    <button 
+                      onClick={() => window.open('/booking', '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes')}
+                      className="px-8 py-4 rounded-full font-semibold text-lg transition-colors shadow-lg cursor-pointer"
+                      style={{backgroundColor: '#C8E5F0', color: '#2D5A87'}}
+                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#B5D9E8'}
+                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#C8E5F0'}
+                    >
+                      Schedule My Appointment
+                    </button>
+                    <p className="text-sm mt-4 opacity-90">
+                      Click above to book online 24/7 or give us a call.
+                    </p>
                   </div>
-                </div>
-              </div>
-
-              {/* CTA */}
-              <div className="space-y-8">
-                <div className="bg-purple-600 text-white p-8 rounded-2xl text-center">
-                  <h3 className="text-2xl font-bold mb-4">🐾 Ready to Book?</h3>
-                  <p className="text-lg mb-6">
-                    Spots fill up fast—especially around the howl-idays!
-                  </p>
-                  <button 
-                    onClick={() => window.open('/booking', '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes')}
-                    className="bg-white text-purple-600 px-8 py-4 rounded-full font-semibold text-lg hover:bg-gray-100 transition-colors shadow-lg"
-                  >
-                    Schedule My Appointment
-                  </button>
-                  <p className="text-sm mt-4 opacity-90">
-                    Click above to book online 24/7 or give us a call.
-                  </p>
-                </div>
-
-                <div className="bg-gray-50 p-6 rounded-2xl">
-                  <h3 className="text-xl font-bold text-purple-900 mb-4">💬 Still Sniffing Around?</h3>
-                  <p className="text-gray-700">
-                    Drop us a message. We're happy to answer questions, give you a tour, or talk you out of giving your dog a home haircut. (Trust us. We've seen some things.)
-                  </p>
                 </div>
               </div>
             </div>
@@ -645,29 +645,30 @@ export default function Home() {
         </section>
 
         {/* Footer */}
-        <footer className="bg-purple-900 text-white py-12">
+        <footer className="py-12" style={{backgroundColor: '#3D6B9F', color: 'white'}}>
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <div className="flex items-center justify-center space-x-2 mb-4">
               <span className="text-3xl">🐾</span>
               <h3 className="text-2xl font-bold">Pupperazi Pet Spa</h3>
             </div>
-            <p className="text-purple-200 mb-6">
+            <p className="text-blue-100 mb-6">
               Because Every Pet Deserves the Red Carpet Treatment
             </p>
-            <div className="flex flex-wrap justify-center gap-6 text-sm text-purple-200">
+            <div className="flex flex-wrap justify-center gap-6 text-sm text-blue-100">
               <span>3454 Tampa Rd, Palm Harbor, FL 34684</span>
               <span>•</span>
               <span>727-753-9302</span>
               <span>•</span>
               <span>PupperaziPetSpa@gmail.com</span>
             </div>
-            <div className="mt-8 pt-8 border-t border-purple-800">
-              <p className="text-purple-300">
+            <div className="mt-8 pt-8" style={{borderTop: '1px solid #5A8BC4'}}>
+              <p className="text-blue-200">
                 © 2025 Pupperazi Pet Spa. All rights reserved. We roll out the paw-parazzi experience! 🎬
               </p>
             </div>
           </div>
         </footer>
+
       </div>
     </>
   );
