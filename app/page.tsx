@@ -175,7 +175,7 @@ export default function Home() {
               {/* Hero Section */}
       <section className="pt-40 pb-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-5xl sm:text-6xl font-bold text-purple-900 mb-6 mt-8">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-purple-900 mb-6 mt-8">
             Where Every Pet Gets the VIP Treatment
           </h1>
           <p className="text-2xl text-gray-700 mb-8 font-light">
