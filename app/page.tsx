@@ -176,7 +176,7 @@ export default function Home() {
       <section className="pt-40 pb-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-5xl sm:text-6xl font-bold text-purple-900 mb-6 mt-8">
-            Where Luxury Meets Comfort for Your Beloved Companion
+            Where Your Pet Gets a 5-Star Experience
           </h1>
           <p className="text-2xl text-gray-700 mb-8 font-light">
             Dog Grooming in Palm Harbor, FL
@@ -652,7 +652,7 @@ export default function Home() {
               <h3 className="text-2xl font-bold">Pupperazi Pet Spa</h3>
             </div>
             <p className="text-blue-100 mb-6">
-              Where Luxury Meets Comfort for Your Beloved Companion
+              Where Your Pet Gets a 5-Star Experience
             </p>
             <div className="flex flex-wrap justify-center gap-6 text-sm text-blue-100">
               <span>3454 Tampa Rd, Palm Harbor, FL 34684</span>
