@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { z } from 'zod';
 
-// Initialize Resend with API key
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Initialize Resend with API key (only if available)
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
 // SlickText API configuration (Updated per docs)
 const SLICKTEXT_API_KEY = process.env.SLICKTEXT_API_KEY;
@@ -164,6 +164,11 @@ async function sendEmail(
   replyTo?: string
 ): Promise<{ success: boolean; error?: string; id?: string }> {
   try {
+    if (!resend) {
+      console.log('Resend not configured, skipping email sending');
+      return { success: false, error: 'Email service not configured' };
+    }
+    
     const { data, error } = await resend.emails.send({
       from: 'Pupperazi Pet Spa <contact@krezzo.com>',
       to: [to],
