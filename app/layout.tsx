@@ -17,7 +17,7 @@ const nunito = Nunito({
 
 export const metadata: Metadata = {
   title: "Pupperazi Pet Spa - Dog Grooming in Palm Harbor, FL",
-  description: "Pupperazi Pet Spa offers boutique-style dog grooming in Palm Harbor, FL. Pamper your pup with premium baths, haircuts, nail trims, and more. Where your pet gets a 5-star experience.",
+  description: "Pupperazi Pet Spa offers boutique-style dog grooming in Palm Harbor, FL. Pamper your pup with premium baths, haircuts, nail trims, and more. Where every pet gets the VIP treatment.",
   keywords: [
     "dog grooming Palm Harbor FL",
     "pet grooming Palm Harbor",
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "Pupperazi Pet Spa - Dog Grooming in Palm Harbor, FL",
-    description: "Boutique-style dog grooming in Palm Harbor, FL. Pamper your pup with premium baths, haircuts, nail trims, and more. Where your pet gets a 5-star experience.",
+    description: "Boutique-style dog grooming in Palm Harbor, FL. Pamper your pup with premium baths, haircuts, nail trims, and more. Where every pet gets the VIP treatment.",
     url: "https://pupperazi-pet-spa.vercel.app",
     siteName: "Pupperazi Pet Spa",
     locale: "en_US",
@@ -60,7 +60,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Pupperazi Pet Spa - Dog Grooming in Palm Harbor, FL",
-    description: "Boutique-style dog grooming in Palm Harbor, FL. Where your pet gets a 5-star experience.",
+    description: "Boutique-style dog grooming in Palm Harbor, FL. Where every pet gets the VIP treatment.",
     images: ["/gallery/pet1.png"],
   },
   robots: {
