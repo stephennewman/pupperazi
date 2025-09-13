@@ -569,7 +569,7 @@ export default function HotelReservationRequest() {
             <div className="pt-8" style={{borderTop: '1px solid #5A8BC4'}}>
               <div className="text-center">
                 <p className="text-blue-200">
-                  © 2023 Pupperazi Pet Spa LLC. All rights reserved. We roll out the paw-parazzi experience! 🎬
+                  © 2026 Pupperazi Pet Spa LLC. All rights reserved. We roll out the paw-parazzi experience! 🎬
                 </p>
               </div>
             </div>

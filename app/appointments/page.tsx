@@ -410,7 +410,7 @@ export default function Appointments() {
 
             <div className="mt-8 pt-8" style={{borderTop: '1px solid #5A8BC4'}}>
               <p className="text-blue-200">
-                © 2023 Pupperazi Pet Spa LLC. All rights reserved. We roll out the paw-parazzi experience! 🎬
+                © 2026 Pupperazi Pet Spa LLC. All rights reserved. We roll out the paw-parazzi experience! 🎬
               </p>
             </div>
           </div>
