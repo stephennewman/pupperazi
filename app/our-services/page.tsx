@@ -167,7 +167,7 @@ export default function OurServices() {
                     href="/grooming"
                     className="inline-block px-8 py-4 bg-purple-600 text-white rounded-full font-semibold text-lg hover:bg-purple-700 transition-colors cursor-pointer"
                   >
-                    Read More >>
+                    Read More &gt;&gt;
                   </a>
                 </div>
               </div>

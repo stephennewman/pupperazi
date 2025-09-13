@@ -240,7 +240,7 @@ export default function Grooming() {
                   onClick={() => window.open('/booking', '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes')}
                   className="px-8 py-4 bg-purple-600 text-white rounded-full font-semibold text-lg hover:bg-purple-700 transition-colors cursor-pointer"
                 >
-                  Book Now >>
+                  Book Now &gt;&gt;
                 </button>
               </div>
             </div>
