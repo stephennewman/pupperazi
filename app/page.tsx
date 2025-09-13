@@ -647,25 +647,67 @@ export default function Home() {
 
         {/* Footer */}
         <footer className="py-12" style={{backgroundColor: '#3D6B9F', color: 'white'}}>
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <div className="flex items-center justify-center space-x-2 mb-4">
-              <span className="text-3xl">🐾</span>
-              <h3 className="text-2xl font-bold">Pupperazi Pet Spa</h3>
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            {/* Main Footer Content */}
+            <div className="grid md:grid-cols-4 gap-8 mb-8">
+              {/* Brand Section */}
+              <div className="md:col-span-1 text-center md:text-left">
+                <div className="flex items-center justify-center md:justify-start space-x-2 mb-4">
+                  <span className="text-3xl">🐾</span>
+                  <h3 className="text-2xl font-bold">Pupperazi Pet Spa</h3>
+                </div>
+                <p className="text-blue-100 mb-4">
+                  Where Every Pet Gets the VIP Treatment
+                </p>
+                <div className="text-sm text-blue-100">
+                  <p>3454 Tampa Rd</p>
+                  <p>Palm Harbor, FL 34684</p>
+                  <p className="mt-2">727-753-9302</p>
+                  <p>PupperaziPetSpa@gmail.com</p>
+                </div>
+              </div>
+
+              {/* Services */}
+              <div className="text-center md:text-left">
+                <h4 className="text-lg font-semibold mb-4">Services</h4>
+                <ul className="space-y-2 text-sm text-blue-100">
+                  <li><a href="/our-services" className="hover:text-white transition-colors">Our Services</a></li>
+                  <li><a href="/grooming" className="hover:text-white transition-colors">Grooming</a></li>
+                  <li><a href="/wash-n-go-baths" className="hover:text-white transition-colors">Wash N Go Baths</a></li>
+                  <li><a href="/appointments" className="hover:text-white transition-colors">Book Appointment</a></li>
+                </ul>
+              </div>
+
+              {/* About & Info */}
+              <div className="text-center md:text-left">
+                <h4 className="text-lg font-semibold mb-4">About & Info</h4>
+                <ul className="space-y-2 text-sm text-blue-100">
+                  <li><a href="/about-us" className="hover:text-white transition-colors">About Us</a></li>
+                  <li><a href="/map-hours" className="hover:text-white transition-colors">Map & Hours</a></li>
+                  <li><a href="/hotel-reservation-request" className="hover:text-white transition-colors">Hotel Reservations</a></li>
+                  <li><a href="/booking" className="hover:text-white transition-colors">Online Booking</a></li>
+                </ul>
+              </div>
+
+              {/* Quick Links */}
+              <div className="text-center md:text-left">
+                <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
+                <ul className="space-y-2 text-sm text-blue-100">
+                  <li><a href="#services" className="hover:text-white transition-colors">Services</a></li>
+                  <li><a href="#gallery" className="hover:text-white transition-colors">Gallery</a></li>
+                  <li><a href="#boarding" className="hover:text-white transition-colors">Boarding</a></li>
+                  <li><a href="#contact" className="hover:text-white transition-colors">Contact</a></li>
+                </ul>
+              </div>
             </div>
-            <p className="text-blue-100 mb-6">
-              Where Every Pet Gets the VIP Treatment
-            </p>
-            <div className="flex flex-wrap justify-center gap-6 text-sm text-blue-100">
-              <span>3454 Tampa Rd, Palm Harbor, FL 34684</span>
-              <span>•</span>
-              <span>727-753-9302</span>
-              <span>•</span>
-              <span>PupperaziPetSpa@gmail.com</span>
-            </div>
-            <div className="mt-8 pt-8" style={{borderTop: '1px solid #5A8BC4'}}>
-              <p className="text-blue-200">
-                © 2023 Pupperazi Pet Spa LLC. All rights reserved. We roll out the paw-parazzi experience! 🎬
-              </p>
+
+            {/* Bottom Footer */}
+            <div className="pt-8" style={{borderTop: '1px solid #5A8BC4'}}>
+              <div className="text-center">
+                <p className="text-blue-200">
+                  © 2023 Pupperazi Pet Spa LLC. All rights reserved. We roll out the paw-parazzi experience! 🎬
+                </p>
+              </div>
             </div>
           </div>
         </footer>
