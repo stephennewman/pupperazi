@@ -182,8 +182,29 @@ export default function BookingPage() {
       const data = await response.json();
 
       if (response.ok) {
-        setBookingSuccess(true);
-        setBookingId(data.bookingId || `PP-${Date.now().toString(36).toUpperCase()}`);
+        const bookingId = data.bookingId || `PP-${Date.now().toString(36).toUpperCase()}`;
+        
+        // Store contract data for the contract signing page
+        const contractData = {
+          bookingId,
+          customerName: `${ownerInfo.firstName} ${ownerInfo.lastName}`,
+          petName: petInfo.name,
+          services: selectedServices.map(s => s.name),
+          totalAmount: selectedServices.reduce((total, service) => {
+            // Extract price from service.price string (e.g., "$45-65" -> 45)
+            const price = parseInt(service.price.replace(/[^0-9]/g, ''));
+            return total + (price || 0);
+          }, 0),
+          appointmentDate: selectedDate,
+          appointmentTime: selectedTime,
+        };
+
+        // Store in localStorage for the contract page
+        localStorage.setItem(`contract_${bookingId}`, JSON.stringify(contractData));
+        localStorage.setItem(`payment_${bookingId}`, JSON.stringify(contractData));
+
+        // Redirect to contract signing page
+        window.location.href = `/contract?bookingId=${bookingId}`;
       } else {
         setBookingError(data.error || 'Booking failed. Please try again.');
       }

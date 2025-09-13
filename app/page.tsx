@@ -41,19 +41,20 @@ export default function Home() {
       "latitude": 28.0836,
       "longitude": -82.7673
     },
-    "openingHoursSpecification": {
-      "@type": "OpeningHoursSpecification",
-      "dayOfWeek": [
-        "Monday",
-        "Tuesday", 
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday"
-      ],
-      "opens": "08:00",
-      "closes": "17:00"
-    },
+    "openingHoursSpecification": [
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Tuesday", "Wednesday", "Thursday", "Friday"],
+        "opens": "08:00",
+        "closes": "17:30"
+      },
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": "Saturday",
+        "opens": "08:00",
+        "closes": "17:00"
+      }
+    ],
     "servedCuisine": [],
     "priceRange": "$15-$60",
     "description": "Pupperazi Pet Spa offers boutique-style dog grooming in Palm Harbor, FL. Pamper your pup with premium baths, haircuts, nail trims, boarding and more. Where luxury meets comfort for your beloved companion.",
@@ -663,7 +664,7 @@ export default function Home() {
             </div>
             <div className="mt-8 pt-8" style={{borderTop: '1px solid #5A8BC4'}}>
               <p className="text-blue-200">
-                © 2025 Pupperazi Pet Spa. All rights reserved. We roll out the paw-parazzi experience! 🎬
+                © 2023 Pupperazi Pet Spa LLC. All rights reserved. We roll out the paw-parazzi experience! 🎬
               </p>
             </div>
           </div>
