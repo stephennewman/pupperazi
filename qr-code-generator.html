@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pupperazi QR Code Generator</title>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      text-align: center;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+    }
+    .container {
+      background: white;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    h1 { color: #2D5A87; margin-bottom: 10px; }
+    input {
+      width: 100%;
+      padding: 15px;
+      font-size: 16px;
+      border: 2px solid #2D5A87;
+      border-radius: 10px;
+      margin: 20px 0;
+      box-sizing: border-box;
+    }
+    button {
+      background: #C8E5F0;
+      color: #2D5A87;
+      border: none;
+      padding: 15px 40px;
+      font-size: 18px;
+      font-weight: bold;
+      border-radius: 50px;
+      cursor: pointer;
+      margin: 10px;
+    }
+    button:hover { background: #B5D9E8; }
+    #qrcode { margin: 30px auto; }
+    .instructions {
+      background: #f0f9ff;
+      padding: 20px;
+      border-radius: 10px;
+      margin-top: 20px;
+      text-align: left;
+    }
+    .instructions h3 { color: #2D5A87; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🐾 Pupperazi Photo Booth QR Code</h1>
+    <p style="color: #666;">Generate a QR code for your in-store photo booth experience!</p>
+    
+    <input 
+      type="text" 
+      id="url" 
+      value="https://pupperazi-pet-spa.vercel.app/photo-booth"
+      placeholder="Enter your photo booth URL"
+    />
+    
+    <button onclick="generateQR()">Generate QR Code</button>
+    
+    <div id="qrcode"></div>
+    
+    <button id="downloadBtn" style="display:none;" onclick="downloadQR()">📥 Download QR Code</button>
+    
+    <div class="instructions">
+      <h3>📋 Instructions:</h3>
+      <ol style="line-height: 1.8;">
+        <li>Click "Generate QR Code" above</li>
+        <li>Click "Download QR Code" to save as PNG</li>
+        <li>Print the QR code (recommended: 4"x4" or larger)</li>
+        <li>Place it in-store where customers can easily scan it</li>
+        <li>Customers scan → take photo → share on Instagram! 🎉</li>
+      </ol>
+      
+      <h3 style="margin-top: 20px;">💡 Pro Tips:</h3>
+      <ul style="line-height: 1.8;">
+        <li>Add signage: "📸 Snap & Share! Scan for a Pupperazi-branded photo"</li>
+        <li>Place near checkout or waiting area</li>
+        <li>Encourage sharing with #PupperaziPetSpa</li>
+        <li>Consider offering a small discount for shares</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    let qrCodeInstance = null;
+
+    function generateQR() {
+      const url = document.getElementById('url').value;
+      const qrcodeDiv = document.getElementById('qrcode');
+      
+      // Clear previous QR code
+      qrcodeDiv.innerHTML = '';
+      
+      // Generate new QR code
+      QRCode.toCanvas(url, {
+        width: 300,
+        margin: 2,
+        color: {
+          dark: '#2D5A87',
+          light: '#FFFFFF'
+        }
+      }, function (error, canvas) {
+        if (error) {
+          console.error(error);
+          alert('Error generating QR code');
+        } else {
+          qrcodeDiv.appendChild(canvas);
+          document.getElementById('downloadBtn').style.display = 'inline-block';
+          qrCodeInstance = canvas;
+        }
+      });
+    }
+
+    function downloadQR() {
+      if (!qrCodeInstance) return;
+      
+      const link = document.createElement('a');
+      link.download = 'pupperazi-photo-booth-qr.png';
+      link.href = qrCodeInstance.toDataURL();
+      link.click();
+    }
+
+    // Generate QR code on page load
+    window.onload = generateQR;
+  </script>
+</body>
+</html>
+

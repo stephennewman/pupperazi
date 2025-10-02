@@ -239,10 +239,10 @@ export default function Grooming() {
                   Click on the button below to make an appointment!
                 </p>
                 <button 
-                  onClick={() => window.open('/booking', '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes')}
+                  onClick={() => setIsPopupOpen(true)}
                   className="px-8 py-4 bg-purple-600 text-white rounded-full font-semibold text-lg hover:bg-purple-700 transition-colors cursor-pointer"
                 >
-                  Book Now &gt;&gt;
+                  Request Appointment
                 </button>
               </div>
             </div>
@@ -332,7 +332,7 @@ export default function Grooming() {
                   <li><a href="/our-services" className="hover:text-white transition-colors">Our Services</a></li>
                   <li><a href="/grooming" className="hover:text-white transition-colors">Grooming</a></li>
                   <li><a href="/wash-n-go-baths" className="hover:text-white transition-colors">Wash N Go Baths</a></li>
-                  <li><a href="/appointments" className="hover:text-white transition-colors">Book Appointment</a></li>
+                  <li><a href="/appointments" className="hover:text-white transition-colors">Request Appointment</a></li>
                 </ul>
               </div>
 
@@ -343,7 +343,6 @@ export default function Grooming() {
                   <li><a href="/about-us" className="hover:text-white transition-colors">About Us</a></li>
                   <li><a href="/map-hours" className="hover:text-white transition-colors">Map & Hours</a></li>
                   <li><a href="/hotel-reservation-request" className="hover:text-white transition-colors">Hotel Reservations</a></li>
-                  <li><a href="/booking" className="hover:text-white transition-colors">Online Booking</a></li>
                 </ul>
               </div>
 

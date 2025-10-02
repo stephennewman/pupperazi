@@ -63,25 +63,20 @@ export default function AppointmentPopup({ isOpen, onClose }: AppointmentPopupPr
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="flex justify-between items-center p-6 border-b border-gray-200">
-          <div>
-            <h2 className="text-2xl font-bold text-purple-900 mb-2">
-              📝 Request Appointment
-            </h2>
-            <p className="text-gray-600">
-              Fill out the form below and we'll get back to you soon!
-            </p>
-          </div>
+        <div className="flex justify-between items-center p-5 border-b border-gray-200">
+          <h2 className="text-2xl font-bold text-purple-900">
+            📝 Request Appointment
+          </h2>
           <button
             onClick={handleClose}
-            className="text-gray-400 hover:text-gray-600 text-2xl font-bold"
+            className="text-gray-400 hover:text-gray-600 text-3xl font-bold leading-none"
           >
             ×
           </button>
         </div>
 
         {/* Form */}
-        <div className="p-6">
+        <div className="p-5">
           {submitStatus === 'success' && (
             <div className="mb-6 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg">
               <p className="font-semibold">✅ Thanks for submitting!</p>
@@ -96,107 +91,124 @@ export default function AppointmentPopup({ isOpen, onClose }: AppointmentPopupPr
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Name & Phone */}
-            <div>
-              <label htmlFor="popup-name" className="block text-sm font-semibold text-gray-700 mb-2">
-                Name & Phone Number: *
-              </label>
-              <input
-                type="text"
-                id="popup-name"
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                placeholder="Your name and phone number"
-              />
+          <form onSubmit={handleSubmit} className="space-y-3">
+            {/* Name & Phone - Side by Side */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="popup-name" className="block text-sm font-semibold text-gray-700 mb-2">
+                  Name: *
+                </label>
+                <input
+                  type="text"
+                  id="popup-name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  placeholder="Your name"
+                />
+              </div>
+              <div>
+                <label htmlFor="popup-phone" className="block text-sm font-semibold text-gray-700 mb-2">
+                  Phone: *
+                </label>
+                <input
+                  type="tel"
+                  id="popup-phone"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  placeholder="(727) 555-0123"
+                />
+              </div>
             </div>
 
-            {/* Email */}
-            <div>
-              <label htmlFor="popup-email" className="block text-sm font-semibold text-gray-700 mb-2">
-                Email: *
-              </label>
-              <input
-                type="email"
-                id="popup-email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                placeholder="your.email@example.com"
-              />
+            {/* Email & New Customer - Side by Side */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="popup-email" className="block text-sm font-semibold text-gray-700 mb-2">
+                  Email: *
+                </label>
+                <input
+                  type="email"
+                  id="popup-email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  placeholder="your.email@example.com"
+                />
+              </div>
+              <div>
+                <label htmlFor="popup-customer" className="block text-sm font-semibold text-gray-700 mb-2">
+                  New Customer?: *
+                </label>
+                <select
+                  id="popup-customer"
+                  name="isNewCustomer"
+                  value={formData.isNewCustomer}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                >
+                  <option value="">Select one</option>
+                  <option value="yes">Yes, I'm new</option>
+                  <option value="no">No, returning</option>
+                </select>
+              </div>
             </div>
 
-            {/* New Customer */}
-            <div>
-              <label htmlFor="popup-customer" className="block text-sm font-semibold text-gray-700 mb-2">
-                New Customer?: *
-              </label>
-              <select
-                id="popup-customer"
-                name="isNewCustomer"
-                value={formData.isNewCustomer}
-                onChange={handleInputChange}
-                required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              >
-                <option value="">Select one</option>
-                <option value="yes">Yes, I'm a new customer</option>
-                <option value="no">No, I'm a returning customer</option>
-              </select>
-            </div>
-
-            {/* Pet Info */}
-            <div>
-              <label htmlFor="popup-pet" className="block text-sm font-semibold text-gray-700 mb-2">
-                Pet(s) Name & Breed(s): *
-              </label>
-              <textarea
-                id="popup-pet"
-                name="petInfo"
-                value={formData.petInfo}
-                onChange={handleInputChange}
-                required
-                rows={2}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                placeholder="e.g., Buddy - Golden Retriever, Luna - Mixed Breed"
-              />
-            </div>
-
-            {/* Date & Time */}
-            <div>
-              <label htmlFor="popup-datetime" className="block text-sm font-semibold text-gray-700 mb-2">
-                Date & Time Requested: *
-              </label>
-              <input
-                type="text"
-                id="popup-datetime"
-                name="dateTime"
-                value={formData.dateTime}
-                onChange={handleInputChange}
-                required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                placeholder="e.g., Tuesday, March 15th at 2:00 PM"
-              />
+            {/* Pet Info & Date/Time - Side by Side */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="popup-pet" className="block text-sm font-semibold text-gray-700 mb-2">
+                  Pet(s) Name & Breed(s): *
+                </label>
+                <textarea
+                  id="popup-pet"
+                  name="petInfo"
+                  value={formData.petInfo}
+                  onChange={handleInputChange}
+                  required
+                  rows={2}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
+                  placeholder="Buddy - Golden Retriever"
+                />
+              </div>
+              <div>
+                <label htmlFor="popup-datetime" className="block text-sm font-semibold text-gray-700 mb-2">
+                  Date & Time Requested: *
+                </label>
+                <textarea
+                  id="popup-datetime"
+                  name="dateTime"
+                  value={formData.dateTime}
+                  onChange={handleInputChange}
+                  required
+                  rows={2}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
+                  placeholder="Tuesday, March 15th at 2 PM"
+                />
+              </div>
             </div>
 
             {/* Message */}
             <div>
               <label htmlFor="popup-message" className="block text-sm font-semibold text-gray-700 mb-2">
-                Message:
+                Additional Notes:
               </label>
               <textarea
                 id="popup-message"
                 name="message"
                 value={formData.message}
                 onChange={handleInputChange}
-                rows={3}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                placeholder="Any special requests, notes about your pet, or questions..."
+                rows={2}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
+                placeholder="Special requests or questions..."
               />
             </div>
 

@@ -308,13 +308,13 @@ export default function Home() {
                   Ready to give your pup the boutique treatment? ✨
                 </p>
                 <button 
-                  onClick={() => window.open('/booking', '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes')}
+                  onClick={() => setIsPopupOpen(true)}
                   className="px-6 py-3 rounded-full font-semibold transition-colors cursor-pointer"
                   style={{backgroundColor: '#C8E5F0', color: '#2D5A87'}}
                   onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#B5D9E8'}
                   onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#C8E5F0'}
                 >
-                  Book Your Appointment
+                  Request Appointment
                 </button>
               </div>
             </div>
@@ -629,16 +629,16 @@ export default function Home() {
                       Spots fill up fast—especially around the howl-idays!
                     </p>
                     <button 
-                      onClick={() => window.open('/booking', '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes')}
+                      onClick={() => setIsPopupOpen(true)}
                       className="px-8 py-4 rounded-full font-semibold text-lg transition-colors shadow-lg cursor-pointer"
                       style={{backgroundColor: '#C8E5F0', color: '#2D5A87'}}
                       onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#B5D9E8'}
                       onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#C8E5F0'}
                     >
-                      Schedule My Appointment
+                      Request Appointment
                     </button>
                     <p className="text-sm mt-4 opacity-90">
-                      Click above to book online 24/7 or give us a call.
+                      Fill out the form or give us a call.
                     </p>
                   </div>
                 </div>
@@ -676,7 +676,7 @@ export default function Home() {
                   <li><a href="/our-services" className="hover:text-white transition-colors">Our Services</a></li>
                   <li><a href="/grooming" className="hover:text-white transition-colors">Grooming</a></li>
                   <li><a href="/wash-n-go-baths" className="hover:text-white transition-colors">Wash N Go Baths</a></li>
-                  <li><a href="/appointments" className="hover:text-white transition-colors">Book Appointment</a></li>
+                  <li><a href="/appointments" className="hover:text-white transition-colors">Request Appointment</a></li>
                 </ul>
               </div>
 
@@ -687,7 +687,6 @@ export default function Home() {
                   <li><a href="/about-us" className="hover:text-white transition-colors">About Us</a></li>
                   <li><a href="/map-hours" className="hover:text-white transition-colors">Map & Hours</a></li>
                   <li><a href="/hotel-reservation-request" className="hover:text-white transition-colors">Hotel Reservations</a></li>
-                  <li><a href="/booking" className="hover:text-white transition-colors">Online Booking</a></li>
                 </ul>
               </div>
 
