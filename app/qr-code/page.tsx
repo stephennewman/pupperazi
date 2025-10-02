@@ -3,7 +3,7 @@
 import { useState } from 'react';
 
 export default function QRCodePage() {
-  const [url, setUrl] = useState('https://pupperazi-ek1p7mkwt-krezzo.vercel.app/photo-booth');
+  const [url, setUrl] = useState('https://pupperazi-9eqt7u0sl-krezzo.vercel.app/photo-booth');
 
   return (
     <div className="min-h-screen p-8" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
