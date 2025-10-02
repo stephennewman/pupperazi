@@ -102,9 +102,9 @@ export default function AppointmentPopup({ isOpen, onClose }: AppointmentPopupPr
           {submitStatus !== 'success' && (
           <form onSubmit={handleSubmit} className="space-y-3">
             {/* Name & Phone - Side by Side */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-3">
               <div>
-                <label htmlFor="popup-name" className="block text-sm font-semibold text-gray-700 mb-2">
+                <label htmlFor="popup-name" className="block text-xs font-semibold text-gray-700 mb-1">
                   Name: *
                 </label>
                 <input
@@ -114,12 +114,12 @@ export default function AppointmentPopup({ isOpen, onClose }: AppointmentPopupPr
                   value={formData.name}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm"
                   placeholder="Your name"
                 />
               </div>
               <div>
-                <label htmlFor="popup-phone" className="block text-sm font-semibold text-gray-700 mb-2">
+                <label htmlFor="popup-phone" className="block text-xs font-semibold text-gray-700 mb-1">
                   Phone: *
                 </label>
                 <input
@@ -129,16 +129,16 @@ export default function AppointmentPopup({ isOpen, onClose }: AppointmentPopupPr
                   value={formData.phone}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm"
                   placeholder="(727) 555-0123"
                 />
               </div>
             </div>
 
             {/* Email & New Customer - Side by Side */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-3">
               <div>
-                <label htmlFor="popup-email" className="block text-sm font-semibold text-gray-700 mb-2">
+                <label htmlFor="popup-email" className="block text-xs font-semibold text-gray-700 mb-1">
                   Email: *
                 </label>
                 <input
@@ -148,12 +148,12 @@ export default function AppointmentPopup({ isOpen, onClose }: AppointmentPopupPr
                   value={formData.email}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm"
                   placeholder="your.email@example.com"
                 />
               </div>
               <div>
-                <label htmlFor="popup-customer" className="block text-sm font-semibold text-gray-700 mb-2">
+                <label htmlFor="popup-customer" className="block text-xs font-semibold text-gray-700 mb-1">
                   New Customer?: *
                 </label>
                 <select
@@ -162,7 +162,7 @@ export default function AppointmentPopup({ isOpen, onClose }: AppointmentPopupPr
                   value={formData.isNewCustomer}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm"
                 >
                   <option value="">Select one</option>
                   <option value="yes">Yes, I'm new</option>
@@ -172,9 +172,9 @@ export default function AppointmentPopup({ isOpen, onClose }: AppointmentPopupPr
             </div>
 
             {/* Pet Info & Date/Time - Side by Side */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-3">
               <div>
-                <label htmlFor="popup-pet" className="block text-sm font-semibold text-gray-700 mb-2">
+                <label htmlFor="popup-pet" className="block text-xs font-semibold text-gray-700 mb-1">
                   Pet(s) Name & Breed(s): *
                 </label>
                 <textarea
@@ -189,7 +189,7 @@ export default function AppointmentPopup({ isOpen, onClose }: AppointmentPopupPr
                 />
               </div>
               <div>
-                <label htmlFor="popup-datetime" className="block text-sm font-semibold text-gray-700 mb-2">
+                <label htmlFor="popup-datetime" className="block text-xs font-semibold text-gray-700 mb-1">
                   Date & Time Requested: *
                 </label>
                 <textarea
@@ -207,7 +207,7 @@ export default function AppointmentPopup({ isOpen, onClose }: AppointmentPopupPr
 
             {/* Message */}
             <div>
-              <label htmlFor="popup-message" className="block text-sm font-semibold text-gray-700 mb-2">
+              <label htmlFor="popup-message" className="block text-xs font-semibold text-gray-700 mb-1">
                 Additional Notes:
               </label>
               <textarea
