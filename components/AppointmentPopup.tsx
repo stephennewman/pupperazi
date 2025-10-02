@@ -145,7 +145,7 @@ ${formData.message ? `Additional Notes: ${formData.message}` : ''}
                   value={formData.name}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm text-gray-900 bg-white"
                   placeholder="Your name"
                 />
               </div>
@@ -160,7 +160,7 @@ ${formData.message ? `Additional Notes: ${formData.message}` : ''}
                   value={formData.phone}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm text-gray-900 bg-white"
                   placeholder="(727) 555-0123"
                 />
               </div>
@@ -179,7 +179,7 @@ ${formData.message ? `Additional Notes: ${formData.message}` : ''}
                   value={formData.email}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm text-gray-900 bg-white"
                   placeholder="your.email@example.com"
                 />
               </div>
@@ -193,7 +193,7 @@ ${formData.message ? `Additional Notes: ${formData.message}` : ''}
                   value={formData.isNewCustomer}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm text-gray-900 bg-white"
                 >
                   <option value="">Select one</option>
                   <option value="yes">Yes, I'm new</option>
@@ -215,7 +215,7 @@ ${formData.message ? `Additional Notes: ${formData.message}` : ''}
                   onChange={handleInputChange}
                   required
                   rows={2}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none text-sm text-gray-900 bg-white"
                   placeholder="Buddy - Golden Retriever"
                 />
               </div>
@@ -230,7 +230,7 @@ ${formData.message ? `Additional Notes: ${formData.message}` : ''}
                   onChange={handleInputChange}
                   required
                   rows={2}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none text-sm text-gray-900 bg-white"
                   placeholder="Tuesday, March 15th at 2 PM"
                 />
               </div>
