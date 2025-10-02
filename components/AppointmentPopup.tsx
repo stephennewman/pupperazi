@@ -33,19 +33,50 @@ export default function AppointmentPopup({ isOpen, onClose }: AppointmentPopupPr
     setIsSubmitting(true);
     
     try {
-      // Simulate form submission - replace with actual API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      setSubmitStatus('success');
-      setFormData({
-        name: '',
-        phone: '',
-        email: '',
-        isNewCustomer: '',
-        petInfo: '',
-        dateTime: '',
-        message: ''
+      // Format the message to include all appointment details
+      const appointmentDetails = `
+APPOINTMENT REQUEST
+
+Customer Status: ${formData.isNewCustomer === 'yes' ? 'New Customer' : 'Returning Customer'}
+Pet Information: ${formData.petInfo}
+Requested Date/Time: ${formData.dateTime}
+
+${formData.message ? `Additional Notes: ${formData.message}` : ''}
+      `.trim();
+
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          service: 'grooming',
+          contactMethod: 'either',
+          message: appointmentDetails
+        }),
       });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setSubmitStatus('success');
+        setFormData({
+          name: '',
+          phone: '',
+          email: '',
+          isNewCustomer: '',
+          petInfo: '',
+          dateTime: '',
+          message: ''
+        });
+      } else {
+        setSubmitStatus('error');
+      }
     } catch (error) {
+      console.error('Appointment submission error:', error);
       setSubmitStatus('error');
     } finally {
       setIsSubmitting(false);
