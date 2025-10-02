@@ -34,14 +34,15 @@ export default function AppointmentPopup({ isOpen, onClose }: AppointmentPopupPr
     
     try {
       // Format the message to include all appointment details
-      const appointmentDetails = `
-APPOINTMENT REQUEST
+      const appointmentDetails = `🐾 APPOINTMENT REQUEST
 
-Customer Status: ${formData.isNewCustomer === 'yes' ? 'New Customer' : 'Returning Customer'}
-Pet Information: ${formData.petInfo}
-Requested Date/Time: ${formData.dateTime}
+📋 Customer Status: ${formData.isNewCustomer === 'yes' ? 'New Customer ⭐' : 'Returning Customer'}
 
-${formData.message ? `Additional Notes: ${formData.message}` : ''}
+🐕 Pet Information: ${formData.petInfo}
+
+📅 Requested Date/Time: ${formData.dateTime}
+
+${formData.message ? `💬 Additional Notes:\n${formData.message}` : ''}
       `.trim();
 
       const response = await fetch('/api/contact', {

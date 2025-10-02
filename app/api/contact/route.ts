@@ -116,13 +116,19 @@ export async function POST(request: NextRequest) {
       });
     }
     
+    // Check if this is an appointment request
+    const isAppointmentRequest = message.includes('APPOINTMENT REQUEST');
+    const subjectLine = isAppointmentRequest 
+      ? `🐾 New Appointment Request - ${name}` 
+      : `New Contact Form: ${serviceDisplay} - ${name}`;
+
     const { data, error } = await resend.emails.send({
       from: 'Pupperazi Pet Spa <contact@krezzo.com>',
       to: [
         'stephen.p.newman@gmail.com', // Primary business email
         process.env.ADMIN_EMAIL || 'admin@pupperazi.com' // Admin notification
       ],
-      subject: `New Contact Form: ${serviceDisplay} - ${name}`,
+      subject: subjectLine,
       html: htmlContent,
       replyTo: email, // Allow replies to go back to the customer
     });
