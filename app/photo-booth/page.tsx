@@ -183,6 +183,10 @@ export default function PhotoBooth() {
               {/* Frame overlays - always show when video is active */}
               {!capturedImage && (
                 <>
+                  {/* Top overlay */}
+                  <div className="absolute top-0 left-0 right-0 text-center py-3 sm:py-4 z-10" style={{ background: 'linear-gradient(90deg, #9b59b6, #667eea, #3b82f6)' }}>
+                    <h2 className="text-xl sm:text-2xl font-bold text-white">🐾 Pupperazi Pet Spa</h2>
+                  </div>
                   {/* Bottom overlay */}
                   <div className="absolute bottom-0 left-0 right-0 text-center py-2 sm:py-3 z-10" style={{ backgroundColor: 'rgba(45, 90, 135, 0.95)' }}>
                     <p className="text-white font-semibold text-base sm:text-lg">📍 Palm Harbor, FL</p>
