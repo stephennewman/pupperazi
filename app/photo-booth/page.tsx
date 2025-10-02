@@ -6,6 +6,7 @@ export default function PhotoBooth() {
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [showFrame, setShowFrame] = useState(true);
+  const [facingMode, setFacingMode] = useState<'user' | 'environment'>('environment');
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -16,12 +17,17 @@ export default function PhotoBooth() {
         stream.getTracks().forEach(track => track.stop());
       }
     };
-  }, []);
+  }, [facingMode]);
 
   const startCamera = async () => {
+    // Stop existing stream
+    if (stream) {
+      stream.getTracks().forEach(track => track.stop());
+    }
+
     try {
       const mediaStream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: 'user', width: { ideal: 1080 }, height: { ideal: 1350 } }
+        video: { facingMode: facingMode, width: { ideal: 1080 }, height: { ideal: 1350 } }
       });
       setStream(mediaStream);
       if (videoRef.current) {
@@ -31,6 +37,10 @@ export default function PhotoBooth() {
       console.error('Camera access denied:', err);
       alert('Please allow camera access to use the photo booth!');
     }
+  };
+
+  const flipCamera = () => {
+    setFacingMode(prev => prev === 'user' ? 'environment' : 'user');
   };
 
   const capturePhoto = () => {
@@ -209,13 +219,22 @@ export default function PhotoBooth() {
                 >
                   📸 Capture Photo
                 </button>
-                <button
-                  onClick={() => setShowFrame(!showFrame)}
-                  className="w-full py-2 sm:py-3 rounded-full text-sm sm:text-base font-semibold"
-                  style={{ backgroundColor: 'rgba(255,255,255,0.3)', color: 'white', border: '2px solid white' }}
-                >
-                  {showFrame ? '🖼️ Hide Frame' : '🖼️ Show Frame'}
-                </button>
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    onClick={flipCamera}
+                    className="py-2 sm:py-3 rounded-full text-sm sm:text-base font-semibold"
+                    style={{ backgroundColor: 'rgba(255,255,255,0.3)', color: 'white', border: '2px solid white' }}
+                  >
+                    🔄 Flip Camera
+                  </button>
+                  <button
+                    onClick={() => setShowFrame(!showFrame)}
+                    className="py-2 sm:py-3 rounded-full text-sm sm:text-base font-semibold"
+                    style={{ backgroundColor: 'rgba(255,255,255,0.3)', color: 'white', border: '2px solid white' }}
+                  >
+                    {showFrame ? '🖼️ Hide Frame' : '🖼️ Show Frame'}
+                  </button>
+                </div>
               </div>
             ) : (
               <div className="space-y-3">
