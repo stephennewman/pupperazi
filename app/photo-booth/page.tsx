@@ -77,28 +77,13 @@ export default function PhotoBooth() {
     
     ctx.drawImage(video, sx, sy, sWidth, sHeight, 0, 0, canvas.width, canvas.height);
 
-    // Draw branded frame overlay
-    // Top bar with gradient
-    const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
-    gradient.addColorStop(0, '#9b59b6');
-    gradient.addColorStop(0.5, '#667eea');
-    gradient.addColorStop(1, '#3b82f6');
-    
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, canvas.width, 180);
-
-    // Pupperazi branding
-    ctx.fillStyle = 'white';
-    ctx.font = 'bold 80px serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('🐾 Pupperazi Pet Spa', canvas.width / 2, 110);
-
-    // Bottom bar
+    // Draw branded frame overlay - bottom bar only
     ctx.fillStyle = 'rgba(45, 90, 135, 0.95)';
     ctx.fillRect(0, canvas.height - 140, canvas.width, 140);
 
     ctx.fillStyle = 'white';
     ctx.font = '48px sans-serif';
+    ctx.textAlign = 'center';
     ctx.fillText('📍 Palm Harbor, FL', canvas.width / 2, canvas.height - 85);
     ctx.font = '40px sans-serif';
     ctx.fillText('727-753-9302', canvas.width / 2, canvas.height - 30);
@@ -184,10 +169,6 @@ export default function PhotoBooth() {
               {/* Frame overlays - always show when video is active */}
               {!capturedImage && (
                 <>
-                  {/* Top overlay */}
-                  <div className="absolute top-0 left-0 right-0 text-center py-3 sm:py-4 z-10" style={{ background: 'linear-gradient(90deg, #9b59b6, #667eea, #3b82f6)' }}>
-                    <h2 className="text-xl sm:text-2xl font-bold text-white">🐾 Pupperazi Pet Spa</h2>
-                  </div>
                   {/* Bottom overlay */}
                   <div className="absolute bottom-0 left-0 right-0 text-center py-2 sm:py-3 z-10" style={{ backgroundColor: 'rgba(45, 90, 135, 0.95)' }}>
                     <p className="text-white font-semibold text-base sm:text-lg">📍 Palm Harbor, FL</p>
@@ -231,7 +212,7 @@ export default function PhotoBooth() {
                   className="w-full py-3 sm:py-4 rounded-full text-lg sm:text-xl font-bold shadow-lg transform active:scale-95 transition-transform"
                   style={{ background: 'linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%)', color: 'white' }}
                 >
-                  Share!
+                  📤 Share!
                 </button>
                 <button
                   onClick={downloadPhoto}
