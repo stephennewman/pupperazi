@@ -231,14 +231,14 @@ export default function PhotoBooth() {
                   className="w-full py-3 sm:py-4 rounded-full text-lg sm:text-xl font-bold shadow-lg transform active:scale-95 transition-transform"
                   style={{ background: 'linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%)', color: 'white' }}
                 >
-                  📱 Share to Instagram
+                  Share!
                 </button>
                 <button
                   onClick={downloadPhoto}
                   className="w-full py-3 sm:py-4 rounded-full text-lg sm:text-xl font-bold shadow-lg transform active:scale-95 transition-transform"
                   style={{ backgroundColor: '#C8E5F0', color: '#2D5A87' }}
                 >
-                  💾 Download Photo
+                  🖼️ Save!
                 </button>
                 <button
                   onClick={retake}
