@@ -5,7 +5,6 @@ import { useState, useRef, useEffect } from 'react';
 export default function PhotoBooth() {
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
-  const [showFrame, setShowFrame] = useState(true);
   const [facingMode, setFacingMode] = useState<'user' | 'environment'>('environment');
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -78,33 +77,31 @@ export default function PhotoBooth() {
     
     ctx.drawImage(video, sx, sy, sWidth, sHeight, 0, 0, canvas.width, canvas.height);
 
-    if (showFrame) {
-      // Draw branded frame overlay
-      // Top bar with gradient
-      const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
-      gradient.addColorStop(0, '#9b59b6');
-      gradient.addColorStop(0.5, '#667eea');
-      gradient.addColorStop(1, '#3b82f6');
-      
-      ctx.fillStyle = gradient;
-      ctx.fillRect(0, 0, canvas.width, 180);
+    // Draw branded frame overlay
+    // Top bar with gradient
+    const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
+    gradient.addColorStop(0, '#9b59b6');
+    gradient.addColorStop(0.5, '#667eea');
+    gradient.addColorStop(1, '#3b82f6');
+    
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, canvas.width, 180);
 
-      // Pupperazi branding
-      ctx.fillStyle = 'white';
-      ctx.font = 'bold 80px serif';
-      ctx.textAlign = 'center';
-      ctx.fillText('🐾 Pupperazi Pet Spa', canvas.width / 2, 110);
+    // Pupperazi branding
+    ctx.fillStyle = 'white';
+    ctx.font = 'bold 80px serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('🐾 Pupperazi Pet Spa', canvas.width / 2, 110);
 
-      // Bottom bar
-      ctx.fillStyle = 'rgba(45, 90, 135, 0.95)';
-      ctx.fillRect(0, canvas.height - 140, canvas.width, 140);
+    // Bottom bar
+    ctx.fillStyle = 'rgba(45, 90, 135, 0.95)';
+    ctx.fillRect(0, canvas.height - 140, canvas.width, 140);
 
-      ctx.fillStyle = 'white';
-      ctx.font = '48px sans-serif';
-      ctx.fillText('📍 Palm Harbor, FL', canvas.width / 2, canvas.height - 85);
-      ctx.font = '40px sans-serif';
-      ctx.fillText('727-753-9302', canvas.width / 2, canvas.height - 30);
-    }
+    ctx.fillStyle = 'white';
+    ctx.font = '48px sans-serif';
+    ctx.fillText('📍 Palm Harbor, FL', canvas.width / 2, canvas.height - 85);
+    ctx.font = '40px sans-serif';
+    ctx.fillText('727-753-9302', canvas.width / 2, canvas.height - 30);
 
     const imageUrl = canvas.toDataURL('image/jpeg', 0.95);
     setCapturedImage(imageUrl);
@@ -184,8 +181,8 @@ export default function PhotoBooth() {
                 style={{ display: capturedImage ? 'none' : 'block' }}
               />
               
-              {/* Frame overlays - show when video is active and frame is enabled */}
-              {!capturedImage && showFrame && (
+              {/* Frame overlays - always show when video is active */}
+              {!capturedImage && (
                 <>
                   {/* Top overlay */}
                   <div className="absolute top-0 left-0 right-0 text-center py-3 sm:py-4 z-10" style={{ background: 'linear-gradient(90deg, #9b59b6, #667eea, #3b82f6)' }}>
@@ -219,22 +216,13 @@ export default function PhotoBooth() {
                 >
                   📸 Capture Photo
                 </button>
-                <div className="grid grid-cols-2 gap-3">
-                  <button
-                    onClick={flipCamera}
-                    className="py-2 sm:py-3 rounded-full text-sm sm:text-base font-semibold"
-                    style={{ backgroundColor: 'rgba(255,255,255,0.3)', color: 'white', border: '2px solid white' }}
-                  >
-                    🔄 Flip Camera
-                  </button>
-                  <button
-                    onClick={() => setShowFrame(!showFrame)}
-                    className="py-2 sm:py-3 rounded-full text-sm sm:text-base font-semibold"
-                    style={{ backgroundColor: 'rgba(255,255,255,0.3)', color: 'white', border: '2px solid white' }}
-                  >
-                    {showFrame ? '🖼️ Hide Frame' : '🖼️ Show Frame'}
-                  </button>
-                </div>
+                <button
+                  onClick={flipCamera}
+                  className="w-full py-2 sm:py-3 rounded-full text-sm sm:text-base font-semibold"
+                  style={{ backgroundColor: 'rgba(255,255,255,0.3)', color: 'white', border: '2px solid white' }}
+                >
+                  🔄 Flip Camera
+                </button>
               </div>
             ) : (
               <div className="space-y-3">
