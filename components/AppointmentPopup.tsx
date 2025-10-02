@@ -78,9 +78,17 @@ export default function AppointmentPopup({ isOpen, onClose }: AppointmentPopupPr
         {/* Form */}
         <div className="p-5">
           {submitStatus === 'success' && (
-            <div className="mb-6 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg">
-              <p className="font-semibold">✅ Thanks for submitting!</p>
-              <p>We'll get back to you within 24 hours to confirm your appointment.</p>
+            <div className="text-center py-8">
+              <div className="mb-6 p-6 bg-green-50 border border-green-200 text-green-800 rounded-lg">
+                <p className="font-semibold text-lg mb-2">✅ Thanks for submitting!</p>
+                <p>We'll get back to you within 24 hours to confirm your appointment.</p>
+              </div>
+              <button
+                onClick={handleClose}
+                className="px-8 py-3 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700 transition-colors"
+              >
+                Return to Site
+              </button>
             </div>
           )}
 
@@ -91,6 +99,7 @@ export default function AppointmentPopup({ isOpen, onClose }: AppointmentPopupPr
             </div>
           )}
 
+          {submitStatus !== 'success' && (
           <form onSubmit={handleSubmit} className="space-y-3">
             {/* Name & Phone - Side by Side */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -230,6 +239,7 @@ export default function AppointmentPopup({ isOpen, onClose }: AppointmentPopupPr
               </button>
             </div>
           </form>
+          )}
         </div>
       </div>
     </div>
