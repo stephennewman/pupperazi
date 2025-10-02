@@ -2,9 +2,11 @@
 
 import { useState } from 'react';
 import Head from 'next/head';
+import AppointmentPopup from '../../components/AppointmentPopup';
 
 export default function WashNGoBaths() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   // Structured Data for Google
   const structuredData = {
@@ -92,7 +94,7 @@ export default function WashNGoBaths() {
       
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
         {/* Navigation */}
-        <nav className="fixed top-4 w-full bg-white/90 backdrop-blur-md z-50 shadow-sm">
+        <nav className="fixed top-0 w-full bg-white/90 backdrop-blur-md z-50 shadow-sm">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center py-4">
               <a href="/" className="flex items-center space-x-2 cursor-pointer">
@@ -272,15 +274,15 @@ export default function WashNGoBaths() {
                 Book your Wash N Go bath today and save time while keeping your pet fresh!
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <button 
-                  onClick={() => window.open('/booking', '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes')}
-                  className="px-8 py-4 rounded-full font-semibold text-lg transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-1 cursor-pointer"
-                  style={{backgroundColor: '#C8E5F0', color: '#2D5A87'}}
-                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#B5D9E8'}
-                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#C8E5F0'}
-                >
-                  Book Now
-                </button>
+                  <button 
+                    onClick={() => setIsPopupOpen(true)}
+                    className="px-8 py-4 rounded-full font-semibold text-lg transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-1 cursor-pointer"
+                    style={{backgroundColor: '#C8E5F0', color: '#2D5A87'}}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#B5D9E8'}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#C8E5F0'}
+                  >
+                    Request Appointment
+                  </button>
                 <a
                   href="tel:727-753-9302"
                   className="px-8 py-4 rounded-full font-semibold text-lg transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-1 cursor-pointer border-2 border-white text-white hover:bg-white hover:text-blue-600"
@@ -383,6 +385,12 @@ export default function WashNGoBaths() {
             </div>
           </div>
         </footer>
+
+        {/* Appointment Popup */}
+        <AppointmentPopup 
+          isOpen={isPopupOpen} 
+          onClose={() => setIsPopupOpen(false)} 
+        />
       </div>
     </>
   );

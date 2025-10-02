@@ -75,8 +75,8 @@ export default function BookingPage() {
     for (let i = 1; i <= 14; i++) {
       const date = new Date(today);
       date.setDate(today.getDate() + i);
-      // Skip Sundays (day 0)
-      if (date.getDay() !== 0) {
+      // Skip Sundays (day 0) and Mondays (day 1)
+      if (date.getDay() !== 0 && date.getDay() !== 1) {
         dates.push(date);
       }
     }
@@ -99,8 +99,8 @@ export default function BookingPage() {
           hour12: true
         });
         
-        // Simulate availability (in real app, this would check actual bookings)
-        const available = Math.random() > 0.3; // 70% chance of being available
+        // All time slots are available for requests
+        const available = true;
         
         slots.push({
           time: displayTime,
@@ -274,7 +274,7 @@ export default function BookingPage() {
         {currentStep === 1 && (
           <div className="space-y-8">
             <div className="text-center">
-              <h2 className="text-3xl font-bold text-purple-900 mb-4">Select Your Services</h2>
+              <h2 className="text-3xl font-bold text-purple-900 mb-4">Request Your Services</h2>
               <p className="text-lg text-gray-600">Choose the pampering your pet deserves</p>
             </div>
 
@@ -384,7 +384,7 @@ export default function BookingPage() {
                     : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                 }`}
               >
-                Continue to Calendar →
+                Continue →
               </button>
             </div>
           </div>
@@ -394,10 +394,11 @@ export default function BookingPage() {
         {currentStep === 2 && (
           <div className="space-y-8">
             <div className="text-center">
-              <h2 className="text-3xl font-bold text-purple-900 mb-4">Choose Date & Time</h2>
+              <h2 className="text-3xl font-bold text-purple-900 mb-4">Request Date & Time</h2>
               <p className="text-lg text-gray-600">
-                Appointment duration: <span className="font-semibold text-purple-600">{formatDuration(getTotalDuration())}</span>
+                Requested duration: <span className="font-semibold text-purple-600">{formatDuration(getTotalDuration())}</span>
               </p>
+              <p className="text-sm text-gray-500 mt-2">We'll confirm availability and get back to you within 24 hours</p>
             </div>
 
             <div className="grid lg:grid-cols-2 gap-8">
@@ -445,7 +446,6 @@ export default function BookingPage() {
                         }`}
                       >
                         {slot.time}
-                        {!slot.available && <div className="text-xs">Booked</div>}
                       </button>
                     ))}
                   </div>

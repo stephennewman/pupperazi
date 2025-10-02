@@ -60,3 +60,6 @@ export async function createPaymentLink(amount: number, bookingId: string, custo
     throw error;
   }
 }
+
+
+

@@ -187,10 +187,10 @@ export default function ContactForm() {
             </button>
 
             <a
-              href="/booking"
+              href="/appointments"
               className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors text-center cursor-pointer"
             >
-              📅 Book Appointment
+              📅 Request Appointment
             </a>
           </div>
 

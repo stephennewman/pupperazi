@@ -3,10 +3,12 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import Head from 'next/head';
+import AppointmentPopup from '../components/AppointmentPopup';
 
 export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   const galleryImages = [
     'pet1.png',
@@ -113,7 +115,7 @@ export default function Home() {
       
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
         {/* Navigation */}
-        <nav className="fixed top-4 w-full bg-white/90 backdrop-blur-md z-50 shadow-sm">
+        <nav className="fixed top-0 w-full bg-white/90 backdrop-blur-md z-50 shadow-sm">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center py-4">
               <a href="/" className="flex items-center space-x-2 cursor-pointer">
@@ -190,13 +192,13 @@ export default function Home() {
           </div>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <button
-              onClick={() => window.open('/booking', '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes')}
+              onClick={() => setIsPopupOpen(true)}
               className="px-8 py-4 rounded-full text-lg font-semibold transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-1 cursor-pointer text-gray-800"
               style={{backgroundColor: '#C8E5F0', color: '#2D5A87'}}
               onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#B5D9E8'}
               onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#C8E5F0'}
             >
-              Book Appointment
+              Request Appointment
             </button>
           </div>
         </div>
@@ -712,6 +714,11 @@ export default function Home() {
           </div>
         </footer>
 
+        {/* Appointment Popup */}
+        <AppointmentPopup 
+          isOpen={isPopupOpen} 
+          onClose={() => setIsPopupOpen(false)} 
+        />
       </div>
     </>
   );
