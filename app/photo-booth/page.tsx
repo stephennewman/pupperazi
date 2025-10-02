@@ -180,14 +180,10 @@ export default function PhotoBooth() {
                 style={{ display: capturedImage ? 'none' : 'block' }}
               />
               
-              {/* Frame overlays - always show when video is active */}
+              {/* Frame overlays - only bottom bar in live preview */}
               {!capturedImage && (
                 <>
-                  {/* Top overlay */}
-                  <div className="absolute top-0 left-0 right-0 text-center py-3 sm:py-4 z-10" style={{ background: 'linear-gradient(90deg, #9b59b6, #667eea, #3b82f6)' }}>
-                    <h2 className="text-xl sm:text-2xl font-bold text-white">🐾 Pupperazi Pet Spa</h2>
-                  </div>
-                  {/* Bottom overlay */}
+                  {/* Bottom overlay only */}
                   <div className="absolute bottom-0 left-0 right-0 text-center py-2 sm:py-3 z-10" style={{ backgroundColor: 'rgba(45, 90, 135, 0.95)' }}>
                     <p className="text-white font-semibold text-base sm:text-lg">📍 Palm Harbor, FL</p>
                     <p className="text-white text-sm sm:text-base">727-753-9302</p>
