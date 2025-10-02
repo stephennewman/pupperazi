@@ -77,13 +77,27 @@ export default function PhotoBooth() {
     
     ctx.drawImage(video, sx, sy, sWidth, sHeight, 0, 0, canvas.width, canvas.height);
 
-    // Draw branded frame overlay - bottom bar only
+    // Draw branded frame overlay
+    // Top bar with gradient and Pupperazi branding
+    const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
+    gradient.addColorStop(0, '#9b59b6');
+    gradient.addColorStop(0.5, '#667eea');
+    gradient.addColorStop(1, '#3b82f6');
+    
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, canvas.width, 180);
+
+    ctx.fillStyle = 'white';
+    ctx.font = 'bold 80px serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('🐾 Pupperazi Pet Spa', canvas.width / 2, 110);
+
+    // Bottom bar with contact info
     ctx.fillStyle = 'rgba(45, 90, 135, 0.95)';
     ctx.fillRect(0, canvas.height - 140, canvas.width, 140);
 
     ctx.fillStyle = 'white';
     ctx.font = '48px sans-serif';
-    ctx.textAlign = 'center';
     ctx.fillText('📍 Palm Harbor, FL', canvas.width / 2, canvas.height - 85);
     ctx.font = '40px sans-serif';
     ctx.fillText('727-753-9302', canvas.width / 2, canvas.height - 30);
