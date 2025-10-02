@@ -161,12 +161,6 @@ export default function PhotoBooth() {
     <div className="fixed inset-0 overflow-hidden" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
       <div className="h-full flex flex-col items-center justify-center p-4">
         <div className="w-full max-w-lg flex flex-col" style={{ maxHeight: '100vh' }}>
-          {/* Header */}
-          <div className="text-center mb-4 flex-shrink-0">
-            <h1 className="text-3xl sm:text-4xl font-bold text-white mb-1">🐾 Pupperazi Photo Booth</h1>
-            <p className="text-white/90 text-sm sm:text-base">Snap, Frame & Share!</p>
-          </div>
-
           {/* Camera/Photo View - Fixed aspect ratio container */}
           <div className="flex-shrink-0 mb-4">
             <div className="relative bg-white rounded-3xl shadow-2xl overflow-hidden mx-auto" style={{ width: '100%', maxWidth: '432px', aspectRatio: '4/5' }}>
