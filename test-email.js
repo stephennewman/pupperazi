@@ -12,14 +12,16 @@ async function testEmail() {
     console.log('API Key present:', !!process.env.RESEND_API_KEY);
     console.log('API Key length:', process.env.RESEND_API_KEY?.length);
 
-    const appointmentDetails = `
-APPOINTMENT REQUEST (TEST)
+    const appointmentDetails = `🐾 APPOINTMENT REQUEST
 
-Customer Status: New Customer
-Pet Information: Max - Golden Retriever
-Requested Date/Time: Tomorrow at 2:00 PM
+📋 Customer Status: New Customer ⭐
 
-Additional Notes: This is a test email from the appointment request form.
+🐕 Pet Information: Max - Golden Retriever
+
+📅 Requested Date/Time: Tomorrow at 2:00 PM
+
+💬 Additional Notes:
+This is a test email from the appointment request form with the new formatting!
     `.trim();
 
     const htmlContent = `
@@ -56,7 +58,7 @@ ${appointmentDetails}
     const { data, error } = await resend.emails.send({
       from: 'Pupperazi Pet Spa <contact@krezzo.com>',
       to: ['stephen.p.newman@gmail.com'],
-      subject: 'TEST - New Contact Form: Grooming - Test User',
+      subject: '🐾 New Appointment Request - Test User',
       html: htmlContent,
       replyTo: 'test@example.com',
     });

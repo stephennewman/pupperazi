@@ -42,11 +42,14 @@ export async function POST(request: NextRequest) {
       either: 'Either Phone or Email'
     }[contactMethod];
 
+    // Check if this is an appointment request
+    const isAppointmentRequest = message.includes('APPOINTMENT REQUEST');
+
     // Create HTML email template
     const htmlContent = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
-          <h1 style="color: white; margin: 0; font-size: 24px;">🐾 New Contact Form Submission</h1>
+          <h1 style="color: white; margin: 0; font-size: 24px;">${isAppointmentRequest ? '🐾 New Appointment Request' : '📋 New Contact Form Submission'}</h1>
           <p style="color: #e8eaf6; margin: 10px 0 0 0; font-size: 14px;">Pupperazi Pet Spa</p>
         </div>
 
@@ -70,20 +73,24 @@ export async function POST(request: NextRequest) {
               <a href="tel:${phone}" style="margin-left: 10px; color: #667eea; text-decoration: none;">${phone}</a>
             </div>
             ` : ''}
+          </div>
 
+          ${!isAppointmentRequest ? `
+          <div style="margin-bottom: 25px;">
             <div style="margin-bottom: 15px;">
               <strong style="color: #667eea;">Service Interest:</strong>
               <span style="margin-left: 10px;">${serviceDisplay}</span>
             </div>
 
-            <div style="margin-bottom: 25px;">
+            <div style="margin-bottom: 15px;">
               <strong style="color: #667eea;">Preferred Contact Method:</strong>
               <span style="margin-left: 10px;">${contactDisplay}</span>
             </div>
           </div>
+          ` : ''}
 
           <div style="border-top: 1px solid #eee; padding-top: 20px;">
-            <h3 style="color: #333; margin: 0 0 15px 0; font-size: 16px;">Message:</h3>
+            <h3 style="color: #333; margin: 0 0 15px 0; font-size: 16px;">${isAppointmentRequest ? 'Appointment Details:' : 'Message:'}</h3>
             <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; border-left: 4px solid #667eea;">
               <p style="margin: 0; line-height: 1.6; color: #555; white-space: pre-wrap;">${message}</p>
             </div>
@@ -91,7 +98,7 @@ export async function POST(request: NextRequest) {
 
           <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; text-align: center;">
             <p style="color: #888; font-size: 12px; margin: 0;">
-              This message was sent from the Pupperazi Pet Spa contact form<br>
+              This message was sent from the Pupperazi Pet Spa ${isAppointmentRequest ? 'appointment request form' : 'contact form'}<br>
               Timestamp: ${new Date().toLocaleString('en-US', {
                 timeZone: 'America/New_York',
                 year: 'numeric',
@@ -116,8 +123,6 @@ export async function POST(request: NextRequest) {
       });
     }
     
-    // Check if this is an appointment request
-    const isAppointmentRequest = message.includes('APPOINTMENT REQUEST');
     const subjectLine = isAppointmentRequest 
       ? `🐾 New Appointment Request - ${name}` 
       : `New Contact Form: ${serviceDisplay} - ${name}`;
