@@ -9,7 +9,7 @@ interface Service {
   duration: number; // in minutes
   price: string;
   description: string;
-  category: 'grooming' | 'bath' | 'addon' | 'boarding';
+  category: 'grooming' | 'bath' | 'addon';
 }
 
 interface TimeSlot {

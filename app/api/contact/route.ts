@@ -10,7 +10,7 @@ const contactSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters').max(100, 'Name is too long'),
   email: z.string().email('Please enter a valid email address'),
   phone: z.string().optional(),
-  service: z.enum(['general', 'grooming', 'boarding', 'other']).refine((val) => val, {
+  service: z.enum(['general', 'grooming', 'other']).refine((val) => val, {
     message: 'Please select a service type'
   }),
   contactMethod: z.enum(['phone', 'email', 'either']).refine((val) => val, {
@@ -31,7 +31,6 @@ export async function POST(request: NextRequest) {
     const serviceDisplay = {
       general: 'General Inquiry',
       grooming: 'Dog Grooming',
-      boarding: 'Pet Boarding',
       other: 'Other Services'
     }[service];
 

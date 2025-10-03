@@ -37,7 +37,7 @@ const bookingSchema = z.object({
     duration: z.number(),
     price: z.string(),
     description: z.string(),
-    category: z.enum(['grooming', 'bath', 'addon', 'boarding'])
+    category: z.enum(['grooming', 'bath', 'addon'])
   })).min(1, 'At least one service must be selected'),
 
   // Date and time

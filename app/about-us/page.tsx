@@ -14,7 +14,7 @@ export default function AboutUs() {
     "@context": "https://schema.org",
     "@type": "AboutPage",
     "name": "About Pupperazi Pet Spa",
-    "description": "Learn about Pupperazi Pet Spa's story, our experienced team, and our commitment to providing the best pet grooming and boarding services in Palm Harbor, FL.",
+    "description": "Learn about Pupperazi Pet Spa's story, our experienced team, and our commitment to providing the best pet grooming services in Palm Harbor, FL.",
     "url": "https://pupperazi-pet-spa.vercel.app/about-us",
     "mainEntity": {
       "@type": "PetGrooming",
@@ -55,7 +55,6 @@ export default function AboutUs() {
               <div className="hidden md:flex items-center space-x-8">
                 <a href="/#services" className="text-gray-700 transition-colors cursor-pointer" style={{color: '#2D5A87'}} onMouseEnter={(e) => e.currentTarget.style.color = '#3D6B9F'} onMouseLeave={(e) => e.currentTarget.style.color = '#2D5A87'}>Services</a>
                 <a href="/#gallery" className="text-gray-700 transition-colors cursor-pointer" style={{color: '#2D5A87'}} onMouseEnter={(e) => e.currentTarget.style.color = '#3D6B9F'} onMouseLeave={(e) => e.currentTarget.style.color = '#2D5A87'}>Gallery</a>
-                <a href="/#boarding" className="text-gray-700 transition-colors cursor-pointer" style={{color: '#2D5A87'}} onMouseEnter={(e) => e.currentTarget.style.color = '#3D6B9F'} onMouseLeave={(e) => e.currentTarget.style.color = '#2D5A87'}>Boarding</a>
                 <a href="/about-us" className="text-gray-700 transition-colors cursor-pointer font-semibold" style={{color: '#2D5A87'}} onMouseEnter={(e) => e.currentTarget.style.color = '#3D6B9F'} onMouseLeave={(e) => e.currentTarget.style.color = '#2D5A87'}>About</a>
                 <a href="/#contact" className="text-gray-700 transition-colors cursor-pointer" style={{color: '#2D5A87'}} onMouseEnter={(e) => e.currentTarget.style.color = '#3D6B9F'} onMouseLeave={(e) => e.currentTarget.style.color = '#2D5A87'}>Contact</a>
                 <a
@@ -87,7 +86,6 @@ export default function AboutUs() {
                 <div className="flex flex-col space-y-2">
                   <a href="/#services" className="px-2 py-1 cursor-pointer transition-colors" style={{color: '#2D5A87'}} onMouseEnter={(e) => e.currentTarget.style.color = '#3D6B9F'} onMouseLeave={(e) => e.currentTarget.style.color = '#2D5A87'}>Services</a>
                   <a href="/#gallery" className="px-2 py-1 cursor-pointer transition-colors" style={{color: '#2D5A87'}} onMouseEnter={(e) => e.currentTarget.style.color = '#3D6B9F'} onMouseLeave={(e) => e.currentTarget.style.color = '#2D5A87'}>Gallery</a>
-                  <a href="/#boarding" className="px-2 py-1 cursor-pointer transition-colors" style={{color: '#2D5A87'}} onMouseEnter={(e) => e.currentTarget.style.color = '#3D6B9F'} onMouseLeave={(e) => e.currentTarget.style.color = '#2D5A87'}>Boarding</a>
                   <a href="/about-us" className="px-2 py-1 cursor-pointer transition-colors font-semibold" style={{color: '#2D5A87'}} onMouseEnter={(e) => e.currentTarget.style.color = '#3D6B9F'} onMouseLeave={(e) => e.currentTarget.style.color = '#2D5A87'}>About</a>
                   <a href="/#contact" className="px-2 py-1 cursor-pointer transition-colors" style={{color: '#2D5A87'}} onMouseEnter={(e) => e.currentTarget.style.color = '#3D6B9F'} onMouseLeave={(e) => e.currentTarget.style.color = '#2D5A87'}>Contact</a>
                   <a
@@ -145,13 +143,6 @@ export default function AboutUs() {
                   <h3 className="text-2xl font-bold text-purple-900 mb-4">🐾 Our Grooming Philosophy</h3>
                   <p className="text-lg text-gray-700 mb-4">
                     Pet grooming has always been our mainstay. Our groomers are extremely experienced and focused on making the experience as comfortable and relaxing as possible. Our four-legged guests are not cooped up in tiny cages all day waiting for their turn. We schedule our appointments on the hour and call as soon as we are done. Turnaround is usually around 2-2.5 hours for little dogs and 3-3.5 hours for large dogs. They do their waiting in spacious pens with a mat or blankets and a water bowl. If their stay is longer than a couple hours, we take them out for potty breaks.
-                  </p>
-                </div>
-
-                <div className="bg-gradient-to-br from-blue-100 to-purple-100 p-8 rounded-2xl mb-8">
-                  <h3 className="text-2xl font-bold text-purple-900 mb-4">🏨 Overnight Boarding</h3>
-                  <p className="text-lg text-gray-700 mb-4">
-                    We also offer overnight boarding for your pups. We are a small facility and have limited spaces for this but we have flexible availability throughout the year. We do book up relatively fast during the holidays so be sure to plan ahead! They do stay in their own pen overnight but during the day we rotate all the pups to have time in our open play area. We do not offer playtime with other dogs but they do get plenty of staff love! We take them for walks 4-6 times a day around the plaza and they always have access to water.
                   </p>
                 </div>
 
@@ -345,7 +336,6 @@ export default function AboutUs() {
                 <ul className="space-y-2 text-sm text-blue-100">
                   <li><a href="/about-us" className="hover:text-white transition-colors">About Us</a></li>
                   <li><a href="/map-hours" className="hover:text-white transition-colors">Map & Hours</a></li>
-                  <li><a href="/hotel-reservation-request" className="hover:text-white transition-colors">Hotel Reservations</a></li>
                 </ul>
               </div>
 

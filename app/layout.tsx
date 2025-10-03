@@ -26,7 +26,6 @@ export const metadata: Metadata = {
     "dog bathing Palm Harbor",
     "nail trimming dogs",
     "professional dog grooming",
-    "pet boarding Palm Harbor",
     "Pupperazi Pet Spa"
   ],
   authors: [{ name: "Pupperazi Pet Spa" }],

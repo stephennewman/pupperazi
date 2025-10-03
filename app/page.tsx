@@ -59,7 +59,7 @@ export default function Home() {
     ],
     "servedCuisine": [],
     "priceRange": "$15-$60",
-    "description": "Pupperazi Pet Spa offers boutique-style dog grooming in Palm Harbor, FL. Pamper your pup with premium baths, haircuts, nail trims, boarding and more. Where luxury meets comfort for your beloved companion.",
+    "description": "Pupperazi Pet Spa offers boutique-style dog grooming in Palm Harbor, FL. Pamper your pup with premium baths, haircuts, nail trims, and more. Where luxury meets comfort for your beloved companion.",
     "hasOfferCatalog": {
       "@type": "OfferCatalog",
       "name": "Pet Grooming Services",
@@ -86,18 +86,6 @@ export default function Home() {
             "@type": "Service", 
             "name": "Full Glam Groom",
             "description": "Complete grooming package with styling and nail trim"
-          }
-        },
-        {
-          "@type": "Offer",
-          "itemOffered": {
-            "@type": "Service",
-            "name": "Pet Boarding",
-            "description": "The Pawsh Pet Hotel boarding services",
-            "offers": {
-              "@type": "Offer",
-              "priceRange": "$35-$60 per night"
-            }
           }
         }
       ]
@@ -127,7 +115,6 @@ export default function Home() {
               <div className="hidden md:flex items-center space-x-8">
                 <a href="#services" className="text-gray-700 transition-colors cursor-pointer" style={{color: '#2D5A87'}} onMouseEnter={(e) => e.currentTarget.style.color = '#3D6B9F'} onMouseLeave={(e) => e.currentTarget.style.color = '#2D5A87'}>Services</a>
                 <a href="#gallery" className="text-gray-700 transition-colors cursor-pointer" style={{color: '#2D5A87'}} onMouseEnter={(e) => e.currentTarget.style.color = '#3D6B9F'} onMouseLeave={(e) => e.currentTarget.style.color = '#2D5A87'}>Gallery</a>
-                <a href="#boarding" className="text-gray-700 transition-colors cursor-pointer" style={{color: '#2D5A87'}} onMouseEnter={(e) => e.currentTarget.style.color = '#3D6B9F'} onMouseLeave={(e) => e.currentTarget.style.color = '#2D5A87'}>Boarding</a>
                 <a href="#about" className="text-gray-700 transition-colors cursor-pointer" style={{color: '#2D5A87'}} onMouseEnter={(e) => e.currentTarget.style.color = '#3D6B9F'} onMouseLeave={(e) => e.currentTarget.style.color = '#2D5A87'}>About</a>
                 <a href="#contact" className="text-gray-700 transition-colors cursor-pointer" style={{color: '#2D5A87'}} onMouseEnter={(e) => e.currentTarget.style.color = '#3D6B9F'} onMouseLeave={(e) => e.currentTarget.style.color = '#2D5A87'}>Contact</a>
                 <a
@@ -159,7 +146,6 @@ export default function Home() {
                 <div className="flex flex-col space-y-2">
                   <a href="#services" className="px-2 py-1 cursor-pointer transition-colors" style={{color: '#2D5A87'}} onMouseEnter={(e) => e.currentTarget.style.color = '#3D6B9F'} onMouseLeave={(e) => e.currentTarget.style.color = '#2D5A87'}>Services</a>
                   <a href="#gallery" className="px-2 py-1 cursor-pointer transition-colors" style={{color: '#2D5A87'}} onMouseEnter={(e) => e.currentTarget.style.color = '#3D6B9F'} onMouseLeave={(e) => e.currentTarget.style.color = '#2D5A87'}>Gallery</a>
-                  <a href="#boarding" className="px-2 py-1 cursor-pointer transition-colors" style={{color: '#2D5A87'}} onMouseEnter={(e) => e.currentTarget.style.color = '#3D6B9F'} onMouseLeave={(e) => e.currentTarget.style.color = '#2D5A87'}>Boarding</a>
                   <a href="#about" className="px-2 py-1 cursor-pointer transition-colors" style={{color: '#2D5A87'}} onMouseEnter={(e) => e.currentTarget.style.color = '#3D6B9F'} onMouseLeave={(e) => e.currentTarget.style.color = '#2D5A87'}>About</a>
                   <a href="#contact" className="px-2 py-1 cursor-pointer transition-colors" style={{color: '#2D5A87'}} onMouseEnter={(e) => e.currentTarget.style.color = '#3D6B9F'} onMouseLeave={(e) => e.currentTarget.style.color = '#2D5A87'}>Contact</a>
                   <a
@@ -187,7 +173,7 @@ export default function Home() {
           <div className="text-xl text-purple-800 mb-12 space-y-2">
             <p className="font-semibold">Top-Quality Baths, Haircuts, Nail Trims & More</p>
             <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-              At Pupperazi Pet Spa, we pamper your pup with professional grooming services in Palm Harbor, FL. Complete with bubbles, belly rubs, and boutique boarding.
+              At Pupperazi Pet Spa, we pamper your pup with professional grooming services in Palm Harbor, FL. Complete with bubbles, belly rubs, and boutique care.
             </p>
           </div>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -219,7 +205,7 @@ export default function Home() {
             <div className="grid md:grid-cols-2 gap-12 items-center">
               <div>
                 <p className="text-lg text-gray-700 mb-6">
-                  At Pupperazi Pet Spa, your pet isn't just another appointment—they're our VIP (Very Important Pet). We're all about holistic health and tail-wagging happiness, blending expert grooming with natural wellness to keep your pet looking fetching and feeling fabulous.
+                  At Pupperazi Pet Spa, your pet isn't just another appointment—they're our VIP (Very Important Pet). We're all about holistic health and tail-wagging happiness, blending expert grooming with natural wellness to keep your pet looking and feeling fabulous.
                 </p>
                 <p className="text-lg text-purple-800 font-semibold">
                   From shampoo to chew toys, we've got every paw covered.
@@ -453,86 +439,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Boarding Section */}
-        <section id="boarding" className="py-20 bg-white">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold text-purple-900 mb-6">
-                🏨 The Pawsh Pet Hotel
-              </h2>
-              <p className="text-xl text-gray-700">
-                Sleepovers That Feel Like Staycations
-              </p>
-              <p className="text-lg text-gray-600 mt-4">
-                Going away? We'll treat your pup like royalty while you're out of town.
-              </p>
-            </div>
-
-            <div className="grid lg:grid-cols-2 gap-12">
-              {/* What's Included */}
-              <div className="bg-gradient-to-br from-blue-50 to-purple-50 p-8 rounded-2xl">
-                <h3 className="text-2xl font-bold text-purple-900 mb-6">🛏️ Every overnight guest enjoys:</h3>
-                <ul className="space-y-3 text-gray-700">
-                  <li className="flex items-start">
-                    <span className="text-purple-600 mr-2">•</span>
-                    Comfy bedding in a private pen
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-purple-600 mr-2">•</span>
-                    Minimum of 4 potty breaks a day
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-purple-600 mr-2">•</span>
-                    15 minutes of solo walk or playtime
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-purple-600 mr-2">•</span>
-                    Filtered water, fresh blankets, and TLC from our staff
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-purple-600 mr-2">•</span>
-                    Medication administration if needed
-                  </li>
-                </ul>
-                <p className="text-purple-800 font-semibold mt-6">
-                  📸 Want a daily pup-date? Just say the word!
-                </p>
-              </div>
-
-              {/* Pricing */}
-              <div>
-                <h3 className="text-2xl font-bold text-purple-900 mb-6">�� Overnight Rates</h3>
-                <div className="space-y-4 mb-8">
-                  <div className="flex justify-between items-center p-4 bg-purple-50 rounded-lg">
-                    <span className="font-semibold text-purple-900">1 Dog</span>
-                    <span className="text-2xl font-bold text-purple-600">$35/night</span>
-                  </div>
-                  <div className="flex justify-between items-center p-4 bg-purple-50 rounded-lg">
-                    <span className="font-semibold text-purple-900">2 Dogs (same room)</span>
-                    <span className="text-2xl font-bold text-purple-600">$50/night</span>
-                  </div>
-                  <div className="flex justify-between items-center p-4 bg-purple-50 rounded-lg">
-                    <span className="font-semibold text-purple-900">3 Dogs (same room)</span>
-                    <span className="text-2xl font-bold text-purple-600">$60/night</span>
-                  </div>
-                </div>
-
-                <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-lg mb-6">
-                  <p className="text-yellow-800 font-semibold">
-                    🎄 Book early for holidays! We fill up faster than a bowl of treats.
-                  </p>
-                </div>
-
-                <div className="bg-red-50 border-l-4 border-red-400 p-4 rounded-lg">
-                  <p className="text-red-800 text-sm">
-                    ⚠️ We're a boutique facility—not a doggie Alcatraz. We can't accommodate escape artists, excessive barkers, or pups recently recovering from illness. We don't require vaccinations but expect healthy pets only.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
         {/* Team Section */}
         <section className="py-20 bg-gradient-to-br from-purple-50 to-blue-50">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -686,7 +592,6 @@ export default function Home() {
                 <ul className="space-y-2 text-sm text-blue-100">
                   <li><a href="/about-us" className="hover:text-white transition-colors">About Us</a></li>
                   <li><a href="/map-hours" className="hover:text-white transition-colors">Map & Hours</a></li>
-                  <li><a href="/hotel-reservation-request" className="hover:text-white transition-colors">Hotel Reservations</a></li>
                 </ul>
               </div>
 
@@ -696,7 +601,6 @@ export default function Home() {
                 <ul className="space-y-2 text-sm text-blue-100">
                   <li><a href="#services" className="hover:text-white transition-colors">Services</a></li>
                   <li><a href="#gallery" className="hover:text-white transition-colors">Gallery</a></li>
-                  <li><a href="#boarding" className="hover:text-white transition-colors">Boarding</a></li>
                   <li><a href="#contact" className="hover:text-white transition-colors">Contact</a></li>
                 </ul>
               </div>
