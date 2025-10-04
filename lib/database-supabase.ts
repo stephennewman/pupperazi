@@ -10,6 +10,8 @@ export const customerOperations = {
     address?: string;
     emergencyContact?: string;
     marketingConsent?: boolean;
+    contactMethod?: string;
+    reminderPreference?: string;
   }) {
     const { data: customer, error } = await supabase
       .from('customers')
@@ -21,6 +23,8 @@ export const customerOperations = {
         address: data.address || null,
         emergency_contact: data.emergencyContact || null,
         marketing_consent: data.marketingConsent || false,
+        contact_method: data.contactMethod || null,
+        reminder_preference: data.reminderPreference || null,
       })
       .select()
       .single();

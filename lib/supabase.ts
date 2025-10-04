@@ -29,6 +29,8 @@ export interface Database {
           address: string | null;
           emergency_contact: string | null;
           marketing_consent: boolean;
+          contact_method: string | null;
+          reminder_preference: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -40,6 +42,8 @@ export interface Database {
           address?: string | null;
           emergency_contact?: string | null;
           marketing_consent?: boolean;
+          contact_method?: string | null;
+          reminder_preference?: string | null;
         };
         Update: {
           first_name?: string;
@@ -49,6 +53,8 @@ export interface Database {
           address?: string | null;
           emergency_contact?: string | null;
           marketing_consent?: boolean;
+          contact_method?: string | null;
+          reminder_preference?: string | null;
           updated_at?: string;
         };
       };

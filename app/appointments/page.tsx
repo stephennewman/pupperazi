@@ -72,7 +72,7 @@ export default function Appointments() {
                   className="px-4 py-2 rounded-full font-semibold transition-colors cursor-pointer"
                   style={{backgroundColor: '#2D5A87', color: 'white'}}
                 >
-                  727-753-9302
+                  Call/Text 727-753-9302
                 </a>
               </div>
 
@@ -103,7 +103,7 @@ export default function Appointments() {
                     className="px-4 py-2 rounded-full font-semibold transition-colors cursor-pointer mx-2 mt-2"
                     style={{backgroundColor: '#2D5A87', color: 'white'}}
                   >
-                    727-753-9302
+                    Call/Text 727-753-9302
                   </a>
                 </div>
               </div>
@@ -155,7 +155,7 @@ export default function Appointments() {
                 href="tel:727-753-9302"
                 className="px-8 py-4 bg-green-600 text-white rounded-full font-semibold text-lg hover:bg-green-700 transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-1"
               >
-                📞 Call Us: 727-753-9302
+                📞 Call/Text Us: 727-753-9302
               </a>
             </div>
             
@@ -257,7 +257,11 @@ export default function Appointments() {
 
             <div className="mt-8 pt-8" style={{borderTop: '1px solid #5A8BC4'}}>
               <p className="text-blue-200">
-                © 2026 Pupperazi Pet Spa LLC. All rights reserved. We roll out the paw-parazzi experience! 🎬
+                © 2026 Pupperazi Pet Spa LLC. All rights reserved.
+              </p>
+              <br />
+              <p className="text-blue-200">
+                Site built with ❤️ in <a href="https://www.stephennewman.me" target="_blank" rel="noopener noreferrer" className="underline hover:text-white">Palm Harbor</a>
               </p>
             </div>
           </div>

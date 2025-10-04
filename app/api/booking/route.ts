@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { z } from 'zod';
 import { customerOperations, petOperations, appointmentOperations, appointmentServiceOperations } from '@/lib/database-supabase';
+import { trackConversion } from '@/lib/analytics';
 
 // Initialize Resend with API key (only if available)
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
@@ -99,7 +100,9 @@ export async function POST(request: NextRequest) {
         phone: ownerInfo.phone,
         address: ownerInfo.address || undefined,
         emergencyContact: ownerInfo.emergencyContact || undefined,
-        marketingConsent: preferences.marketingConsent
+        marketingConsent: preferences.marketingConsent,
+        contactMethod: preferences.contactMethod,
+        reminderPreference: preferences.reminderPreference
       });
     }
 
@@ -139,6 +142,12 @@ export async function POST(request: NextRequest) {
 
     // Send emails after successful database transaction
     await sendConfirmationEmails(bookingId, validatedData);
+
+    // Track conversion in analytics
+    const sessionId = request.cookies.get('session_id')?.value;
+    if (sessionId) {
+      await trackConversion(sessionId);
+    }
 
     return NextResponse.json({
       success: true,

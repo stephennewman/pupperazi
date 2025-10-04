@@ -122,7 +122,7 @@ export default function Home() {
                   className="px-4 py-2 rounded-full font-semibold transition-colors cursor-pointer"
                   style={{backgroundColor: '#2D5A87', color: 'white'}}
                 >
-                  727-753-9302
+                  <span className="text-xs">Call/Text</span> <span className="font-bold">727-753-9302</span>
                 </a>
               </div>
 
@@ -153,7 +153,7 @@ export default function Home() {
                     className="px-4 py-2 rounded-full font-semibold transition-colors cursor-pointer mx-2 mt-2"
                     style={{backgroundColor: '#2D5A87', color: 'white'}}
                   >
-                    727-753-9302
+                    <span className="text-xs">Call/Text</span> <span className="font-bold">727-753-9302</span>
                   </a>
                 </div>
               </div>
@@ -610,7 +610,11 @@ export default function Home() {
             <div className="pt-8" style={{borderTop: '1px solid #5A8BC4'}}>
               <div className="text-center">
                 <p className="text-blue-200">
-                  © 2026 Pupperazi Pet Spa LLC. All rights reserved. We roll out the paw-parazzi experience! 🎬
+                  © 2026 Pupperazi Pet Spa LLC. All rights reserved.
+                </p>
+                <br />
+                <p className="text-blue-200">
+                  Site built with ❤️ in <a href="https://www.stephennewman.me" target="_blank" rel="noopener noreferrer" className="underline hover:text-white">Palm Harbor</a>
                 </p>
               </div>
             </div>

@@ -935,7 +935,7 @@ export default function BookingPage() {
               <div className="mt-8 text-center">
                 <p className="text-gray-600 mb-2">Questions about your appointment?</p>
                 <p className="text-lg">
-                  Call us: <a href="tel:727-753-9302" className="text-purple-600 hover:text-purple-700 font-semibold">(727) 753-9302</a> |
+                  Call/Text us: <a href="tel:727-753-9302" className="text-purple-600 hover:text-purple-700 font-semibold">(727) 753-9302</a> |
                   Email: <a href="mailto:PupperaziPetSpa@gmail.com" className="text-purple-600 hover:text-purple-700 font-semibold">PupperaziPetSpa@gmail.com</a>
                 </p>
               </div>
