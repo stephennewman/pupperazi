@@ -10,7 +10,7 @@ export default function BestDogGroomerPalmHarborPage() {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
     "name": "Pupperazi Pet Spa - Best Dog Groomer in Palm Harbor FL",
-    "image": "https://pupperazi-pet-spa.vercel.app/gallery/pet1.png",
+    "image": "https://pupperazi.krezzo.com/gallery/pet1.png",
     "description": "Voted best dog groomer in Palm Harbor, FL. Expert groomers with 20+ years experience. Boutique spa serving all breeds. Book your appointment today!",
     "address": {
       "@type": "PostalAddress",
@@ -44,7 +44,7 @@ export default function BestDogGroomerPalmHarborPage() {
     {
       name: "Jennifer K.",
       rating: 5,
-      text: "Pupperazi is the BEST! No more all-day waits. They call when she's ready (usually 2-3 hours) and she actually seems happy when I pick her up."
+      text: "Pupperazi is the BEST! No more all-day waits. They call when she's ready (2-3 hours for small dogs & 2-4 hours for large dogs) and she actually seems happy when I pick her up."
     }
   ];
 
@@ -145,7 +145,7 @@ export default function BestDogGroomerPalmHarborPage() {
                 <div className="text-4xl mb-4">⏱️</div>
                 <h3 className="text-2xl font-bold text-purple-900 mb-3">No All-Day Waits</h3>
                 <p className="text-gray-700">
-                  Most grooms take 2-3 hours, not 6-8 like the big chains. We call you when your pup is ready—same day pickup. Less stress for your dog, less waiting for you. It's that simple.
+                  Most grooms take 2-3 hours for small dogs & 2-4 hours for large dogs, not 6-8 like the big chains. We call you when your pup is ready—same day pickup. Less stress for your dog, less waiting for you. It's that simple.
                 </p>
               </div>
             </div>
@@ -252,7 +252,7 @@ export default function BestDogGroomerPalmHarborPage() {
                 <tbody>
                   <tr className="border-b">
                     <td className="p-4">Appointment Duration</td>
-                    <td className="p-4 text-center text-green-600 font-bold">2-3 hours ✓</td>
+                    <td className="p-4 text-center text-green-600 font-bold">2-3 hrs (small) / 2-4 hrs (large) ✓</td>
                     <td className="p-4 text-center text-red-600">6-8 hours ✗</td>
                   </tr>
                   <tr className="border-b bg-purple-50">

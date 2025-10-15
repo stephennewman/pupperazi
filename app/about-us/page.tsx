@@ -15,7 +15,7 @@ export default function AboutUs() {
     "@type": "AboutPage",
     "name": "About Pupperazi Pet Spa",
     "description": "Learn about Pupperazi Pet Spa's story, our experienced team, and our commitment to providing the best pet grooming services in Palm Harbor, FL.",
-    "url": "https://pupperazi-pet-spa.vercel.app/about-us",
+    "url": "https://pupperazi.krezzo.com/about-us",
     "mainEntity": {
       "@type": "PetGrooming",
       "name": "Pupperazi Pet Spa",
@@ -306,7 +306,7 @@ export default function AboutUs() {
                     </svg>
                   </a>
                   <a 
-                    href="https://instagram.com/pupperazipetspa" 
+                    href="https://instagram.com/pupperazipetspa_ph" 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors"

@@ -36,14 +36,14 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL("https://pupperazi-pet-spa.vercel.app"),
+  metadataBase: new URL("https://pupperazi.krezzo.com"),
   alternates: {
     canonical: "/",
   },
   openGraph: {
     title: "Pupperazi Pet Spa - Dog Grooming in Palm Harbor, FL",
     description: "Boutique-style dog grooming in Palm Harbor, FL. Pamper your pup with premium baths, haircuts, nail trims, and more. Where every pet gets the VIP treatment.",
-    url: "https://pupperazi-pet-spa.vercel.app",
+    url: "https://pupperazi.krezzo.com",
     siteName: "Pupperazi Pet Spa",
     locale: "en_US",
     type: "website",
@@ -87,11 +87,13 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <script src="https://web-analytics-flax.vercel.app/track.js?id=2accfa7a-e443-46f7-9b64-6ba9641bb18f"></script>
+        <script async src="https://web-analytics-flax.vercel.app/track.js?id=2accfa7a-e443-46f7-9b64-6ba9641bb18f"></script>
         <link
           rel="icon"
           href={`data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐾</text></svg>`}
         />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body
         className={`${playfairDisplay.variable} ${nunito.variable} antialiased`}

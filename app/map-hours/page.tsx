@@ -13,7 +13,7 @@ export default function MapHours() {
     "@context": "https://schema.org",
     "@type": "PetGrooming",
     "name": "Pupperazi Pet Spa",
-    "url": "https://pupperazi-pet-spa.vercel.app/map-hours",
+    "url": "https://pupperazi.krezzo.com/map-hours",
     "telephone": "727-753-9302",
     "email": "PupperaziPetSpa@gmail.com",
     "address": {
@@ -314,7 +314,7 @@ export default function MapHours() {
                     </svg>
                   </a>
                   <a 
-                    href="https://instagram.com/pupperazipetspa" 
+                    href="https://instagram.com/pupperazipetspa_ph" 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors"

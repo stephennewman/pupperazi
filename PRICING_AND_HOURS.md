@@ -83,8 +83,8 @@ Going away? We'll treat your pup like royalty while you're out of town.
 
 ## 📋 Additional Information
 
-- 🕒 **Appointment Duration:** Typically 2-3 hours. We call you when your pet is ready for pickup.
-- 📞 **Appointments are spaced** to reduce stress and crate time for your pet's comfort.
+- 🕒 **Appointment Duration:** Typically 2-3 hours for small dogs & 2-4 hours for large dogs. We call you when your pet is ready for pickup.
+- 📞 **Appointments are spaced** to reduce stress and crate time for your pet's comfort. Morning appointments have quicker turnaround time, and we can always provide a heads up when we are finished.
 - 🎉 **Refer a Friend:** Get 10% off your next full service & their first full service!
 
 ---
@@ -93,11 +93,11 @@ Going away? We'll treat your pup like royalty while you're out of town.
 
 **Call or Text:** 727-753-9302  
 **Email:** PupperaziPetSpa@gmail.com  
-**Website:** pupperazi-pet-spa.vercel.app
+**Website:** pupperazi.krezzo.com
 
 **Find Us:**
 - 📘 Facebook: @pupperazipetspa
-- 📸 Instagram: @pupperazipetspa
+- 📸 Instagram: @pupperazipetspa_ph
 
 ---
 

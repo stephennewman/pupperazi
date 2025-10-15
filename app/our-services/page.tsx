@@ -14,7 +14,7 @@ export default function OurServices() {
     "@type": "PetGrooming",
     "name": "Pupperazi Pet Spa - Our Services",
     "description": "Comprehensive pet grooming and spa services in Palm Harbor, FL",
-    "url": "https://pupperazi-pet-spa.vercel.app/our-services",
+    "url": "https://pupperazi.krezzo.com/our-services",
     "telephone": "727-753-9302",
     "email": "PupperaziPetSpa@gmail.com",
     "address": {
@@ -35,14 +35,6 @@ export default function OurServices() {
             "@type": "Service",
             "name": "Full Service Dog Grooming",
             "description": "Complete grooming services for dogs"
-          }
-        },
-        {
-          "@type": "Offer",
-          "itemOffered": {
-            "@type": "Service",
-            "name": "Cat Baths & Nail Trims",
-            "description": "Specialized grooming services for cats"
           }
         },
         {
@@ -159,7 +151,7 @@ export default function OurServices() {
                   ✂️ Grooming
                 </h2>
                 <p className="text-lg text-gray-700 mb-6 text-center leading-relaxed">
-                  We offer full service dog grooming & cat baths/nail trims, as well as a la carte services.
+                  We offer full service dog grooming as well as a la carte services.
                 </p>
                 
                 <div className="text-center">
@@ -173,7 +165,7 @@ export default function OurServices() {
               </div>
 
               {/* Service Categories */}
-              <div className="grid md:grid-cols-3 gap-8">
+              <div className="grid md:grid-cols-2 gap-8">
                 <div className="bg-white p-8 rounded-2xl shadow-lg text-center hover:shadow-xl transition-shadow">
                   <div className="w-16 h-16 bg-gradient-to-br from-purple-200 to-blue-200 rounded-full mx-auto mb-6 flex items-center justify-center">
                     <span className="text-3xl">🐕</span>
@@ -181,22 +173,6 @@ export default function OurServices() {
                   <h3 className="text-2xl font-bold text-purple-900 mb-4">Dog Grooming</h3>
                   <p className="text-gray-700 mb-6">
                     Full service grooming for dogs of all sizes and breeds. From baths to full makeovers.
-                  </p>
-                  <a
-                    href="/grooming"
-                    className="text-purple-600 font-semibold hover:text-purple-700 transition-colors"
-                  >
-                    Learn More →
-                  </a>
-                </div>
-
-                <div className="bg-white p-8 rounded-2xl shadow-lg text-center hover:shadow-xl transition-shadow">
-                  <div className="w-16 h-16 bg-gradient-to-br from-blue-200 to-purple-200 rounded-full mx-auto mb-6 flex items-center justify-center">
-                    <span className="text-3xl">🐱</span>
-                  </div>
-                  <h3 className="text-2xl font-bold text-purple-900 mb-4">Cat Services</h3>
-                  <p className="text-gray-700 mb-6">
-                    Specialized cat baths and nail trims. We understand our feline friends' unique needs.
                   </p>
                   <a
                     href="/grooming"
@@ -289,7 +265,7 @@ export default function OurServices() {
                     </svg>
                   </a>
                   <a 
-                    href="https://instagram.com/pupperazipetspa" 
+                    href="https://instagram.com/pupperazipetspa_ph" 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors"

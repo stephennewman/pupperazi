@@ -13,8 +13,8 @@ export default function Grooming() {
     "@context": "https://schema.org",
     "@type": "PetGrooming",
     "name": "Pupperazi Pet Spa - Grooming Services",
-    "description": "Professional dog grooming and cat services in Palm Harbor, FL",
-    "url": "https://pupperazi-pet-spa.vercel.app/grooming",
+    "description": "Professional dog grooming services in Palm Harbor, FL",
+    "url": "https://pupperazi.krezzo.com/grooming",
     "telephone": "727-753-9302",
     "email": "PupperaziPetSpa@gmail.com",
     "address": {
@@ -156,7 +156,7 @@ export default function Grooming() {
               {/* Description */}
               <div className="text-center mb-12">
                 <p className="text-lg text-gray-700 mb-8 leading-relaxed">
-                  We offer full service dog grooming & cat bath/nails, a la carte services and our very popular Wash N Go bath service. We offer something for everyone no matter how little or how much you need. We are experienced with the very young as well as the very old and ones with special health issues or anxieties. We schedule our appointments throughout the day and get in touch as soon as they are ready, so they need not stay any longer than necessary. For pets who are staying longer, there are water bowls provided and potty breaks every few hours.
+                  We offer full service dog grooming, a la carte services and our very popular Wash N Go bath service. We offer something for everyone no matter how little or how much you need. We are experienced with the very young as well as the very old and ones with special health issues or anxieties. We schedule our appointments throughout the day and get in touch as soon as they are ready, so they need not stay any longer than necessary. For pets who are staying longer, there are water bowls provided and potty breaks every few hours.
                 </p>
               </div>
 
@@ -172,25 +172,50 @@ export default function Grooming() {
 
                 <div className="space-y-8">
                   <div className="bg-white p-6 rounded-xl shadow-md">
-                    <h3 className="text-2xl font-bold text-purple-900 mb-4">🛁 Bath</h3>
-                    <p className="text-gray-700">
-                      Includes ear cleaning, nail trim, pad trim, sanitary trim, brushout and blow dry and anal gland expression.
+                    <div className="flex justify-between items-start mb-4">
+                      <h3 className="text-2xl font-bold text-purple-900">🛁 Bath Time Bliss</h3>
+                      <span className="text-2xl font-bold text-purple-600">$45-65</span>
+                    </div>
+                    <p className="text-gray-700 mb-3">
+                      Full service bath with premium shampoo and conditioning
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      <strong>Includes:</strong> ear cleaning, nail trim, pad & sanitary trim, brushout, blow dry, and anal gland expression
                     </p>
                   </div>
 
                   <div className="bg-white p-6 rounded-xl shadow-md">
-                    <h3 className="text-2xl font-bold text-purple-900 mb-4">✂️ Mini Groom</h3>
-                    <p className="text-gray-700">
-                      Includes above bath plus face, feet, & tail trim. Body not trimmed.
+                    <div className="flex justify-between items-start mb-4">
+                      <h3 className="text-2xl font-bold text-purple-900">✂️ Mini Makeover</h3>
+                      <span className="text-2xl font-bold text-purple-600">$50-95</span>
+                    </div>
+                    <p className="text-gray-700 mb-3">
+                      Everything in the bath, plus a face, feet & tail tidy-up
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      Think of it as a "paw-dicure" and "fur-facial"
                     </p>
                   </div>
 
                   <div className="bg-white p-6 rounded-xl shadow-md">
-                    <h3 className="text-2xl font-bold text-purple-900 mb-4">✨ Full Groom</h3>
-                    <p className="text-gray-700">
-                      Includes the above bath plus full body trim of choice.
+                    <div className="flex justify-between items-start mb-4">
+                      <h3 className="text-2xl font-bold text-purple-900">✨ Full Glam Groom</h3>
+                      <span className="text-2xl font-bold text-purple-600">$65-125</span>
+                    </div>
+                    <p className="text-gray-700 mb-3">
+                      All of the above, with a full-body haircut of your choosing
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      The perfect boutique look for your pup's special moments
                     </p>
                   </div>
+                </div>
+                
+                {/* Pricing Disclaimer */}
+                <div className="mt-8 text-center">
+                  <p className="text-sm text-gray-600 italic">
+                    Pricing may change due to breed, size, temperament, or necessary add-ons - all of which we will try and communicate in advance.
+                  </p>
                 </div>
               </div>
 
@@ -209,13 +234,6 @@ export default function Grooming() {
                   </div>
 
                   <div className="bg-white p-6 rounded-xl shadow-md">
-                    <h3 className="text-xl font-bold text-purple-900 mb-3">🐱 Cat Services</h3>
-                    <p className="text-gray-700">
-                      Specialized cat baths and nail trims. We understand our feline friends' unique needs.
-                    </p>
-                  </div>
-
-                  <div className="bg-white p-6 rounded-xl shadow-md">
                     <h3 className="text-xl font-bold text-purple-900 mb-3">👶 Young & Old</h3>
                     <p className="text-gray-700">
                       Experienced with very young pets and senior animals with special health considerations.
@@ -229,6 +247,46 @@ export default function Grooming() {
                     </p>
                   </div>
                 </div>
+              </div>
+
+              {/* Add-On Spa Specials */}
+              <div className="bg-white p-8 rounded-2xl shadow-lg mb-12">
+                <h2 className="text-3xl font-bold text-purple-900 mb-8 text-center">
+                  🧼 Add-On Spa Specials
+                </h2>
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div className="flex justify-between items-center p-3 bg-purple-50 rounded-lg">
+                    <span className="font-semibold text-purple-900">Nail Trim</span>
+                    <span className="text-purple-600 font-bold">$10</span>
+                  </div>
+                  <div className="flex justify-between items-center p-3 bg-purple-50 rounded-lg">
+                    <span className="font-semibold text-purple-900">Nail Trim + Dremel</span>
+                    <span className="text-purple-600 font-bold">$18</span>
+                  </div>
+                  <div className="flex justify-between items-center p-3 bg-purple-50 rounded-lg">
+                    <span className="font-semibold text-purple-900">Anal Glands</span>
+                    <span className="text-purple-600 font-bold">$5</span>
+                  </div>
+                  <div className="flex justify-between items-center p-3 bg-purple-50 rounded-lg">
+                    <span className="font-semibold text-purple-900">Teeth Brushing</span>
+                    <span className="text-purple-600 font-bold">$5</span>
+                  </div>
+                  <div className="flex justify-between items-center p-3 bg-purple-50 rounded-lg">
+                    <span className="font-semibold text-purple-900">3B (Bath, Blow Dry, Brush Out & Ear Cleaning)</span>
+                    <span className="text-purple-600 font-bold">$20-$60</span>
+                  </div>
+                  <div className="flex justify-between items-center p-3 bg-purple-50 rounded-lg">
+                    <span className="font-semibold text-purple-900">Special or Medicated Shampoos</span>
+                    <span className="text-purple-600 font-bold">$5-$10</span>
+                  </div>
+                  <div className="flex justify-between items-center p-3 bg-purple-50 rounded-lg">
+                    <span className="font-semibold text-purple-900">Walk-in Services/Trims</span>
+                    <span className="text-purple-600 font-bold">$5-$15</span>
+                  </div>
+                </div>
+                <p className="text-center text-gray-600 mt-4 italic">
+                  All the extras for when you want your pet to feel extra.
+                </p>
               </div>
 
               {/* CTA */}
@@ -310,7 +368,7 @@ export default function Grooming() {
                     </svg>
                   </a>
                   <a 
-                    href="https://instagram.com/pupperazipetspa" 
+                    href="https://instagram.com/pupperazipetspa_ph" 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors"

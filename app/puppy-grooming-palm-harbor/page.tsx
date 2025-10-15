@@ -10,7 +10,7 @@ export default function PuppyGroomingPalmHarborPage() {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
     "name": "Pupperazi Pet Spa - Puppy Grooming in Palm Harbor FL",
-    "image": "https://pupperazi-pet-spa.vercel.app/gallery/pet1.png",
+    "image": "https://pupperazi.krezzo.com/gallery/pet1.png",
     "description": "Gentle puppy grooming in Palm Harbor, FL. First-time grooming experiences that build lifelong comfort. Patient, experienced groomers. All breeds welcome.",
     "address": {
       "@type": "PostalAddress",
@@ -296,7 +296,7 @@ export default function PuppyGroomingPalmHarborPage() {
                   How long does a puppy grooming appointment take?
                 </summary>
                 <p className="mt-4 text-gray-700 leading-relaxed">
-                  First visits are usually 30-60 minutes. We keep them short to prevent overwhelm. As your puppy gets more comfortable and grows larger, appointments will gradually extend to 2-3 hours for full grooming. We'll call you when they're ready for pickup—no all-day waits like the big chains.
+                  First visits are usually 30-60 minutes. We keep them short to prevent overwhelm. As your puppy gets more comfortable and grows larger, appointments will gradually extend to 2-3 hours for small dogs & 2-4 hours for large dogs. We'll call you when they're ready for pickup—no all-day waits like the big chains.
                 </p>
               </details>
 

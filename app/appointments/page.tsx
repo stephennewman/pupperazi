@@ -15,7 +15,7 @@ export default function Appointments() {
     "@type": "PetGrooming",
     "name": "Pupperazi Pet Spa",
     "description": "Professional pet grooming services in Palm Harbor, FL",
-    "url": "https://pupperazi-pet-spa.vercel.app/appointments",
+    "url": "https://pupperazi.krezzo.com/appointments",
     "telephone": "727-753-9302",
     "email": "PupperaziPetSpa@gmail.com",
     "address": {
@@ -190,7 +190,7 @@ export default function Appointments() {
                   </svg>
                 </a>
                 <a 
-                  href="https://instagram.com/pupperazipetspa" 
+                  href="https://instagram.com/pupperazipetspa_ph" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="w-12 h-12 bg-pink-200 rounded-full flex items-center justify-center hover:bg-pink-300 transition-colors"
@@ -241,7 +241,7 @@ export default function Appointments() {
                 </svg>
               </a>
               <a 
-                href="https://instagram.com/pupperazipetspa" 
+                href="https://instagram.com/pupperazipetspa_ph" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="w-10 h-10 bg-pink-200/30 rounded-full flex items-center justify-center hover:bg-pink-200/50 transition-colors"

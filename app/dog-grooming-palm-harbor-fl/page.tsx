@@ -11,7 +11,7 @@ export default function DogGroomingPalmHarborPage() {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
     "name": "Pupperazi Pet Spa - Dog Grooming Palm Harbor FL",
-    "image": "https://pupperazi-pet-spa.vercel.app/gallery/pet1.png",
+    "image": "https://pupperazi.krezzo.com/gallery/pet1.png",
     "description": "Professional dog grooming in Palm Harbor, FL. Boutique pet spa offering full-service grooming, baths, nail trims, and more. Serving Palm Harbor, Dunedin, Clearwater & Tarpon Springs.",
     "address": {
       "@type": "PostalAddress",
@@ -45,7 +45,7 @@ export default function DogGroomingPalmHarborPage() {
     },
     {
       question: "How long does a grooming appointment take?",
-      answer: "Most grooming appointments take 2-3 hours. Unlike chain stores where dogs wait in crates all day, we space our appointments to minimize stress and crate time. We'll call you when your pup is ready for pickup—typically the same day."
+      answer: "Most grooming appointments take 2-3 hours for small dogs & 2-4 hours for large dogs. Unlike chain stores where dogs wait in crates all day, we space our appointments to minimize stress and crate time. We'll call you when your pup is ready for pickup—typically the same day."
     },
     {
       question: "Do you groom all dog breeds?",
@@ -142,7 +142,7 @@ export default function DogGroomingPalmHarborPage() {
                 <div className="text-3xl mb-3">⏱️</div>
                 <h3 className="text-xl font-bold text-purple-900 mb-2">No All-Day Crating</h3>
                 <p className="text-gray-700">
-                  We space appointments so your dog isn't stuck in a crate for 6+ hours. Most grooms take 2-3 hours, and we call when ready for pickup.
+                  We space appointments so your dog isn't stuck in a crate for 6+ hours. Most grooms take 2-3 hours for small dogs & 2-4 hours for large dogs, and we call when ready for pickup.
                 </p>
               </div>
 

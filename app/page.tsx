@@ -26,9 +26,9 @@ export default function Home() {
     "@context": "https://schema.org",
     "@type": "PetGrooming",
     "name": "Pupperazi Pet Spa",
-    "image": "https://pupperazi-pet-spa.vercel.app/gallery/pet1.png",
-    "@id": "https://pupperazi-pet-spa.vercel.app",
-    "url": "https://pupperazi-pet-spa.vercel.app",
+    "image": "https://pupperazi.krezzo.com/gallery/pet1.png",
+    "@id": "https://pupperazi.krezzo.com",
+    "url": "https://pupperazi.krezzo.com",
     "telephone": "727-753-9302",
     "address": {
       "@type": "PostalAddress",
@@ -190,8 +190,73 @@ export default function Home() {
         </div>
       </section>
 
+        {/* Team Section */}
+        <section className="py-20 bg-white">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl font-bold text-purple-900 mb-6">
+                👯‍♀️ Meet the Dream Team
+              </h2>
+              <p className="text-xl text-gray-700">
+                Passionate. Paw-sitive. Pet-obsessed.
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-8 mb-12">
+              <div className="bg-white p-6 rounded-2xl shadow-lg text-center">
+                <div className="w-32 h-32 rounded-full mx-auto mb-6 overflow-hidden shadow-lg">
+                  <Image
+                    src="/gallery/mel_edited.avif"
+                    alt="Melissa Schiedenhelm - Co-Owner"
+                    width={128}
+                    height={128}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <h3 className="text-xl font-bold text-purple-900 mb-2">Melissa Schiedenhelm</h3>
+                <p className="text-purple-600 font-semibold">Co-Owner</p>
+              </div>
+
+              <div className="bg-white p-6 rounded-2xl shadow-lg text-center">
+                <div className="w-32 h-32 rounded-full mx-auto mb-6 overflow-hidden shadow-lg">
+                  <Image
+                    src="/gallery/ray_edited.avif"
+                    alt="Rachael Patnode - Co-Owner and Grooming Manager"
+                    width={128}
+                    height={128}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <h3 className="text-xl font-bold text-purple-900 mb-2">Rachael Patnode</h3>
+                <p className="text-purple-600 font-semibold">Co-Owner & Grooming Manager</p>
+              </div>
+
+              <div className="bg-white p-6 rounded-2xl shadow-lg text-center">
+                <div className="w-32 h-32 rounded-full mx-auto mb-6 overflow-hidden shadow-lg">
+                  <Image
+                    src="/gallery/tracy.avif"
+                    alt="Tracy Arts - Pet Stylist with 20+ Years Experience"
+                    width={128}
+                    height={128}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <h3 className="text-xl font-bold text-purple-900 mb-2">Tracy Arts</h3>
+                <p className="text-purple-600 font-semibold">Pet Stylist Extraordinaire</p>
+                <p className="text-sm text-gray-600 mt-2">(20+ years experience!)</p>
+              </div>
+            </div>
+
+            <div className="text-center">
+              <p className="text-lg text-gray-700">
+                We've been part of Pupperazi since 2011 and 2012. What started as a job became a journey—and now, we proudly carry the torch of love, care, and wagging tails.
+              </p>
+            </div>
+          </div>
+        </section>
+
         {/* About Section */}
-        <section id="about" className="py-20 bg-white">
+        <section id="about" className="py-20 bg-gradient-to-br from-purple-50 to-blue-50">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <h2 className="text-4xl font-bold text-purple-900 mb-6">
@@ -230,7 +295,7 @@ export default function Home() {
         </section>
 
         {/* Gallery Section */}
-        <section id="gallery" className="py-20 bg-gradient-to-br from-purple-50 to-blue-50">
+        <section id="gallery" className="py-20 bg-white">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <h2 className="text-4xl font-bold text-purple-900 mb-6">
@@ -253,14 +318,6 @@ export default function Home() {
                   onClick={() => setSelectedImage(image)}
                 >
                   <div className="relative overflow-hidden rounded-3xl bg-white p-3 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 hover:rotate-1">
-                    {/* Fun decorative paw prints */}
-                    <div className="absolute top-2 right-2 text-purple-300 opacity-50 group-hover:opacity-100 transition-opacity">
-                      🐾
-                    </div>
-                    <div className="absolute bottom-2 left-2 text-blue-300 opacity-50 group-hover:opacity-100 transition-opacity">
-                      🐾
-                    </div>
-                    
                     {/* Photo frame with gradient border */}
                     <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-purple-200 via-pink-200 to-blue-200 p-1">
                       <div className="relative aspect-square overflow-hidden rounded-xl bg-white">
@@ -348,25 +405,50 @@ export default function Home() {
               <h3 className="text-2xl font-bold text-purple-900 mb-8 text-center">🧼 Signature Services</h3>
               <div className="grid md:grid-cols-3 gap-8">
                 <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow">
-                  <h4 className="text-xl font-bold text-purple-800 mb-4">Bath Time Bliss</h4>
-                  <p className="text-gray-700">
-                    Includes ear cleaning, nail trim, pad & sanitary trim, brushout, blow dry, and anal gland expression.
+                  <div className="flex justify-between items-start mb-4">
+                    <h4 className="text-xl font-bold text-purple-800">Bath Time Bliss</h4>
+                    <span className="text-2xl font-bold text-purple-600">$45-65</span>
+                  </div>
+                  <p className="text-gray-700 mb-3">
+                    Full service bath with premium shampoo and conditioning
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    <strong>Includes:</strong> ear cleaning, nail trim, pad & sanitary trim, brushout, blow dry, and anal gland expression
                   </p>
                 </div>
                 
                 <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow">
-                  <h4 className="text-xl font-bold text-purple-800 mb-4">Mini Makeover</h4>
-                  <p className="text-gray-700">
-                    Everything in the bath, plus a face, feet & tail tidy-up. Think of it as a "paw-dicure" and "fur-facial."
+                  <div className="flex justify-between items-start mb-4">
+                    <h4 className="text-xl font-bold text-purple-800">Mini Makeover</h4>
+                    <span className="text-2xl font-bold text-purple-600">$50-95</span>
+                  </div>
+                  <p className="text-gray-700 mb-3">
+                    Everything in the bath, plus a face, feet & tail tidy-up
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    Think of it as a "paw-dicure" and "fur-facial"
                   </p>
                 </div>
                 
                 <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow">
-                  <h4 className="text-xl font-bold text-purple-800 mb-4">Full Glam Groom</h4>
-                  <p className="text-gray-700">
-                    All of the above, with a full-body haircut of your choosing. The perfect boutique look for your pup's special moments.
+                  <div className="flex justify-between items-start mb-4">
+                    <h4 className="text-xl font-bold text-purple-800">Full Glam Groom</h4>
+                    <span className="text-2xl font-bold text-purple-600">$65-125</span>
+                  </div>
+                  <p className="text-gray-700 mb-3">
+                    All of the above, with a full-body haircut of your choosing
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    The perfect boutique look for your pup's special moments
                   </p>
                 </div>
+              </div>
+              
+              {/* Pricing Disclaimer */}
+              <div className="mt-8 text-center">
+                <p className="text-sm text-gray-600 italic max-w-3xl mx-auto">
+                  Pricing may change due to breed, size, temperament, or necessary add-ons - all of which we will try and communicate in advance.
+                </p>
               </div>
             </div>
 
@@ -422,8 +504,16 @@ export default function Home() {
                   <span className="text-purple-600 font-bold">$5</span>
                 </div>
                 <div className="flex justify-between items-center p-3 bg-purple-50 rounded-lg">
-                  <span className="font-semibold text-purple-900">Brushout/Blow Dry</span>
-                  <span className="text-purple-600 font-bold">$10/5min</span>
+                  <span className="font-semibold text-purple-900">3B (Bath, Blow Dry, Brush Out & Ear Cleaning)</span>
+                  <span className="text-purple-600 font-bold">$20-$60</span>
+                </div>
+                <div className="flex justify-between items-center p-3 bg-purple-50 rounded-lg">
+                  <span className="font-semibold text-purple-900">Special or Medicated Shampoos</span>
+                  <span className="text-purple-600 font-bold">$5-$10</span>
+                </div>
+                <div className="flex justify-between items-center p-3 bg-purple-50 rounded-lg">
+                  <span className="font-semibold text-purple-900">Walk-in Services/Trims</span>
+                  <span className="text-purple-600 font-bold">$5-$15</span>
                 </div>
               </div>
               <p className="text-center text-gray-600 mt-4 italic">
@@ -433,61 +523,282 @@ export default function Home() {
 
             <div className="text-center mt-8">
               <p className="text-lg text-purple-800 font-semibold">
-                🕒 Appointments are spaced to reduce stress and crate time. We call you when your pet is ready for pickup—usually within 2–3 hours.
+                🕒 Appointments are spaced to reduce stress and crate time. We call you when your pet is ready for pickup—2-3 hours for small dogs & 2-4 hours for large dogs. Morning appointments have quicker turnaround time, and we can always provide a heads up when we are finished.
               </p>
             </div>
           </div>
         </section>
 
-        {/* Team Section */}
-        <section className="py-20 bg-gradient-to-br from-purple-50 to-blue-50">
+        {/* Customer Reviews Section */}
+        <section className="py-20 bg-white">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <h2 className="text-4xl font-bold text-purple-900 mb-6">
-                👯‍♀️ Meet the Dream Team
+                ⭐ What Our Customers Say
               </h2>
               <p className="text-xl text-gray-700">
-                Passionate. Paw-sitive. Pet-obsessed.
+                Real reviews from real pet parents who trust us with their furry family members
               </p>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-8 mb-12">
-              <div className="bg-white p-6 rounded-2xl shadow-lg text-center">
-                <div className="w-20 h-20 bg-purple-200 rounded-full mx-auto mb-4 flex items-center justify-center">
-                  <span className="text-2xl">👩‍💼</span>
+            <div className="grid md:grid-cols-3 gap-6">
+              {/* Joy */}
+              <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow flex flex-col h-full">
+                <div className="flex items-center mb-4">
+                  <div className="w-16 h-16 rounded-full overflow-hidden mr-4 flex-shrink-0">
+                    <Image
+                      src="/gallery/joy.png"
+                      alt="Joy's pet"
+                      width={64}
+                      height={64}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-purple-900">Joy</h3>
+                    <div className="text-yellow-400 text-sm">★★★★★</div>
+                  </div>
                 </div>
-                <h3 className="text-xl font-bold text-purple-900 mb-2">Melissa Schiedenhelm</h3>
-                <p className="text-purple-600 font-semibold">Co-Owner</p>
+                <p className="text-gray-700 text-sm mb-4 flex-grow">
+                  Look how cute my baby looks! 🐶🥰 Very impressed with our first experience there. My Yorkie is not a big fan of groomers and he's not easy but Rachel and the other girls are so nice and good at what they do. The fees are very reasonable too. We're definitely going back and highly recommend Pupperazi 🤗
+                </p>
+                <a
+                  href="https://maps.app.goo.gl/RdibjmykXeU7YCbU8"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-purple-600 font-semibold text-sm hover:text-purple-700 transition-colors"
+                >
+                  View on Google →
+                </a>
               </div>
 
-              <div className="bg-white p-6 rounded-2xl shadow-lg text-center">
-                <div className="w-20 h-20 bg-purple-200 rounded-full mx-auto mb-4 flex items-center justify-center">
-                  <span className="text-2xl">✂️</span>
+              {/* Tom */}
+              <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow flex flex-col h-full">
+                <div className="flex items-center mb-4">
+                  <div className="w-16 h-16 rounded-full overflow-hidden mr-4 flex-shrink-0">
+                    <Image
+                      src="/gallery/tom.png"
+                      alt="Tom's pet"
+                      width={64}
+                      height={64}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-purple-900">Tom</h3>
+                    <div className="text-yellow-400 text-sm">★★★★★</div>
+                  </div>
                 </div>
-                <h3 className="text-xl font-bold text-purple-900 mb-2">Rachael Patnode</h3>
-                <p className="text-purple-600 font-semibold">Co-Owner & Grooming Manager</p>
+                <p className="text-gray-700 text-sm mb-4 flex-grow">
+                  We love this place. They walked us together so we would feel secure. We are Bostons so we don't have much of a tail, be we still give them five wiggles.
+                </p>
+                <a
+                  href="https://maps.app.goo.gl/5MEcESxeRPhi2zuE6"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-purple-600 font-semibold text-sm hover:text-purple-700 transition-colors"
+                >
+                  View on Google →
+                </a>
               </div>
 
-              <div className="bg-white p-6 rounded-2xl shadow-lg text-center">
-                <div className="w-20 h-20 bg-purple-200 rounded-full mx-auto mb-4 flex items-center justify-center">
-                  <span className="text-2xl">⭐</span>
+              {/* Kelly */}
+              <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow flex flex-col h-full">
+                <div className="flex items-center mb-4">
+                  <div className="w-16 h-16 rounded-full overflow-hidden mr-4 flex-shrink-0">
+                    <Image
+                      src="/gallery/kelly.png"
+                      alt="Kelly's pet"
+                      width={64}
+                      height={64}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-purple-900">Kelly</h3>
+                    <div className="text-yellow-400 text-sm">★★★★★</div>
+                  </div>
                 </div>
-                <h3 className="text-xl font-bold text-purple-900 mb-2">Tracy Arts</h3>
-                <p className="text-purple-600 font-semibold">Pet Stylist Extraordinaire</p>
-                <p className="text-sm text-gray-600 mt-2">(20+ years experience!)</p>
+                <p className="text-gray-700 text-sm mb-4 flex-grow">
+                  We called for a same day appointment and they happily worked us in. The team was super friendly and loving with the dogs. They followed our instructions perfectly and gave her a little banana to wear. Highly recommend this place.
+                </p>
+                <a
+                  href="https://maps.app.goo.gl/Tv5QuWswLJM6H6ZF6"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-purple-600 font-semibold text-sm hover:text-purple-700 transition-colors"
+                >
+                  View on Google →
+                </a>
               </div>
-            </div>
 
-            <div className="text-center">
-              <p className="text-lg text-gray-700">
-                We've been part of Pupperazi since 2011 and 2012. What started as a job became a journey—and now, we proudly carry the torch of love, care, and wagging tails.
-              </p>
+              {/* Lara */}
+              <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow flex flex-col h-full">
+                <div className="flex items-center mb-4">
+                  <div className="w-16 h-16 rounded-full overflow-hidden mr-4 flex-shrink-0">
+                    <Image
+                      src="/gallery/lara.png"
+                      alt="Lara's pet"
+                      width={64}
+                      height={64}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-purple-900">Lara</h3>
+                    <div className="text-yellow-400 text-sm">★★★★★</div>
+                  </div>
+                </div>
+                <p className="text-gray-700 text-sm mb-4 flex-grow">
+                  Mila was very knowledgeable and did a phenomenal job on our pup. She is so caring and took great care of Coconut, he looks awesome and seems very happy! We will definitely book another appointment soon.
+                </p>
+                <a
+                  href="https://maps.app.goo.gl/SQUT4RpuPN3FFFFFA"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-purple-600 font-semibold text-sm hover:text-purple-700 transition-colors"
+                >
+                  View on Google →
+                </a>
+              </div>
+
+              {/* Louanna */}
+              <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow flex flex-col h-full">
+                <div className="flex items-center mb-4">
+                  <div className="w-16 h-16 rounded-full overflow-hidden mr-4 flex-shrink-0">
+                    <Image
+                      src="/gallery/louanna.png"
+                      alt="Louanna's pet"
+                      width={64}
+                      height={64}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-purple-900">Louanna</h3>
+                    <div className="text-yellow-400 text-sm">★★★★★</div>
+                  </div>
+                </div>
+                <p className="text-gray-700 text-sm mb-4 flex-grow">
+                  We've been taking our dog to Pupperazi every 8 weeks for 9 years. Friendly staff. Clean facility. Excellent grooming. Fair prices. Community advocates. Easy appointment scheduling via text or online.
+                </p>
+                <a
+                  href="https://maps.app.goo.gl/7fT7Zsp1kCFPG7ot7"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-purple-600 font-semibold text-sm hover:text-purple-700 transition-colors"
+                >
+                  View on Google →
+                </a>
+              </div>
+
+              {/* Marcy */}
+              <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow flex flex-col h-full">
+                <div className="flex items-center mb-4">
+                  <div className="w-16 h-16 rounded-full overflow-hidden mr-4 flex-shrink-0">
+                    <Image
+                      src="/gallery/marcy.png"
+                      alt="Marcy's pet"
+                      width={64}
+                      height={64}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-purple-900">Marcy</h3>
+                    <div className="text-yellow-400 text-sm">★★★★★</div>
+                  </div>
+                </div>
+                <p className="text-gray-700 text-sm mb-4 flex-grow">
+                  My puppy is very fussy, and she was very calm and happy after her visit. Melissa is superb with her and the best grooming experience I have ever seen. They listened and HEAR requests, concerns and she came home with the best haircut too.
+                </p>
+                <a
+                  href="https://maps.app.goo.gl/i6WABFkS5qjSaAnL7"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-purple-600 font-semibold text-sm hover:text-purple-700 transition-colors"
+                >
+                  View on Google →
+                </a>
+              </div>
+
+              {/* Brianna (no image) */}
+              <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow flex flex-col h-full">
+                <div className="flex items-center mb-4">
+                  <div className="w-16 h-16 rounded-full bg-purple-200 mr-4 flex-shrink-0 flex items-center justify-center">
+                    <span className="text-2xl">🐾</span>
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-purple-900">Brianna</h3>
+                    <div className="text-yellow-400 text-sm">★★★★★</div>
+                  </div>
+                </div>
+                <p className="text-gray-700 text-sm mb-4 flex-grow">
+                  I cannot say enough amazing things about the team at Pupperazi! I've been bringing my pup here since 2018 and always have a positive experience. I now live over an hour away and still bring my dog here because I trust them so much. Their pricing is so reasonable and their staff is always so kind and wonderful.
+                </p>
+                <a
+                  href="https://maps.app.goo.gl/D9HRc6Vu4ybpaEH99"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-purple-600 font-semibold text-sm hover:text-purple-700 transition-colors"
+                >
+                  View on Google →
+                </a>
+              </div>
+
+              {/* S. T. (no image) */}
+              <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow flex flex-col h-full">
+                <div className="flex items-center mb-4">
+                  <div className="w-16 h-16 rounded-full bg-purple-200 mr-4 flex-shrink-0 flex items-center justify-center">
+                    <span className="text-2xl">🐾</span>
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-purple-900">S. T.</h3>
+                    <div className="text-yellow-400 text-sm">★★★★★</div>
+                  </div>
+                </div>
+                <p className="text-gray-700 text-sm mb-4 flex-grow">
+                  I love this place! After going to several other groomers and being very disappointed someone at the dog park recommended Pupperazi. The difference in my dogs appearance and the groomers skill set is amazing. They are 30 minutes from me and I will continue to make the drive. 🥰
+                </p>
+                <a
+                  href="https://maps.app.goo.gl/LhT6AYDfkPpBFqQC6"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-purple-600 font-semibold text-sm hover:text-purple-700 transition-colors"
+                >
+                  View on Google →
+                </a>
+              </div>
+
+              {/* Patricia (no image) */}
+              <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow flex flex-col h-full">
+                <div className="flex items-center mb-4">
+                  <div className="w-16 h-16 rounded-full bg-purple-200 mr-4 flex-shrink-0 flex items-center justify-center">
+                    <span className="text-2xl">🐾</span>
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-purple-900">Patricia</h3>
+                    <div className="text-yellow-400 text-sm">★★★★★</div>
+                  </div>
+                </div>
+                <p className="text-gray-700 text-sm mb-4 flex-grow">
+                  I am very happy with Pupperazi Pet Spa! The workers are friendly and professional, and the communication is excellent. My pet always looks fantastic after each visit. The facility is clean and well-maintained. I would highly recommend them!
+                </p>
+                <a
+                  href="https://maps.app.goo.gl/rgevZU6TYkRbQo3n9"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-purple-600 font-semibold text-sm hover:text-purple-700 transition-colors"
+                >
+                  View on Google →
+                </a>
+              </div>
             </div>
           </div>
         </section>
 
         {/* Contact Section */}
-        <section id="contact" className="py-20 bg-white">
+        <section id="contact" className="py-20 bg-gradient-to-br from-purple-50 to-blue-50">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <h2 className="text-4xl font-bold text-purple-900 mb-6">

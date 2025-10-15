@@ -14,7 +14,7 @@ export default function WashNGoBaths() {
     "@type": "PetGrooming",
     "name": "Pupperazi Pet Spa - Wash N Go Baths",
     "description": "Quick and convenient pet bathing services in Palm Harbor, FL",
-    "url": "https://pupperazi-pet-spa.vercel.app/wash-n-go-baths",
+    "url": "https://pupperazi.krezzo.com/wash-n-go-baths",
     "telephone": "727-753-9302",
     "email": "PupperaziPetSpa@gmail.com",
     "address": {
@@ -326,7 +326,7 @@ export default function WashNGoBaths() {
                     </svg>
                   </a>
                   <a 
-                    href="https://instagram.com/pupperazipetspa" 
+                    href="https://instagram.com/pupperazipetspa_ph" 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors"
