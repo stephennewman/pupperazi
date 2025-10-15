@@ -569,6 +569,30 @@ export default function Home() {
                 </a>
               </div>
 
+              {/* S. T. (no image) */}
+              <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow flex flex-col h-full">
+                <div className="flex items-center mb-4">
+                  <div className="w-16 h-16 rounded-full bg-purple-200 mr-4 flex-shrink-0 flex items-center justify-center">
+                    <span className="text-2xl">🐶</span>
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-purple-900">S. T.</h3>
+                    <div className="text-yellow-400 text-sm">★★★★★</div>
+                  </div>
+                </div>
+                <p className="text-gray-700 text-sm mb-4 flex-grow">
+                  I love this place! After going to several other groomers and being very disappointed someone at the dog park recommended Pupperazi. The difference in my dogs appearance and the groomers skill set is amazing. They are 30 minutes from me and I will continue to make the drive. 🥰
+                </p>
+                <a
+                  href="https://maps.app.goo.gl/LhT6AYDfkPpBFqQC6"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-purple-600 font-semibold text-sm hover:text-purple-700 transition-colors"
+                >
+                  View on Google →
+                </a>
+              </div>
+
               {/* Tom */}
               <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow flex flex-col h-full">
                 <div className="flex items-center mb-4">
@@ -599,28 +623,22 @@ export default function Home() {
                 </a>
               </div>
 
-              {/* Kelly */}
+              {/* Patricia (no image) */}
               <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow flex flex-col h-full">
                 <div className="flex items-center mb-4">
-                  <div className="w-16 h-16 rounded-full overflow-hidden mr-4 flex-shrink-0">
-                    <Image
-                      src="/gallery/kelly.png"
-                      alt="Kelly's pet"
-                      width={64}
-                      height={64}
-                      className="w-full h-full object-cover"
-                    />
+                  <div className="w-16 h-16 rounded-full bg-purple-200 mr-4 flex-shrink-0 flex items-center justify-center">
+                    <span className="text-2xl">✨</span>
                   </div>
                   <div>
-                    <h3 className="font-bold text-purple-900">Kelly</h3>
+                    <h3 className="font-bold text-purple-900">Patricia</h3>
                     <div className="text-yellow-400 text-sm">★★★★★</div>
                   </div>
                 </div>
                 <p className="text-gray-700 text-sm mb-4 flex-grow">
-                  We called for a same day appointment and they happily worked us in. The team was super friendly and loving with the dogs. They followed our instructions perfectly and gave her a little banana to wear. Highly recommend this place.
+                  I am very happy with Pupperazi Pet Spa! The workers are friendly and professional, and the communication is excellent. My pet always looks fantastic after each visit. The facility is clean and well-maintained. I would highly recommend them!
                 </p>
                 <a
-                  href="https://maps.app.goo.gl/Tv5QuWswLJM6H6ZF6"
+                  href="https://maps.app.goo.gl/rgevZU6TYkRbQo3n9"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-purple-600 font-semibold text-sm hover:text-purple-700 transition-colors"
@@ -651,6 +669,60 @@ export default function Home() {
                 </p>
                 <a
                   href="https://maps.app.goo.gl/SQUT4RpuPN3FFFFFA"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-purple-600 font-semibold text-sm hover:text-purple-700 transition-colors"
+                >
+                  View on Google →
+                </a>
+              </div>
+
+              {/* Brianna (no image) */}
+              <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow flex flex-col h-full">
+                <div className="flex items-center mb-4">
+                  <div className="w-16 h-16 rounded-full bg-purple-200 mr-4 flex-shrink-0 flex items-center justify-center">
+                    <span className="text-2xl">💙</span>
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-purple-900">Brianna</h3>
+                    <div className="text-yellow-400 text-sm">★★★★★</div>
+                  </div>
+                </div>
+                <p className="text-gray-700 text-sm mb-4 flex-grow">
+                  I cannot say enough amazing things about the team at Pupperazi! I've been bringing my pup here since 2018 and always have a positive experience. I now live over an hour away and still bring my dog here because I trust them so much. Their pricing is so reasonable and their staff is always so kind and wonderful.
+                </p>
+                <a
+                  href="https://maps.app.goo.gl/D9HRc6Vu4ybpaEH99"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-purple-600 font-semibold text-sm hover:text-purple-700 transition-colors"
+                >
+                  View on Google →
+                </a>
+              </div>
+
+              {/* Kelly */}
+              <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow flex flex-col h-full">
+                <div className="flex items-center mb-4">
+                  <div className="w-16 h-16 rounded-full overflow-hidden mr-4 flex-shrink-0">
+                    <Image
+                      src="/gallery/kelly.png"
+                      alt="Kelly's pet"
+                      width={64}
+                      height={64}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-purple-900">Kelly</h3>
+                    <div className="text-yellow-400 text-sm">★★★★★</div>
+                  </div>
+                </div>
+                <p className="text-gray-700 text-sm mb-4 flex-grow">
+                  We called for a same day appointment and they happily worked us in. The team was super friendly and loving with the dogs. They followed our instructions perfectly and gave her a little banana to wear. Highly recommend this place.
+                </p>
+                <a
+                  href="https://maps.app.goo.gl/Tv5QuWswLJM6H6ZF6"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-purple-600 font-semibold text-sm hover:text-purple-700 transition-colors"
@@ -718,78 +790,6 @@ export default function Home() {
                   View on Google →
                 </a>
               </div>
-
-              {/* Brianna (no image) */}
-              <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow flex flex-col h-full">
-                <div className="flex items-center mb-4">
-                  <div className="w-16 h-16 rounded-full bg-purple-200 mr-4 flex-shrink-0 flex items-center justify-center">
-                    <span className="text-2xl">🐾</span>
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-purple-900">Brianna</h3>
-                    <div className="text-yellow-400 text-sm">★★★★★</div>
-                  </div>
-                </div>
-                <p className="text-gray-700 text-sm mb-4 flex-grow">
-                  I cannot say enough amazing things about the team at Pupperazi! I've been bringing my pup here since 2018 and always have a positive experience. I now live over an hour away and still bring my dog here because I trust them so much. Their pricing is so reasonable and their staff is always so kind and wonderful.
-                </p>
-                <a
-                  href="https://maps.app.goo.gl/D9HRc6Vu4ybpaEH99"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-purple-600 font-semibold text-sm hover:text-purple-700 transition-colors"
-                >
-                  View on Google →
-                </a>
-              </div>
-
-              {/* S. T. (no image) */}
-              <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow flex flex-col h-full">
-                <div className="flex items-center mb-4">
-                  <div className="w-16 h-16 rounded-full bg-purple-200 mr-4 flex-shrink-0 flex items-center justify-center">
-                    <span className="text-2xl">🐾</span>
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-purple-900">S. T.</h3>
-                    <div className="text-yellow-400 text-sm">★★★★★</div>
-                  </div>
-                </div>
-                <p className="text-gray-700 text-sm mb-4 flex-grow">
-                  I love this place! After going to several other groomers and being very disappointed someone at the dog park recommended Pupperazi. The difference in my dogs appearance and the groomers skill set is amazing. They are 30 minutes from me and I will continue to make the drive. 🥰
-                </p>
-                <a
-                  href="https://maps.app.goo.gl/LhT6AYDfkPpBFqQC6"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-purple-600 font-semibold text-sm hover:text-purple-700 transition-colors"
-                >
-                  View on Google →
-                </a>
-              </div>
-
-              {/* Patricia (no image) */}
-              <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow flex flex-col h-full">
-                <div className="flex items-center mb-4">
-                  <div className="w-16 h-16 rounded-full bg-purple-200 mr-4 flex-shrink-0 flex items-center justify-center">
-                    <span className="text-2xl">🐾</span>
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-purple-900">Patricia</h3>
-                    <div className="text-yellow-400 text-sm">★★★★★</div>
-                  </div>
-                </div>
-                <p className="text-gray-700 text-sm mb-4 flex-grow">
-                  I am very happy with Pupperazi Pet Spa! The workers are friendly and professional, and the communication is excellent. My pet always looks fantastic after each visit. The facility is clean and well-maintained. I would highly recommend them!
-                </p>
-                <a
-                  href="https://maps.app.goo.gl/rgevZU6TYkRbQo3n9"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-purple-600 font-semibold text-sm hover:text-purple-700 transition-colors"
-                >
-                  View on Google →
-                </a>
-              </div>
             </div>
           </div>
         </section>
@@ -799,8 +799,11 @@ export default function Home() {
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <h2 className="text-4xl font-bold text-purple-900 mb-6">
-                📍 Get in Touch
+                🐾 Ready to Pamper Your Pup?
               </h2>
+              <p className="text-xl text-gray-700">
+                Let's book your pet's next spa day!
+              </p>
             </div>
 
             <div className="max-w-4xl mx-auto">
