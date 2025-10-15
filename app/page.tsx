@@ -401,10 +401,10 @@ export default function Home() {
             </div>
 
             {/* Signature Services */}
-            <div className="mb-16">
-              <h3 className="text-2xl font-bold text-purple-900 mb-8 text-center">🧼 Signature Services</h3>
-              <div className="grid md:grid-cols-3 gap-8">
-                <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow">
+            <div className="bg-white p-8 rounded-2xl shadow-lg mb-8">
+              <h3 className="text-2xl font-bold text-purple-900 mb-6">🧼 Signature Services</h3>
+              <div className="grid md:grid-cols-3 gap-6">
+                <div className="p-6 bg-gradient-to-br from-purple-50 to-blue-50 rounded-xl">
                   <div className="flex justify-between items-start mb-4">
                     <h4 className="text-xl font-bold text-purple-800">Bath Time Bliss</h4>
                     <span className="text-2xl font-bold text-purple-600">$45-65</span>
@@ -417,7 +417,7 @@ export default function Home() {
                   </p>
                 </div>
                 
-                <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow">
+                <div className="p-6 bg-gradient-to-br from-purple-50 to-blue-50 rounded-xl">
                   <div className="flex justify-between items-start mb-4">
                     <h4 className="text-xl font-bold text-purple-800">Mini Makeover</h4>
                     <span className="text-2xl font-bold text-purple-600">$50-95</span>
@@ -430,7 +430,7 @@ export default function Home() {
                   </p>
                 </div>
                 
-                <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow">
+                <div className="p-6 bg-gradient-to-br from-purple-50 to-blue-50 rounded-xl">
                   <div className="flex justify-between items-start mb-4">
                     <h4 className="text-xl font-bold text-purple-800">Full Glam Groom</h4>
                     <span className="text-2xl font-bold text-purple-600">$65-125</span>
@@ -443,7 +443,6 @@ export default function Home() {
                   </p>
                 </div>
               </div>
-              
             </div>
 
             {/* Quick Wash */}
@@ -478,7 +477,7 @@ export default function Home() {
             </div>
 
             {/* Add-ons */}
-            <div className="bg-white p-8 rounded-2xl shadow-lg">
+            <div className="bg-white p-8 rounded-2xl shadow-lg mb-8">
               <h3 className="text-2xl font-bold text-purple-900 mb-6">🧼 Add-On Spa Specials</h3>
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div className="flex justify-between items-center p-3 bg-purple-50 rounded-lg">
@@ -516,15 +515,13 @@ export default function Home() {
             </div>
 
             {/* Combined Pricing & Timing Info */}
-            <div className="bg-gradient-to-br from-purple-100 to-blue-100 p-6 rounded-2xl shadow-lg max-w-4xl mx-auto">
-              <div className="space-y-3 text-center">
-                <p className="text-base text-gray-800">
-                  <span className="font-semibold text-purple-900">⏱️ Typical Wait:</span> 2-3 hours (small dogs) • 2-4 hours (large dogs). Morning appointments are fastest, and we'll text when ready!
-                </p>
-                <p className="text-sm text-gray-700">
-                  <span className="font-semibold text-purple-900">💰 Pricing Note:</span> Final price may vary based on breed, size, temperament, or add-ons—we'll communicate any changes upfront.
-                </p>
-              </div>
+            <div className="max-w-4xl mx-auto mt-8 space-y-2 text-center">
+              <p className="text-sm text-gray-700">
+                <span className="font-semibold text-purple-900">⏱️ Typical Wait:</span> 2-3 hours (small dogs) • 2-4 hours (large dogs). Morning appointments are fastest, and we'll text when ready!
+              </p>
+              <p className="text-sm text-gray-700">
+                <span className="font-semibold text-purple-900">💰 Pricing Note:</span> Final price may vary based on breed, size, temperament, or add-ons—we'll communicate any changes upfront.
+              </p>
             </div>
           </div>
         </section>
