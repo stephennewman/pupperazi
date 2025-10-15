@@ -444,12 +444,6 @@ export default function Home() {
                 </div>
               </div>
               
-              {/* Pricing Disclaimer */}
-              <div className="mt-8 text-center">
-                <p className="text-sm text-gray-600 italic max-w-3xl mx-auto">
-                  Pricing may change due to breed, size, temperament, or necessary add-ons - all of which we will try and communicate in advance.
-                </p>
-              </div>
             </div>
 
             {/* Quick Wash */}
@@ -521,10 +515,16 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="text-center mt-8">
-              <p className="text-lg text-purple-800 font-semibold">
-                🕒 Appointments are spaced to reduce stress and crate time. We call you when your pet is ready for pickup—2-3 hours for small dogs & 2-4 hours for large dogs. Morning appointments have quicker turnaround time, and we can always provide a heads up when we are finished.
-              </p>
+            {/* Combined Pricing & Timing Info */}
+            <div className="bg-gradient-to-br from-purple-100 to-blue-100 p-6 rounded-2xl shadow-lg max-w-4xl mx-auto">
+              <div className="space-y-3 text-center">
+                <p className="text-base text-gray-800">
+                  <span className="font-semibold text-purple-900">⏱️ Typical Wait:</span> 2-3 hours (small dogs) • 2-4 hours (large dogs). Morning appointments are fastest, and we'll text when ready!
+                </p>
+                <p className="text-sm text-gray-700">
+                  <span className="font-semibold text-purple-900">💰 Pricing Note:</span> Final price may vary based on breed, size, temperament, or add-ons—we'll communicate any changes upfront.
+                </p>
+              </div>
             </div>
           </div>
         </section>
