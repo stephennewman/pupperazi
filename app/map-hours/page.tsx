@@ -237,7 +237,7 @@ export default function MapHours() {
                       📍 Open in Google Maps
                     </a>
                     <a
-                      href="https://www.apple.com/maps/"
+                      href="http://maps.apple.com/?address=3454+Tampa+Rd,+Palm+Harbor,+FL+34684"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="px-6 py-3 bg-blue-600 text-white rounded-full font-semibold hover:bg-blue-700 transition-colors cursor-pointer"
