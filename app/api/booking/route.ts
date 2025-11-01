@@ -274,7 +274,11 @@ async function sendConfirmationEmails(bookingId: string, data: any) {
           <div style="line-height: 1.6;">
             <p style="margin: 5px 0;"><strong>Name:</strong> ${ownerInfo.firstName} ${ownerInfo.lastName}</p>
             <p style="margin: 5px 0;"><strong>Email:</strong> <a href="mailto:${ownerInfo.email}">${ownerInfo.email}</a></p>
-            <p style="margin: 5px 0;"><strong>Phone:</strong> <a href="tel:${ownerInfo.phone}">${ownerInfo.phone}</a></p>
+            <p style="margin: 5px 0 10px 0;"><strong>Phone:</strong> ${ownerInfo.phone}</p>
+            <div style="margin-left: 0;">
+              <a href="sms:${ownerInfo.phone}" style="background: #48bb78; color: white; padding: 8px 20px; text-decoration: none; border-radius: 5px; font-size: 13px; margin-right: 10px; display: inline-block;">💬 Text Customer</a>
+              <a href="tel:${ownerInfo.phone}" style="background: #667eea; color: white; padding: 8px 20px; text-decoration: none; border-radius: 5px; font-size: 13px; display: inline-block;">📞 Call Customer</a>
+            </div>
           </div>
         </div>
 

@@ -307,8 +307,8 @@ function createBusinessEmailContent(leadData: z.infer<typeof leadSchema>): strin
         </div>
 
         <div style="text-align: center; margin: 30px 0;">
-          <a href="mailto:${leadData.email}" style="background: #667eea; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; margin-right: 10px;">Reply to Customer</a>
-          ${customerPhone ? `<a href="tel:${customerPhone.replace(/\D/g, '')}" style="background: #48bb78; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">Call Customer</a>` : '<span style="color: #a0aec0; font-style: italic;">No phone number provided</span>'}
+          <a href="mailto:${leadData.email}" style="background: #667eea; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; margin-right: 10px;">✉️ Email Customer</a>
+          ${customerPhone ? `<a href="sms:${customerPhone.replace(/\D/g, '')}" style="background: #48bb78; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; margin-right: 10px;">💬 Text Customer</a><a href="tel:${customerPhone.replace(/\D/g, '')}" style="background: #805ad5; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">📞 Call Customer</a>` : '<span style="color: #a0aec0; font-style: italic;">No phone number provided</span>'}
         </div>
 
         <div style="border-top: 1px solid #e1e5e9; padding-top: 20px; margin-top: 30px;">
