@@ -13,7 +13,7 @@ export default function MapHours() {
     "@context": "https://schema.org",
     "@type": "PetGrooming",
     "name": "Pupperazi Pet Spa",
-    "url": "https://pupperazi.krezzo.com/map-hours",
+    "url": "https://pupperazipetspa.com/map-hours",
     "telephone": "727-753-9302",
     "email": "PupperaziPetSpa@gmail.com",
     "address": {

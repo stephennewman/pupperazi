@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { customerOperations } from '@/lib/database-supabase';
+import { requireAuth } from '@/lib/auth';
 
 interface Customer {
   id: number;
@@ -15,7 +16,7 @@ interface Customer {
   created_at: string;
 }
 
-export async function GET(request: NextRequest) {
+export const GET = requireAuth(async (request: NextRequest) => {
   try {
     const { searchParams } = new URL(request.url);
     const search = searchParams.get('search');
@@ -59,4 +60,4 @@ export async function GET(request: NextRequest) {
       { status: 500 }
     );
   }
-}
+});

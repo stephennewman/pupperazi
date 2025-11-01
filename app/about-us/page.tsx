@@ -15,7 +15,7 @@ export default function AboutUs() {
     "@type": "AboutPage",
     "name": "About Pupperazi Pet Spa",
     "description": "Learn about Pupperazi Pet Spa's story, our experienced team, and our commitment to providing the best pet grooming services in Palm Harbor, FL.",
-    "url": "https://pupperazi.krezzo.com/about-us",
+    "url": "https://pupperazipetspa.com/about-us",
     "mainEntity": {
       "@type": "PetGrooming",
       "name": "Pupperazi Pet Spa",

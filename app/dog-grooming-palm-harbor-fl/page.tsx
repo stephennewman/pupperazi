@@ -11,7 +11,7 @@ export default function DogGroomingPalmHarborPage() {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
     "name": "Pupperazi Pet Spa - Dog Grooming Palm Harbor FL",
-    "image": "https://pupperazi.krezzo.com/gallery/pet1.png",
+    "image": "https://pupperazipetspa.com/gallery/pet1.png",
     "description": "Professional dog grooming in Palm Harbor, FL. Boutique pet spa offering full-service grooming, baths, nail trims, and more. Serving Palm Harbor, Dunedin, Clearwater & Tarpon Springs.",
     "address": {
       "@type": "PostalAddress",

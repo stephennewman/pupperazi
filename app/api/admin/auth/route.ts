@@ -1,12 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-
-// Simple admin password (in production, this should be hashed and stored securely)
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
-
-// Simple token generation (in production, use JWT or similar)
-function generateToken(): string {
-  return Buffer.from(`${Date.now()}:${Math.random()}`).toString('base64');
-}
+import { validatePassword, generateToken } from '@/lib/auth';
 
 export async function POST(request: NextRequest) {
   try {
@@ -19,15 +12,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check password
-    if (password !== ADMIN_PASSWORD) {
+    // Check password using centralized auth
+    if (!validatePassword(password)) {
       return NextResponse.json(
         { error: 'Invalid password' },
         { status: 401 }
       );
     }
 
-    // Generate token
+    // Generate secure token
     const token = generateToken();
 
     return NextResponse.json({

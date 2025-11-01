@@ -10,7 +10,7 @@ export default function PuppyGroomingPalmHarborPage() {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
     "name": "Pupperazi Pet Spa - Puppy Grooming in Palm Harbor FL",
-    "image": "https://pupperazi.krezzo.com/gallery/pet1.png",
+    "image": "https://pupperazipetspa.com/gallery/pet1.png",
     "description": "Gentle puppy grooming in Palm Harbor, FL. First-time grooming experiences that build lifelong comfort. Patient, experienced groomers. All breeds welcome.",
     "address": {
       "@type": "PostalAddress",

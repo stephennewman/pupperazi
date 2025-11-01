@@ -26,9 +26,9 @@ export default function Home() {
     "@context": "https://schema.org",
     "@type": "PetGrooming",
     "name": "Pupperazi Pet Spa",
-    "image": "https://pupperazi.krezzo.com/gallery/pet1.png",
-    "@id": "https://pupperazi.krezzo.com",
-    "url": "https://pupperazi.krezzo.com",
+    "image": "https://pupperazipetspa.com/gallery/pet1.png",
+    "@id": "https://pupperazipetspa.com",
+    "url": "https://pupperazipetspa.com",
     "telephone": "727-753-9302",
     "address": {
       "@type": "PostalAddress",

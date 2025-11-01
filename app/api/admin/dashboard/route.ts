@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { statements } from '@/lib/database';
+import { requireAuth } from '@/lib/auth';
 
 interface DashboardStats {
   total_appointments: number;
@@ -20,7 +21,7 @@ interface RecentBooking {
   services: string;
 }
 
-export async function GET(request: NextRequest) {
+export const GET = requireAuth(async (request: NextRequest) => {
   try {
     // Get dashboard stats
     const stats = statements.getDashboardStats.get() as DashboardStats;
@@ -57,4 +58,4 @@ export async function GET(request: NextRequest) {
       { status: 500 }
     );
   }
-}
+});

@@ -14,7 +14,7 @@ export default function OurServices() {
     "@type": "PetGrooming",
     "name": "Pupperazi Pet Spa - Our Services",
     "description": "Comprehensive pet grooming and spa services in Palm Harbor, FL",
-    "url": "https://pupperazi.krezzo.com/our-services",
+    "url": "https://pupperazipetspa.com/our-services",
     "telephone": "727-753-9302",
     "email": "PupperaziPetSpa@gmail.com",
     "address": {

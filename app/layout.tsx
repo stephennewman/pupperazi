@@ -36,14 +36,14 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL("https://pupperazi.krezzo.com"),
+  metadataBase: new URL("https://pupperazipetspa.com"),
   alternates: {
     canonical: "/",
   },
   openGraph: {
     title: "Pupperazi Pet Spa - Dog Grooming in Palm Harbor, FL",
     description: "Boutique-style dog grooming in Palm Harbor, FL. Pamper your pup with premium baths, haircuts, nail trims, and more. Where every pet gets the VIP treatment.",
-    url: "https://pupperazi.krezzo.com",
+    url: "https://pupperazipetspa.com",
     siteName: "Pupperazi Pet Spa",
     locale: "en_US",
     type: "website",

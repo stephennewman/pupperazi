@@ -129,6 +129,7 @@ export async function POST(request: NextRequest) {
     const { data, error } = await resend.emails.send({
       from: 'Pupperazi Pet Spa <contact@krezzo.com>',
       to: [
+        'PupperaziPetSpa@gmail.com', // Business email
         'stephen.p.newman@gmail.com', // Primary business email
         process.env.ADMIN_EMAIL || 'admin@pupperazi.com' // Admin notification
       ],

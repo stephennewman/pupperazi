@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { appointmentOperations } from '@/lib/database-supabase';
+import { requireAuth } from '@/lib/auth';
 
 interface Appointment {
   id: string;
@@ -21,7 +22,7 @@ interface Appointment {
   services_list: string;
 }
 
-export async function GET(request: NextRequest) {
+export const GET = requireAuth(async (request: NextRequest) => {
   try {
     const { searchParams } = new URL(request.url);
     const status = searchParams.get('status');
@@ -78,9 +79,9 @@ export async function GET(request: NextRequest) {
       { status: 500 }
     );
   }
-}
+});
 
-export async function PATCH(request: NextRequest) {
+export const PATCH = requireAuth(async (request: NextRequest) => {
   try {
     const body = await request.json();
     const { appointmentId, status } = body;
@@ -107,4 +108,4 @@ export async function PATCH(request: NextRequest) {
       { status: 500 }
     );
   }
-}
+});

@@ -10,7 +10,7 @@ export default function BestDogGroomerPalmHarborPage() {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
     "name": "Pupperazi Pet Spa - Best Dog Groomer in Palm Harbor FL",
-    "image": "https://pupperazi.krezzo.com/gallery/pet1.png",
+    "image": "https://pupperazipetspa.com/gallery/pet1.png",
     "description": "Voted best dog groomer in Palm Harbor, FL. Expert groomers with 20+ years experience. Boutique spa serving all breeds. Book your appointment today!",
     "address": {
       "@type": "PostalAddress",

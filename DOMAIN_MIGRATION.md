@@ -1,10 +1,10 @@
 # Domain Migration Checklist
 
-## 🌐 Current Domain
-**https://pupperazi.krezzo.com**
+## 🌐 Current Domain (MIGRATED)
+**https://pupperazipetspa.com** ✅
 
-## 🎯 Future Domain
-**https://pupperazipetspa.com**
+## 🎯 Previous Staging Domain
+**https://pupperazi.krezzo.com** (now redirects)
 
 ---
 

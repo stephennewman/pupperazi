@@ -14,7 +14,7 @@ export default function WashNGoBaths() {
     "@type": "PetGrooming",
     "name": "Pupperazi Pet Spa - Wash N Go Baths",
     "description": "Quick and convenient pet bathing services in Palm Harbor, FL",
-    "url": "https://pupperazi.krezzo.com/wash-n-go-baths",
+    "url": "https://pupperazipetspa.com/wash-n-go-baths",
     "telephone": "727-753-9302",
     "email": "PupperaziPetSpa@gmail.com",
     "address": {
