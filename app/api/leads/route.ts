@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { z } from 'zod';
+import { trackConversion } from '@/lib/analytics';
 
 // Initialize Resend with API key (only if available)
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
@@ -394,6 +395,12 @@ export async function POST(request: NextRequest) {
       customerEmail: emailSuccess ? '✅ Sent' : '❌ Failed',
       businessEmail: businessEmailSuccess ? '✅ Sent' : '❌ Failed'
     });
+
+    // Track conversion in analytics
+    const sessionId = request.cookies.get('session_id')?.value;
+    if (sessionId) {
+      await trackConversion(sessionId);
+    }
 
     // Success response (business SMS is the key notification)
     let successMessage = 'Thank you for your inquiry! ';
