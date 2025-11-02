@@ -69,11 +69,8 @@ export async function POST(request: NextRequest) {
             ${phone ? `
             <div style="margin-bottom: 15px;">
               <strong style="color: #667eea;">Phone:</strong>
-              <span style="margin-left: 10px;">${phone}</span><br>
-              <div style="margin-top: 8px; margin-left: 60px;">
-                <a href="sms:${phone}" style="background: #48bb78; color: white; padding: 6px 16px; text-decoration: none; border-radius: 4px; font-size: 12px; margin-right: 8px; display: inline-block;">💬 Text</a>
-                <a href="tel:${phone}" style="background: #667eea; color: white; padding: 6px 16px; text-decoration: none; border-radius: 4px; font-size: 12px; display: inline-block;">📞 Call</a>
-              </div>
+              <span style="margin-left: 10px; user-select: all; background: #f8f9fa; padding: 4px 8px; border-radius: 4px; font-family: monospace; border: 1px solid #e2e8f0;">${phone}</span>
+              <span style="color: #888; font-size: 11px; margin-left: 8px;">(copy to call/text)</span>
             </div>
             ` : ''}
           </div>

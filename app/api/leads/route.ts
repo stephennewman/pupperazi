@@ -306,9 +306,10 @@ function createBusinessEmailContent(leadData: z.infer<typeof leadSchema>): strin
           </div>
         </div>
 
-        <div style="text-align: center; margin: 30px 0;">
-          <a href="mailto:${leadData.email}" style="background: #667eea; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; margin-right: 10px;">✉️ Email Customer</a>
-          ${customerPhone ? `<a href="sms:${customerPhone.replace(/\D/g, '')}" style="background: #48bb78; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; margin-right: 10px;">💬 Text Customer</a><a href="tel:${customerPhone.replace(/\D/g, '')}" style="background: #805ad5; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">📞 Call Customer</a>` : '<span style="color: #a0aec0; font-style: italic;">No phone number provided</span>'}
+        <div style="background: #f7fafc; padding: 20px; border-radius: 8px; margin: 30px 0;">
+          <p style="color: #2d3748; font-weight: bold; margin: 0 0 10px 0;">📞 Contact Customer:</p>
+          <p style="margin: 5px 0;"><strong>Email:</strong> <a href="mailto:${leadData.email}" style="color: #667eea;">${leadData.email}</a></p>
+          ${customerPhone ? `<p style="margin: 5px 0;"><strong>Phone:</strong> <span style="user-select: all; background: #fff; padding: 4px 8px; border-radius: 4px; font-family: monospace; border: 1px solid #e2e8f0;">${customerPhone}</span> <span style="color: #718096; font-size: 12px;">(copy & paste to call/text)</span></p>` : '<p style="color: #a0aec0; font-style: italic; margin: 5px 0;">No phone number provided</p>'}
         </div>
 
         <div style="border-top: 1px solid #e1e5e9; padding-top: 20px; margin-top: 30px;">
