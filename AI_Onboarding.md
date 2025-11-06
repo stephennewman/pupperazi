@@ -28,6 +28,22 @@
 
 ## Activity Log (Most Recent First)
 
+### November 6, 2025 - 📧 EMAIL CONFIGURATION UPDATE
+- **Activity:** Removed admin@pupperazi.com from email recipients
+- **Status:** ✅ DEPLOYED to GitHub
+- **Changes:**
+  - Removed `admin@pupperazi.com` from contact form email sends
+  - Emails now only sent to:
+    - PupperaziPetSpa@gmail.com
+    - stephen.p.newman@gmail.com
+  - Fixed GitHub authentication issue (switched from HTTPS to SSH)
+  - Resolved credential conflict between stephencheckit and stephennewman accounts
+- **Files Modified:**
+  - `app/api/contact/route.ts` - Updated email recipient list
+  - `MasterAgent.md` - General updates
+- **Commit:** `381591a` - "Remove admin@pupperazi.com from email recipients"
+- **Impact:** Cleaner email distribution, no more unnecessary admin emails
+
 ### June 13, 2025 - 📅 BOOKING WIDGET DEPLOYED!
 - **Activity:** Created comprehensive online booking system
 - **Status:** LIVE with full appointment scheduling functionality
