@@ -132,7 +132,6 @@ export async function POST(request: NextRequest) {
       to: [
         'PupperaziPetSpa@gmail.com', // Business email
         'stephen.p.newman@gmail.com', // Primary business email
-        process.env.ADMIN_EMAIL || 'admin@pupperazi.com' // Admin notification
       ],
       subject: subjectLine,
       html: htmlContent,
