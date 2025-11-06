@@ -87,7 +87,26 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <script async src="https://web-analytics-flax.vercel.app/track.js?id=2accfa7a-e443-46f7-9b64-6ba9641bb18f"></script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var script = document.createElement('script');
+                  script.async = true;
+                  script.crossOrigin = 'anonymous';
+                  script.src = 'https://web-analytics-flax.vercel.app/track.js?id=2accfa7a-e443-46f7-9b64-6ba9641bb18f';
+                  script.onerror = function() {
+                    console.warn('Analytics script failed to load - this is expected and won\\'t affect functionality');
+                  };
+                  document.head.appendChild(script);
+                } catch(e) {
+                  console.warn('Analytics initialization error:', e.message);
+                }
+              })();
+            `,
+          }}
+        />
         <link
           rel="icon"
           href={`data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐾</text></svg>`}
