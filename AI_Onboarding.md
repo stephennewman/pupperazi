@@ -28,6 +28,23 @@
 
 ## Activity Log (Most Recent First)
 
+### November 6, 2025 - 🗑️ REMOVED WEB-ANALYTICS SCRIPT
+- **Activity:** Removed third-party web-analytics script from site
+- **Status:** ✅ DEPLOYED to GitHub
+- **Changes:**
+  - Removed web-analytics-flax.vercel.app tracking script from layout
+  - Site now only uses Vercel Analytics (cleaner, built-in)
+  - Eliminated source of JavaScript errors during form interactions
+  - Reduced external dependencies
+- **Files Modified:**
+  - `app/layout.tsx` - Removed analytics script tag
+- **Impact:**
+  - Eliminates all CORS-related JavaScript errors
+  - Faster page load (one less external script)
+  - Cleaner codebase with fewer dependencies
+  - Still tracking via Vercel Analytics component
+- **Commit:** `2d0f43b` - "Remove web-analytics script from site"
+
 ### November 6, 2025 - 🐛 JAVASCRIPT ERROR FIX
 - **Activity:** Fixed JavaScript errors in analytics tracking script
 - **Status:** ✅ DEPLOYED to GitHub
