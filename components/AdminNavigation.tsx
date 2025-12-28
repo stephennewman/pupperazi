@@ -15,6 +15,7 @@ export default function AdminNavigation({ activeTab }: AdminNavigationProps) {
     if (activeTab) return activeTab;
 
     if (pathname === '/admin') return 'dashboard';
+    if (pathname?.includes('/admin/leads')) return 'customers';
     if (pathname?.includes('/admin/appointments')) return 'appointments';
     if (pathname?.includes('/admin/calendar')) return 'calendar';
     if (pathname?.includes('/admin/customers')) return 'customers';
@@ -27,9 +28,9 @@ export default function AdminNavigation({ activeTab }: AdminNavigationProps) {
 
   const navigationItems = [
     { key: 'dashboard', label: 'Dashboard', icon: '📊', path: '/admin' },
+    { key: 'customers', label: 'Leads', icon: '📋', path: '/admin/leads' },
     { key: 'appointments', label: 'Appointments', icon: '📅', path: '/admin/appointments' },
     { key: 'calendar', label: 'Calendar', icon: '📆', path: '/admin/calendar' },
-    { key: 'customers', label: 'Customers', icon: '👥', path: '/admin/customers' },
     { key: 'settings', label: 'Settings', icon: '⚙️', path: '/admin/settings' }
   ];
 
