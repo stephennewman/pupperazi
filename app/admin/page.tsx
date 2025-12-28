@@ -23,11 +23,37 @@ interface RecentLead {
   utm_source?: string;
 }
 
+interface TrafficData {
+  configured: boolean;
+  today?: {
+    visitors: number;
+    pageViews: number;
+    appointmentClicks: number;
+    phoneClicks: number;
+  };
+  week?: {
+    visitors: number;
+    pageViews: number;
+    appointmentClicks: number;
+    phoneClicks: number;
+    avgSessionDuration: string;
+    bounceRate: string;
+  };
+  month?: {
+    visitors: number;
+    pageViews: number;
+    topPages: { page: string; views: number }[];
+    topSources: { source: string; users: number }[];
+    topCities: { city: string; users: number }[];
+  };
+}
+
 export default function AdminDashboard() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [recentLeads, setRecentLeads] = useState<RecentLead[]>([]);
+  const [traffic, setTraffic] = useState<TrafficData | null>(null);
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -42,22 +68,34 @@ export default function AdminDashboard() {
 
   const fetchDashboardData = async (token: string) => {
     try {
-      const response = await fetch('/api/admin/leads/stats', {
-        headers: { 'Authorization': `Bearer ${token}` },
-      });
+      // Fetch leads stats and traffic data in parallel
+      const [leadsResponse, trafficResponse] = await Promise.all([
+        fetch('/api/admin/leads/stats', {
+          headers: { 'Authorization': `Bearer ${token}` },
+        }),
+        fetch('/api/admin/traffic', {
+          headers: { 'Authorization': `Bearer ${token}` },
+        }),
+      ]);
 
-      if (response.status === 401) {
+      if (leadsResponse.status === 401) {
         localStorage.removeItem('adminToken');
         router.push('/admin/login');
         return;
       }
 
-      const data = await response.json();
-      if (data.success) {
-        setStats(data.stats);
-        setRecentLeads(data.recentLeads || []);
+      const leadsData = await leadsResponse.json();
+      if (leadsData.success) {
+        setStats(leadsData.stats);
+        setRecentLeads(leadsData.recentLeads || []);
       } else {
-        setError(data.error || 'Failed to load data');
+        setError(leadsData.error || 'Failed to load data');
+      }
+
+      // Traffic data (may not be configured)
+      const trafficData = await trafficResponse.json();
+      if (trafficData.success || trafficData.configured === false) {
+        setTraffic(trafficData);
       }
     } catch {
       setError('Failed to load dashboard data');
@@ -104,55 +142,126 @@ export default function AdminDashboard() {
         </div>
       )}
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-500 font-medium">Today's Leads</p>
-              <p className="text-3xl font-bold text-gray-900 mt-1">{stats?.today || 0}</p>
-            </div>
-            <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-              <span className="text-2xl">📥</span>
+      {/* Leads Stats Cards */}
+      <div className="mb-6">
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">📋 Leads</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-100">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-500 font-medium">Today</p>
+                <p className="text-2xl font-bold text-gray-900 mt-1">{stats?.today || 0}</p>
+              </div>
+              <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
+                <span className="text-xl">📥</span>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-500 font-medium">This Week</p>
-              <p className="text-3xl font-bold text-gray-900 mt-1">{stats?.thisWeek || 0}</p>
-            </div>
-            <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-              <span className="text-2xl">📈</span>
+          <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-100">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-500 font-medium">This Week</p>
+                <p className="text-2xl font-bold text-gray-900 mt-1">{stats?.thisWeek || 0}</p>
+              </div>
+              <div className="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
+                <span className="text-xl">📈</span>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-500 font-medium">This Month</p>
-              <p className="text-3xl font-bold text-gray-900 mt-1">{stats?.thisMonth || 0}</p>
-            </div>
-            <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-              <span className="text-2xl">📅</span>
+          <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-100">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-500 font-medium">This Month</p>
+                <p className="text-2xl font-bold text-gray-900 mt-1">{stats?.thisMonth || 0}</p>
+              </div>
+              <div className="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
+                <span className="text-xl">📅</span>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-500 font-medium">Total Leads</p>
-              <p className="text-3xl font-bold text-gray-900 mt-1">{stats?.total || 0}</p>
-            </div>
-            <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
-              <span className="text-2xl">🐾</span>
+          <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-100">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-500 font-medium">Total</p>
+                <p className="text-2xl font-bold text-gray-900 mt-1">{stats?.total || 0}</p>
+              </div>
+              <div className="w-10 h-10 bg-orange-100 rounded-xl flex items-center justify-center">
+                <span className="text-xl">🐾</span>
+              </div>
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Traffic Stats Cards */}
+      <div className="mb-8">
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">📊 Website Traffic</h2>
+        {!traffic?.configured ? (
+          <div className="bg-gray-50 rounded-xl p-6 text-center text-gray-500">
+            <p>Google Analytics not configured</p>
+            <p className="text-sm mt-1">Add GA credentials to see traffic data</p>
+          </div>
+        ) : (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+              <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl shadow-sm p-5 text-white">
+                <p className="text-sm font-medium opacity-90">Today's Visitors</p>
+                <p className="text-2xl font-bold mt-1">{traffic.today?.visitors || 0}</p>
+                <p className="text-xs opacity-75 mt-1">{traffic.today?.pageViews || 0} page views</p>
+              </div>
+
+              <div className="bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl shadow-sm p-5 text-white">
+                <p className="text-sm font-medium opacity-90">7-Day Visitors</p>
+                <p className="text-2xl font-bold mt-1">{traffic.week?.visitors || 0}</p>
+                <p className="text-xs opacity-75 mt-1">{traffic.week?.pageViews || 0} page views</p>
+              </div>
+
+              <div className="bg-gradient-to-br from-emerald-500 to-teal-500 rounded-xl shadow-sm p-5 text-white">
+                <p className="text-sm font-medium opacity-90">30-Day Visitors</p>
+                <p className="text-2xl font-bold mt-1">{traffic.month?.visitors || 0}</p>
+                <p className="text-xs opacity-75 mt-1">{traffic.month?.pageViews || 0} page views</p>
+              </div>
+
+              <div className="bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl shadow-sm p-5 text-white">
+                <p className="text-sm font-medium opacity-90">Engagement</p>
+                <p className="text-lg font-bold mt-1">{traffic.week?.avgSessionDuration || '0m 0s'}</p>
+                <p className="text-xs opacity-75 mt-1">Bounce: {traffic.week?.bounceRate || '0%'}</p>
+              </div>
+            </div>
+
+            {/* CTA Performance */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-100">
+                <h3 className="text-sm font-semibold text-gray-700 mb-3">🎯 CTA Clicks (Last 7 Days)</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="text-center p-3 bg-purple-50 rounded-lg">
+                    <p className="text-2xl font-bold text-purple-700">{traffic.week?.appointmentClicks || 0}</p>
+                    <p className="text-xs text-purple-600">Appointment Clicks</p>
+                  </div>
+                  <div className="text-center p-3 bg-green-50 rounded-lg">
+                    <p className="text-2xl font-bold text-green-700">{traffic.week?.phoneClicks || 0}</p>
+                    <p className="text-xs text-green-600">Phone Clicks</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-100">
+                <h3 className="text-sm font-semibold text-gray-700 mb-3">📍 Top Traffic Sources</h3>
+                <div className="space-y-2">
+                  {traffic.month?.topSources?.slice(0, 4).map((source, i) => (
+                    <div key={i} className="flex justify-between items-center">
+                      <span className="text-sm text-gray-600">{source.source || 'Direct'}</span>
+                      <span className="text-sm font-medium text-gray-900">{source.users}</span>
+                    </div>
+                  )) || <p className="text-sm text-gray-400">No data yet</p>}
+                </div>
+              </div>
+            </div>
+          </>
+        )}
       </div>
 
       {/* Status Breakdown */}
