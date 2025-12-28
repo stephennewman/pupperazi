@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import AdminLayout from '@/components/AdminLayout';
 
 interface Lead {
@@ -23,14 +23,22 @@ interface Lead {
 
 export default function AdminLeads() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [leads, setLeads] = useState<Lead[]>([]);
   const [filteredLeads, setFilteredLeads] = useState<Lead[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState(searchParams.get('status') || 'all');
+  const [statusFilter, setStatusFilter] = useState('all');
   const [updatingId, setUpdatingId] = useState<number | null>(null);
+
+  // Read status filter from URL on mount
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const status = params.get('status');
+      if (status) setStatusFilter(status);
+    }
+  }, []);
 
   const fetchLeads = useCallback(async (token: string) => {
     try {
