@@ -19,6 +19,16 @@ const contactSchema = z.object({
     message: 'Please select a preferred contact method'
   }),
   message: z.string().min(10, 'Message must be at least 10 characters').max(2000, 'Message is too long'),
+  // Additional appointment fields
+  isNewCustomer: z.string().optional(),
+  petInfo: z.string().optional(),
+  requestedDateTime: z.string().optional(),
+  // UTM tracking fields
+  utm_source: z.string().optional(),
+  utm_medium: z.string().optional(),
+  utm_campaign: z.string().optional(),
+  utm_term: z.string().optional(),
+  utm_content: z.string().optional(),
 });
 
 export async function POST(request: NextRequest) {
@@ -27,7 +37,11 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const validatedData = contactSchema.parse(body);
 
-    const { name, email, phone, service, contactMethod, message } = validatedData;
+    const { 
+      name, email, phone, service, contactMethod, message,
+      isNewCustomer, petInfo, requestedDateTime,
+      utm_source, utm_medium, utm_campaign, utm_term, utm_content 
+    } = validatedData;
 
     // Format service for display
     const serviceDisplay = {
@@ -161,11 +175,18 @@ export async function POST(request: NextRequest) {
       name,
       email,
       phone: phone || undefined,
-      is_new_customer: isAppointmentRequest ? (message.includes('New Customer') ? 'yes' : 'no') : undefined,
-      pet_info: isAppointmentRequest ? message.match(/Pet Information: (.+?)(?:\n|$)/)?.[1] : undefined,
-      requested_datetime: isAppointmentRequest ? message.match(/Requested Date\/Time: (.+?)(?:\n|$)/)?.[1] : undefined,
+      // Use direct fields if available, fall back to parsing message
+      is_new_customer: isNewCustomer || (isAppointmentRequest ? (message.includes('New Customer') ? 'yes' : 'no') : undefined),
+      pet_info: petInfo || (isAppointmentRequest ? message.match(/Pet Information: (.+?)(?:\n|$)/)?.[1] : undefined),
+      requested_datetime: requestedDateTime || (isAppointmentRequest ? message.match(/Requested Date\/Time: (.+?)(?:\n|$)/)?.[1] : undefined),
       message,
       source: isAppointmentRequest ? 'appointment_form' : 'contact_form',
+      // UTM tracking
+      utm_source,
+      utm_medium,
+      utm_campaign,
+      utm_term,
+      utm_content,
     });
 
     if (!leadResult.success) {

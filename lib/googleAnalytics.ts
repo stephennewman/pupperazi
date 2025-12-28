@@ -49,6 +49,11 @@ export interface AnalyticsData {
   // CTA Events
   appointmentClicks: number;
   phoneClicks: number;
+  // Form Funnel Events
+  formOpens: number;
+  formStarts: number;
+  formSubmits: number;
+  formAbandons: number;
   // Trends (compared to previous period)
   trends?: {
     totalUsers: TrendData;
@@ -56,6 +61,7 @@ export interface AnalyticsData {
     sessions: TrendData;
     appointmentClicks: TrendData;
     phoneClicks: TrendData;
+    formSubmits: TrendData;
   };
 }
 
@@ -160,19 +166,37 @@ export async function getAnalyticsData(
   const prevEndDate = prevEnd.toISOString().split("T")[0];
 
   // Fetch current period data
-  const [currentMetrics, appointmentClicks, phoneClicks] = await Promise.all([
+  const [
+    currentMetrics, 
+    appointmentClicks, 
+    phoneClicks,
+    formOpens,
+    formStarts,
+    formSubmits,
+    formAbandons
+  ] = await Promise.all([
     getBasicMetrics(client, startDate, endDate),
     getEventCount(client, startDate, endDate, "appointment_click"),
     getEventCount(client, startDate, endDate, "phone_click"),
+    getEventCount(client, startDate, endDate, "form_open"),
+    getEventCount(client, startDate, endDate, "form_start"),
+    getEventCount(client, startDate, endDate, "form_submit_success"),
+    getEventCount(client, startDate, endDate, "form_abandon"),
   ]);
 
   // Fetch previous period data for trends
   let trends: AnalyticsData["trends"];
   if (includeTrends) {
-    const [prevMetrics, prevAppointmentClicks, prevPhoneClicks] = await Promise.all([
+    const [
+      prevMetrics, 
+      prevAppointmentClicks, 
+      prevPhoneClicks,
+      prevFormSubmits
+    ] = await Promise.all([
       getBasicMetrics(client, prevStartDate, prevEndDate),
       getEventCount(client, prevStartDate, prevEndDate, "appointment_click"),
       getEventCount(client, prevStartDate, prevEndDate, "phone_click"),
+      getEventCount(client, prevStartDate, prevEndDate, "form_submit_success"),
     ]);
 
     trends = {
@@ -181,6 +205,7 @@ export async function getAnalyticsData(
       sessions: calculateTrend(currentMetrics.sessions, prevMetrics.sessions),
       appointmentClicks: calculateTrend(appointmentClicks, prevAppointmentClicks),
       phoneClicks: calculateTrend(phoneClicks, prevPhoneClicks),
+      formSubmits: calculateTrend(formSubmits, prevFormSubmits),
     };
   }
 
@@ -260,6 +285,10 @@ export async function getAnalyticsData(
     topCities,
     appointmentClicks,
     phoneClicks,
+    formOpens,
+    formStarts,
+    formSubmits,
+    formAbandons,
     trends,
   };
 }
@@ -365,6 +394,34 @@ export function formatSlackMessage(data: AnalyticsData, type: "daily" | "weekly"
         {
           type: "mrkdwn",
           text: `*📱 Phone Clicks*\n${data.phoneClicks}${formatTrend(data.trends?.phoneClicks)}`,
+        },
+      ],
+    },
+    {
+      type: "section",
+      text: {
+        type: "mrkdwn",
+        text: "*📝 Form Funnel*",
+      },
+    },
+    {
+      type: "section",
+      fields: [
+        {
+          type: "mrkdwn",
+          text: `*📂 Form Opens*\n${data.formOpens}`,
+        },
+        {
+          type: "mrkdwn",
+          text: `*✏️ Form Starts*\n${data.formStarts}`,
+        },
+        {
+          type: "mrkdwn",
+          text: `*✅ Submissions*\n${data.formSubmits}${formatTrend(data.trends?.formSubmits)}`,
+        },
+        {
+          type: "mrkdwn",
+          text: `*❌ Abandons*\n${data.formAbandons}`,
         },
       ],
     },

@@ -19,6 +19,12 @@ export interface PupperaziLead {
   message?: string;
   source?: string;
   status?: 'new' | 'contacted' | 'booked' | 'closed';
+  // UTM tracking
+  utm_source?: string;
+  utm_medium?: string;
+  utm_campaign?: string;
+  utm_term?: string;
+  utm_content?: string;
 }
 
 export async function storeLead(lead: PupperaziLead): Promise<{ success: boolean; id?: number; error?: string }> {
@@ -40,6 +46,12 @@ export async function storeLead(lead: PupperaziLead): Promise<{ success: boolean
         message: lead.message,
         source: lead.source || 'appointment_form',
         status: lead.status || 'new',
+        // UTM tracking
+        utm_source: lead.utm_source,
+        utm_medium: lead.utm_medium,
+        utm_campaign: lead.utm_campaign,
+        utm_term: lead.utm_term,
+        utm_content: lead.utm_content,
       })
       .select('id')
       .single();

@@ -1,6 +1,32 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
+
+// Google Analytics event tracking
+declare global {
+  interface Window {
+    gtag?: (...args: unknown[]) => void;
+  }
+}
+
+const trackEvent = (eventName: string, params?: Record<string, string | number>) => {
+  if (typeof window !== 'undefined' && window.gtag) {
+    window.gtag('event', eventName, params);
+  }
+};
+
+// Get UTM parameters from URL
+const getUTMParams = () => {
+  if (typeof window === 'undefined') return {};
+  const params = new URLSearchParams(window.location.search);
+  return {
+    utm_source: params.get('utm_source') || undefined,
+    utm_medium: params.get('utm_medium') || undefined,
+    utm_campaign: params.get('utm_campaign') || undefined,
+    utm_term: params.get('utm_term') || undefined,
+    utm_content: params.get('utm_content') || undefined,
+  };
+};
 
 interface AppointmentPopupProps {
   isOpen: boolean;
@@ -19,9 +45,33 @@ export default function AppointmentPopup({ isOpen, onClose }: AppointmentPopupPr
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const hasTrackedOpen = useRef(false);
+  const formStarted = useRef(false);
+
+  // Track form open when popup becomes visible
+  useEffect(() => {
+    if (isOpen && !hasTrackedOpen.current) {
+      trackEvent('form_open', { 
+        form_name: 'appointment_request',
+        ...getUTMParams()
+      });
+      hasTrackedOpen.current = true;
+      formStarted.current = false; // Reset form started flag
+    }
+    if (!isOpen) {
+      hasTrackedOpen.current = false;
+    }
+  }, [isOpen]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
+    
+    // Track first interaction with form
+    if (!formStarted.current && value) {
+      trackEvent('form_start', { form_name: 'appointment_request' });
+      formStarted.current = true;
+    }
+    
     setFormData(prev => ({
       ...prev,
       [name]: value
@@ -45,6 +95,9 @@ export default function AppointmentPopup({ isOpen, onClose }: AppointmentPopupPr
 ${formData.message ? `💬 Additional Notes:\n${formData.message}` : ''}
       `.trim();
 
+      // Get UTM parameters
+      const utmParams = getUTMParams();
+
       const response = await fetch('/api/contact', {
         method: 'POST',
         headers: {
@@ -56,14 +109,27 @@ ${formData.message ? `💬 Additional Notes:\n${formData.message}` : ''}
           phone: formData.phone,
           service: 'grooming',
           contactMethod: 'either',
-          message: appointmentDetails
+          message: appointmentDetails,
+          isNewCustomer: formData.isNewCustomer,
+          petInfo: formData.petInfo,
+          requestedDateTime: formData.dateTime,
+          // Include UTM tracking
+          ...utmParams
         }),
       });
 
       const data = await response.json();
 
       if (response.ok) {
+        // Track successful form submission
+        trackEvent('form_submit_success', { 
+          form_name: 'appointment_request',
+          is_new_customer: formData.isNewCustomer,
+          ...utmParams
+        });
+        
         setSubmitStatus('success');
+        formStarted.current = false;
         setFormData({
           name: '',
           phone: '',
@@ -74,10 +140,20 @@ ${formData.message ? `💬 Additional Notes:\n${formData.message}` : ''}
           message: ''
         });
       } else {
+        // Track form error
+        trackEvent('form_submit_error', { 
+          form_name: 'appointment_request',
+          error_message: data.error || 'Unknown error'
+        });
         setSubmitStatus('error');
       }
     } catch (error) {
       console.error('Appointment submission error:', error);
+      // Track form error
+      trackEvent('form_submit_error', { 
+        form_name: 'appointment_request',
+        error_message: error instanceof Error ? error.message : 'Network error'
+      });
       setSubmitStatus('error');
     } finally {
       setIsSubmitting(false);
@@ -85,7 +161,16 @@ ${formData.message ? `💬 Additional Notes:\n${formData.message}` : ''}
   };
 
   const handleClose = () => {
+    // Track form abandonment if user started filling but didn't submit
+    if (formStarted.current && submitStatus !== 'success') {
+      trackEvent('form_abandon', { 
+        form_name: 'appointment_request',
+        fields_filled: Object.values(formData).filter(v => v).length.toString()
+      });
+    }
+    
     setSubmitStatus('idle');
+    formStarted.current = false;
     onClose();
   };
 
