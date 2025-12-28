@@ -15,17 +15,25 @@ const trackEvent = (eventName: string, params?: Record<string, string | number>)
   }
 };
 
-// Get UTM parameters from URL
-const getUTMParams = () => {
+// Get UTM parameters from URL (filters out undefined values for TypeScript)
+const getUTMParams = (): Record<string, string> => {
   if (typeof window === 'undefined') return {};
   const params = new URLSearchParams(window.location.search);
-  return {
-    utm_source: params.get('utm_source') || undefined,
-    utm_medium: params.get('utm_medium') || undefined,
-    utm_campaign: params.get('utm_campaign') || undefined,
-    utm_term: params.get('utm_term') || undefined,
-    utm_content: params.get('utm_content') || undefined,
-  };
+  const utm: Record<string, string> = {};
+  
+  const source = params.get('utm_source');
+  const medium = params.get('utm_medium');
+  const campaign = params.get('utm_campaign');
+  const term = params.get('utm_term');
+  const content = params.get('utm_content');
+  
+  if (source) utm.utm_source = source;
+  if (medium) utm.utm_medium = medium;
+  if (campaign) utm.utm_campaign = campaign;
+  if (term) utm.utm_term = term;
+  if (content) utm.utm_content = content;
+  
+  return utm;
 };
 
 interface AppointmentPopupProps {

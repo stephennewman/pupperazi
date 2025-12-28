@@ -28,6 +28,29 @@
 
 ## Activity Log (Most Recent First)
 
+### December 28, 2025 - 📊 ADVANCED TRACKING & REPORTING ADDED
+- **Activity:** Added conversion funnel tracking, UTM campaign tracking, and weekly leads report
+- **Status:** ✅ DEPLOYED to GitHub
+- **Features:**
+  - **Form Funnel Events:** `form_open`, `form_start`, `form_submit_success`, `form_abandon`
+  - **UTM Parameter Tracking:** source, medium, campaign, term, content stored with leads
+  - **Weekly Leads Report:** Slack report every Monday at 8:30 AM EST
+  - **Enhanced Analytics Reports:** Now include form funnel metrics
+- **Files Created:**
+  - `app/api/leads/weekly/route.ts` - Weekly leads summary endpoint
+- **Files Modified:**
+  - `components/AppointmentPopup.tsx` - Added funnel event tracking
+  - `lib/googleAnalytics.ts` - Added form funnel metrics to reports
+  - `lib/leads-storage.ts` - Added UTM fields
+  - `app/api/contact/route.ts` - Pass UTM params to storage
+  - `vercel.json` - Added weekly leads cron job
+- **Database Migration:** Added UTM columns to pupperazi_leads table
+- **Commit:** `c699083` - "Add conversion funnel tracking, UTM params, and weekly leads report"
+- **Impact:**
+  - Track full form conversion funnel (opens → starts → submits vs abandons)
+  - Know which marketing campaigns drive leads (UTM tracking)
+  - Weekly Slack report shows lead counts, sources, and recent leads
+
 ### December 28, 2025 - 🗄️ LEAD DATABASE STORAGE IMPLEMENTED
 - **Activity:** Implemented real-time lead storage with historical data seeding
 - **Status:** ✅ DEPLOYED and TESTED
