@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { z } from 'zod';
+import { sendFormErrorAlert } from '@/lib/errorNotifications';
 
 // Initialize Resend with API key (only if available)
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
@@ -140,6 +141,12 @@ export async function POST(request: NextRequest) {
 
     if (error) {
       console.error('Resend error:', error);
+      // Send Slack alert for email failure
+      await sendFormErrorAlert('contact', `Email send failed: ${error.message}`, {
+        name,
+        service,
+        isAppointmentRequest,
+      });
       return NextResponse.json(
         { error: 'Failed to send email. Please try again later.' },
         { status: 500 }
@@ -158,6 +165,7 @@ export async function POST(request: NextRequest) {
     console.error('Contact form error:', error);
 
     if (error instanceof z.ZodError) {
+      // Validation errors don't need alerts - they're user errors
       return NextResponse.json(
         {
           error: 'Please check your form data.',
@@ -169,6 +177,12 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
+
+    // Send Slack alert for unexpected errors
+    await sendFormErrorAlert(
+      'contact',
+      error instanceof Error ? error.message : 'Unknown error occurred'
+    );
 
     return NextResponse.json(
       { error: 'Something went wrong. Please try again later.' },

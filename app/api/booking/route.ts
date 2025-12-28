@@ -3,6 +3,7 @@ import { Resend } from 'resend';
 import { z } from 'zod';
 import { customerOperations, petOperations, appointmentOperations, appointmentServiceOperations } from '@/lib/database-supabase';
 import { trackConversion } from '@/lib/analytics';
+import { sendFormErrorAlert } from '@/lib/errorNotifications';
 
 // Initialize Resend with API key (only if available)
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
@@ -168,6 +169,7 @@ export async function POST(request: NextRequest) {
     console.error('Booking error:', error);
 
     if (error instanceof z.ZodError) {
+      // Validation errors don't need alerts - they're user errors
       return NextResponse.json(
         {
           error: 'Please check your booking information.',
@@ -179,6 +181,12 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
+
+    // Send Slack alert for booking failures - this is critical!
+    await sendFormErrorAlert(
+      'booking',
+      error instanceof Error ? error.message : 'Unknown booking error'
+    );
 
     return NextResponse.json(
       { error: 'Booking failed. Please try again or contact us directly.' },
@@ -326,6 +334,12 @@ async function sendConfirmationEmails(bookingId: string, data: any) {
       customer: customerEmail.error,
       business: businessEmail.error
     });
+    // Send Slack alert for email delivery failure
+    await sendFormErrorAlert(
+      'booking',
+      `Email delivery failed - Customer: ${customerEmail.error?.message || 'OK'}, Business: ${businessEmail.error?.message || 'OK'}`,
+      { bookingId, customerEmail: ownerInfo.email }
+    );
     throw new Error('Email delivery failed');
   }
 
