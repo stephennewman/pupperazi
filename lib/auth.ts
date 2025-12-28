@@ -1,30 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server';
+import crypto from 'crypto';
 
 // Admin password from environment
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
 
-// In-memory token store (in production, use Redis or database)
-const validTokens = new Set<string>();
+// Secret for signing tokens (use ADMIN_PASSWORD as base)
+const TOKEN_SECRET = process.env.ADMIN_PASSWORD || 'pupperazi-admin-secret-2024';
 
-// Token expiration time (24 hours)
+// Token expiration time (24 hours in milliseconds)
 const TOKEN_EXPIRY = 24 * 60 * 60 * 1000;
 
-interface TokenData {
-  token: string;
-  createdAt: number;
-}
-
-// Store tokens with expiration
-const tokenStore = new Map<string, TokenData>();
-
-// Generate secure token
+// Generate a signed token (works in serverless - no server-side storage needed)
 export function generateToken(): string {
-  const token = Buffer.from(`${Date.now()}:${Math.random()}:${Math.random()}`).toString('base64');
-  const tokenData: TokenData = {
-    token,
-    createdAt: Date.now()
-  };
-  tokenStore.set(token, tokenData);
+  const timestamp = Date.now();
+  const data = `admin:${timestamp}`;
+  const signature = crypto
+    .createHmac('sha256', TOKEN_SECRET)
+    .update(data)
+    .digest('hex')
+    .substring(0, 16); // Short signature
+  
+  // Token format: base64(timestamp:signature)
+  const token = Buffer.from(`${timestamp}:${signature}`).toString('base64');
   return token;
 }
 
@@ -33,20 +30,34 @@ export function validatePassword(password: string): boolean {
   return password === ADMIN_PASSWORD;
 }
 
-// Validate token
+// Validate token (stateless - works in serverless)
 export function validateToken(token: string | null): boolean {
   if (!token) return false;
   
-  const tokenData = tokenStore.get(token);
-  if (!tokenData) return false;
-  
-  // Check if token is expired
-  if (Date.now() - tokenData.createdAt > TOKEN_EXPIRY) {
-    tokenStore.delete(token);
+  try {
+    // Decode the token
+    const decoded = Buffer.from(token, 'base64').toString('utf-8');
+    const [timestampStr, signature] = decoded.split(':');
+    const timestamp = parseInt(timestampStr, 10);
+    
+    if (isNaN(timestamp)) return false;
+    
+    // Check if token is expired
+    if (Date.now() - timestamp > TOKEN_EXPIRY) {
+      return false;
+    }
+    
+    // Verify signature
+    const expectedSignature = crypto
+      .createHmac('sha256', TOKEN_SECRET)
+      .update(`admin:${timestamp}`)
+      .digest('hex')
+      .substring(0, 16);
+    
+    return signature === expectedSignature;
+  } catch {
     return false;
   }
-  
-  return true;
 }
 
 // Middleware to check authentication
@@ -68,14 +79,3 @@ export function requireAuth(handler: (request: NextRequest) => Promise<NextRespo
     return handler(request);
   };
 }
-
-// Clean up expired tokens periodically
-setInterval(() => {
-  const now = Date.now();
-  for (const [token, data] of tokenStore.entries()) {
-    if (now - data.createdAt > TOKEN_EXPIRY) {
-      tokenStore.delete(token);
-    }
-  }
-}, 60 * 60 * 1000); // Run every hour
-
