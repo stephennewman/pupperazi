@@ -28,6 +28,36 @@
 
 ## Activity Log (Most Recent First)
 
+### December 28, 2025 - 🏢 ADMIN PORTAL / CRM BUILT
+- **Activity:** Built password-protected admin portal for lead management
+- **Status:** ✅ DEPLOYED to GitHub
+- **Access:** `/admin/login` (not linked from public site)
+- **Features:**
+  - **Login Page:** Password-protected admin access at `/admin/login`
+  - **Dashboard:** Stats overview (today, week, month, total leads) with status breakdown
+  - **Leads List:** Search, filter by status (new/contacted/booked/closed), bulk view
+  - **Lead Detail:** Full customer info, pet details, internal notes, status updates
+  - **Quick Actions:** Email, call, and text customers directly from admin
+  - **UTM Tracking:** See campaign source for each lead
+- **Files Created:**
+  - `app/admin/login/page.tsx` - Admin login page
+  - `app/admin/page.tsx` - Dashboard with stats
+  - `app/admin/leads/page.tsx` - Leads list with search/filter
+  - `app/admin/leads/[id]/page.tsx` - Individual lead detail view
+  - `app/api/admin/leads/route.ts` - Leads list API
+  - `app/api/admin/leads/stats/route.ts` - Stats API
+  - `app/api/admin/leads/[id]/route.ts` - Individual lead CRUD API
+- **Files Modified:**
+  - `components/AdminNavigation.tsx` - Added Leads tab
+- **Database Migration:** Added `notes` column for internal notes
+- **Security:** Password protected, not linked from public site
+- **Commit:** `4e180b8` - "Build admin portal with leads management CRM"
+- **Impact:**
+  - Full CRM to manage customer inquiries
+  - Track lead status through sales funnel
+  - Internal notes for customer context
+  - Quick contact actions for fast follow-up
+
 ### December 28, 2025 - 📊 ADVANCED TRACKING & REPORTING ADDED
 - **Activity:** Added conversion funnel tracking, UTM campaign tracking, and weekly leads report
 - **Status:** ✅ DEPLOYED to GitHub
