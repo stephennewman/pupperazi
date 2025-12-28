@@ -1,0 +1,17 @@
+{
+  "crons": [
+    {
+      "path": "/api/analytics/daily",
+      "schedule": "0 13 * * *"
+    },
+    {
+      "path": "/api/analytics/weekly",
+      "schedule": "0 13 * * 1"
+    },
+    {
+      "path": "/api/analytics/monthly",
+      "schedule": "0 13 1 * *"
+    }
+  ]
+}
+

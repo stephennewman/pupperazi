@@ -45,12 +45,26 @@ STRIPE_WEBHOOK_SECRET=whsec_xxx
 ```
 Used for: Online payment processing (if enabled)
 
-### Analytics (Optional)
+### Google Analytics Reporting (Optional)
 ```env
-NEXT_PUBLIC_ANALYTICS_URL=your_analytics_url
-NEXT_PUBLIC_ANALYTICS_ANON_KEY=your_analytics_key
+GA_PROPERTY_ID=your_ga4_property_id
+GA_CLIENT_EMAIL=your_service_account_email
+GA_PRIVATE_KEY=your_service_account_private_key
 ```
-Used for: Custom analytics tracking
+Used for: Automated analytics reports to Slack
+Note: Requires Google Cloud service account with GA4 Data API access
+
+### Slack Integration (Optional)
+```env
+SLACK_ANALYTICS_WEBHOOK=https://hooks.slack.com/services/xxx/xxx/xxx
+```
+Used for: Sending daily/weekly/monthly analytics reports to Slack
+
+### Cron Security (Required for Analytics Reports)
+```env
+CRON_SECRET=your_secure_random_string
+```
+Used for: Securing cron job endpoints
 
 ## Setup Instructions
 
