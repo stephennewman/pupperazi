@@ -1,24 +1,29 @@
 import { NextRequest, NextResponse } from 'next/server';
-import crypto from 'crypto';
 
 // Admin password from environment
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
 
-// Secret for signing tokens (use ADMIN_PASSWORD as base)
-const TOKEN_SECRET = process.env.ADMIN_PASSWORD || 'pupperazi-admin-secret-2024';
+// Secret for signing tokens
+const TOKEN_SECRET = process.env.ADMIN_PASSWORD || 'pupperazi-admin-2024';
 
 // Token expiration time (24 hours in milliseconds)
 const TOKEN_EXPIRY = 24 * 60 * 60 * 1000;
 
-// Generate a signed token (works in serverless - no server-side storage needed)
+// Simple hash function (works in all environments)
+function simpleHash(str: string): string {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash; // Convert to 32bit integer
+  }
+  return Math.abs(hash).toString(36);
+}
+
+// Generate a signed token (stateless - works in serverless)
 export function generateToken(): string {
   const timestamp = Date.now();
-  const data = `admin:${timestamp}`;
-  const signature = crypto
-    .createHmac('sha256', TOKEN_SECRET)
-    .update(data)
-    .digest('hex')
-    .substring(0, 16); // Short signature
+  const signature = simpleHash(`admin:${timestamp}:${TOKEN_SECRET}`);
   
   // Token format: base64(timestamp:signature)
   const token = Buffer.from(`${timestamp}:${signature}`).toString('base64');
@@ -37,7 +42,10 @@ export function validateToken(token: string | null): boolean {
   try {
     // Decode the token
     const decoded = Buffer.from(token, 'base64').toString('utf-8');
-    const [timestampStr, signature] = decoded.split(':');
+    const parts = decoded.split(':');
+    if (parts.length !== 2) return false;
+    
+    const [timestampStr, signature] = parts;
     const timestamp = parseInt(timestampStr, 10);
     
     if (isNaN(timestamp)) return false;
@@ -48,11 +56,7 @@ export function validateToken(token: string | null): boolean {
     }
     
     // Verify signature
-    const expectedSignature = crypto
-      .createHmac('sha256', TOKEN_SECRET)
-      .update(`admin:${timestamp}`)
-      .digest('hex')
-      .substring(0, 16);
+    const expectedSignature = simpleHash(`admin:${timestamp}:${TOKEN_SECRET}`);
     
     return signature === expectedSignature;
   } catch {
