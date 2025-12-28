@@ -6,7 +6,7 @@
 **Tech Stack:** Next.js 15.3.3, React 19, TypeScript, Tailwind CSS 4  
 **Location:** Palm Harbor, FL  
 
-## Current Status (June 13, 2025, 1:46 PM EDT)
+## Current Status (December 28, 2025)
 - ✅ Complete Pupperazi Pet Spa website with all features
 - ✅ Beautiful photo gallery with 9 showcase images
 - ✅ Phone number prominently displayed in navigation
@@ -27,6 +27,21 @@
 - ✅ Easy phone access in navigation
 
 ## Activity Log (Most Recent First)
+
+### December 28, 2025 - 📊 GOOGLE ANALYTICS ADDED
+- **Activity:** Added Google Analytics (gtag.js) tracking to the site
+- **Status:** ✅ DEPLOYED to GitHub
+- **Changes:**
+  - Added Google tag (gtag.js) to layout.tsx head section
+  - Tracking ID: G-5DXLGKFPVZ
+  - Uses Next.js `dangerouslySetInnerHTML` for proper inline script handling
+- **Files Modified:**
+  - `app/layout.tsx` - Added gtag.js script tags
+- **Commit:** `027f630` - "Add Google Analytics (gtag.js) tracking - G-5DXLGKFPVZ"
+- **Impact:**
+  - Full Google Analytics 4 tracking enabled
+  - Track user behavior, page views, conversions
+  - Data available in Google Analytics dashboard
 
 ### November 6, 2025 - 🗑️ REMOVED WEB-ANALYTICS SCRIPT
 - **Activity:** Removed third-party web-analytics script from site
