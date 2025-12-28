@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { z } from 'zod';
 import { sendFormErrorAlert } from '@/lib/errorNotifications';
+import { storeLead } from '@/lib/leads-storage';
 
 // Initialize Resend with API key (only if available)
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
@@ -155,10 +156,29 @@ export async function POST(request: NextRequest) {
 
     console.log('Email sent successfully:', data);
 
+    // Store lead in database for tracking
+    const leadResult = await storeLead({
+      name,
+      email,
+      phone: phone || undefined,
+      is_new_customer: isAppointmentRequest ? (message.includes('New Customer') ? 'yes' : 'no') : undefined,
+      pet_info: isAppointmentRequest ? message.match(/Pet Information: (.+?)(?:\n|$)/)?.[1] : undefined,
+      requested_datetime: isAppointmentRequest ? message.match(/Requested Date\/Time: (.+?)(?:\n|$)/)?.[1] : undefined,
+      message,
+      source: isAppointmentRequest ? 'appointment_form' : 'contact_form',
+    });
+
+    if (!leadResult.success) {
+      console.warn('Lead storage failed (email still sent):', leadResult.error);
+    } else {
+      console.log('Lead stored with ID:', leadResult.id);
+    }
+
     return NextResponse.json({
       success: true,
       message: 'Thank you for your message! We\'ll get back to you soon.',
-      id: data?.id
+      id: data?.id,
+      leadId: leadResult.id
     });
 
   } catch (error) {
