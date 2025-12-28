@@ -5,10 +5,34 @@ import Image from 'next/image';
 import Head from 'next/head';
 import AppointmentPopup from '../components/AppointmentPopup';
 
+// Google Analytics event tracking
+declare global {
+  interface Window {
+    gtag?: (...args: unknown[]) => void;
+  }
+}
+
+const trackEvent = (eventName: string, params?: Record<string, string>) => {
+  if (typeof window !== 'undefined' && window.gtag) {
+    window.gtag('event', eventName, params);
+  }
+};
+
 export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+
+  // Track appointment button clicks
+  const handleAppointmentClick = () => {
+    trackEvent('appointment_click', { location: 'cta_button' });
+    setIsPopupOpen(true);
+  };
+
+  // Track phone link clicks
+  const handlePhoneClick = () => {
+    trackEvent('phone_click', { location: 'header' });
+  };
 
   const galleryImages = [
     'pet1.png',
@@ -119,6 +143,7 @@ export default function Home() {
                 <a href="#contact" className="text-gray-700 transition-colors cursor-pointer" style={{color: '#2D5A87'}} onMouseEnter={(e) => e.currentTarget.style.color = '#3D6B9F'} onMouseLeave={(e) => e.currentTarget.style.color = '#2D5A87'}>Contact</a>
                 <a
                   href="tel:727-753-9302"
+                  onClick={handlePhoneClick}
                   className="px-4 py-2 rounded-full font-semibold transition-colors cursor-pointer"
                   style={{backgroundColor: '#2D5A87', color: 'white'}}
                 >
@@ -150,6 +175,7 @@ export default function Home() {
                   <a href="#contact" className="px-2 py-1 cursor-pointer transition-colors" style={{color: '#2D5A87'}} onMouseEnter={(e) => e.currentTarget.style.color = '#3D6B9F'} onMouseLeave={(e) => e.currentTarget.style.color = '#2D5A87'}>Contact</a>
                   <a
                     href="tel:727-753-9302"
+                    onClick={handlePhoneClick}
                     className="px-4 py-2 rounded-full font-semibold transition-colors cursor-pointer mx-2 mt-2"
                     style={{backgroundColor: '#2D5A87', color: 'white'}}
                   >
@@ -178,7 +204,7 @@ export default function Home() {
           </div>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <button
-              onClick={() => setIsPopupOpen(true)}
+              onClick={handleAppointmentClick}
               className="px-8 py-4 rounded-full text-lg font-semibold transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-1 cursor-pointer text-gray-800"
               style={{backgroundColor: '#C8E5F0', color: '#2D5A87'}}
               onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#B5D9E8'}
@@ -351,7 +377,7 @@ export default function Home() {
                   Ready to give your pup the boutique treatment? ✨
                 </p>
                 <button 
-                  onClick={() => setIsPopupOpen(true)}
+                  onClick={handleAppointmentClick}
                   className="px-6 py-3 rounded-full font-semibold transition-colors cursor-pointer"
                   style={{backgroundColor: '#C8E5F0', color: '#2D5A87'}}
                   onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#B5D9E8'}
@@ -846,7 +872,7 @@ export default function Home() {
                       Spots fill up fast—especially around the howl-idays!
                     </p>
                     <button 
-                      onClick={() => setIsPopupOpen(true)}
+                      onClick={handleAppointmentClick}
                       className="px-8 py-4 rounded-full font-semibold text-lg transition-colors shadow-lg cursor-pointer"
                       style={{backgroundColor: '#C8E5F0', color: '#2D5A87'}}
                       onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#B5D9E8'}
