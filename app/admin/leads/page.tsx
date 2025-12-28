@@ -40,7 +40,7 @@ export default function AdminLeads() {
 
       if (response.status === 401) {
         localStorage.removeItem('adminToken');
-        router.push('/admin/login');
+        router.push('/admin/portal-login');
         return;
       }
 
@@ -60,7 +60,7 @@ export default function AdminLeads() {
   useEffect(() => {
     const token = localStorage.getItem('adminToken');
     if (!token) {
-      router.push('/admin/login');
+      router.push('/admin/portal-login');
       return;
     }
     fetchLeads(token);

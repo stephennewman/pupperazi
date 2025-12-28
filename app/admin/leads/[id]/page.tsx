@@ -44,7 +44,7 @@ export default function LeadDetail() {
 
       if (response.status === 401) {
         localStorage.removeItem('adminToken');
-        router.push('/admin/login');
+        router.push('/admin/portal-login');
         return;
       }
 
@@ -65,7 +65,7 @@ export default function LeadDetail() {
   useEffect(() => {
     const token = localStorage.getItem('adminToken');
     if (!token) {
-      router.push('/admin/login');
+      router.push('/admin/portal-login');
       return;
     }
     fetchLead(token);

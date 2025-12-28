@@ -59,7 +59,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     const token = localStorage.getItem('adminToken');
     if (!token) {
-      router.push('/admin/login');
+      router.push('/admin/portal-login');
       return;
     }
 
@@ -80,7 +80,7 @@ export default function AdminDashboard() {
 
       if (leadsResponse.status === 401) {
         localStorage.removeItem('adminToken');
-        router.push('/admin/login');
+        router.push('/admin/portal-login');
         return;
       }
 

@@ -16,7 +16,7 @@ export default function AdminLayout({ children, title, subtitle, activeTab }: Ad
 
   const handleLogout = () => {
     localStorage.removeItem('adminToken');
-    router.push('/admin/login');
+    router.push('/admin/portal-login');
   };
 
   return (
