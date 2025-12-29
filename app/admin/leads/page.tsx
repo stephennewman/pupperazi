@@ -155,7 +155,7 @@ export default function AdminLeads() {
   }
 
   return (
-    <AdminLayout title="Leads" subtitle="Manage customer inquiries" activeTab="customers">
+    <AdminLayout title="Leads" subtitle="Manage customer inquiries" activeTab="leads">
       {error && (
         <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
           {error}

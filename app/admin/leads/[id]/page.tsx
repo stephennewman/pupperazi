@@ -137,7 +137,7 @@ export default function LeadDetail() {
 
   if (error || !lead) {
     return (
-      <AdminLayout title="Lead Not Found" subtitle="" activeTab="customers">
+      <AdminLayout title="Lead Not Found" subtitle="" activeTab="leads">
         <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
           {error || 'Lead not found'}
         </div>
@@ -152,7 +152,7 @@ export default function LeadDetail() {
   }
 
   return (
-    <AdminLayout title="Lead Details" subtitle={lead.name || 'Customer Inquiry'} activeTab="customers">
+    <AdminLayout title="Lead Details" subtitle={lead.name || 'Customer Inquiry'} activeTab="leads">
       {/* Back button */}
       <button
         onClick={() => router.push('/admin/leads')}
