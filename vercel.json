@@ -15,6 +15,10 @@
     {
       "path": "/api/leads/weekly",
       "schedule": "30 13 * * 1"
+    },
+    {
+      "path": "/api/reports/monthly-recap",
+      "schedule": "0 14 1 * *"
     }
   ]
 }
