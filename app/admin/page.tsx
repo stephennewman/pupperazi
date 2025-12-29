@@ -12,6 +12,24 @@ interface DashboardStats {
   byStatus: Record<string, number>;
 }
 
+interface CustomerAcquisition {
+  currentMonth: {
+    name: string;
+    total: number;
+    newCustomers: number;
+    returningCustomers: number;
+    newCustomerPct: number;
+  };
+  previousMonth: {
+    name: string;
+    total: number;
+    newCustomers: number;
+    returningCustomers: number;
+    newCustomerPct: number;
+  };
+  trend: number;
+}
+
 interface RecentLead {
   id: number;
   name: string;
@@ -54,6 +72,7 @@ export default function AdminDashboard() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [recentLeads, setRecentLeads] = useState<RecentLead[]>([]);
   const [traffic, setTraffic] = useState<TrafficData | null>(null);
+  const [acquisition, setAcquisition] = useState<CustomerAcquisition | null>(null);
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -88,6 +107,9 @@ export default function AdminDashboard() {
       if (leadsData.success) {
         setStats(leadsData.stats);
         setRecentLeads(leadsData.recentLeads || []);
+        if (leadsData.customerAcquisition) {
+          setAcquisition(leadsData.customerAcquisition);
+        }
       } else {
         setError(leadsData.error || 'Failed to load data');
       }
@@ -195,6 +217,78 @@ export default function AdminDashboard() {
           </div>
         </div>
       </div>
+
+      {/* Customer Acquisition */}
+      {acquisition && (
+        <div className="mb-8">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">⭐ New Customer Acquisition</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {/* Current Month */}
+            <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-100">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-semibold text-gray-900">{acquisition.currentMonth.name}</h3>
+                <span className="text-sm text-gray-500">Current</span>
+              </div>
+              <div className="flex items-end gap-2 mb-3">
+                <span className="text-3xl font-bold text-purple-600">{acquisition.currentMonth.newCustomerPct}%</span>
+                <span className="text-gray-500 text-sm mb-1">new customers</span>
+              </div>
+              <div className="grid grid-cols-2 gap-2 text-sm">
+                <div className="bg-purple-50 rounded-lg p-2 text-center">
+                  <p className="font-semibold text-purple-700">{acquisition.currentMonth.newCustomers}</p>
+                  <p className="text-purple-600 text-xs">New ⭐</p>
+                </div>
+                <div className="bg-gray-50 rounded-lg p-2 text-center">
+                  <p className="font-semibold text-gray-700">{acquisition.currentMonth.returningCustomers}</p>
+                  <p className="text-gray-600 text-xs">Returning</p>
+                </div>
+              </div>
+              <p className="text-xs text-gray-400 mt-2 text-center">{acquisition.currentMonth.total} total leads</p>
+            </div>
+
+            {/* Previous Month */}
+            <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-100">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-semibold text-gray-900">{acquisition.previousMonth.name}</h3>
+                <span className="text-sm text-gray-500">Previous</span>
+              </div>
+              <div className="flex items-end gap-2 mb-3">
+                <span className="text-3xl font-bold text-gray-600">{acquisition.previousMonth.newCustomerPct}%</span>
+                <span className="text-gray-500 text-sm mb-1">new customers</span>
+              </div>
+              <div className="grid grid-cols-2 gap-2 text-sm">
+                <div className="bg-purple-50 rounded-lg p-2 text-center">
+                  <p className="font-semibold text-purple-700">{acquisition.previousMonth.newCustomers}</p>
+                  <p className="text-purple-600 text-xs">New ⭐</p>
+                </div>
+                <div className="bg-gray-50 rounded-lg p-2 text-center">
+                  <p className="font-semibold text-gray-700">{acquisition.previousMonth.returningCustomers}</p>
+                  <p className="text-gray-600 text-xs">Returning</p>
+                </div>
+              </div>
+              <p className="text-xs text-gray-400 mt-2 text-center">{acquisition.previousMonth.total} total leads</p>
+            </div>
+
+            {/* Trend Card */}
+            <div className={`rounded-xl shadow-sm p-5 border ${acquisition.trend >= 0 ? 'bg-gradient-to-br from-green-50 to-emerald-50 border-green-100' : 'bg-gradient-to-br from-orange-50 to-amber-50 border-orange-100'}`}>
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-semibold text-gray-900">Month-over-Month</h3>
+                <span className="text-2xl">{acquisition.trend >= 0 ? '📈' : '📉'}</span>
+              </div>
+              <div className="text-center py-3">
+                <span className={`text-4xl font-bold ${acquisition.trend >= 0 ? 'text-green-600' : 'text-orange-600'}`}>
+                  {acquisition.trend >= 0 ? '+' : ''}{acquisition.trend}%
+                </span>
+              </div>
+              <p className="text-sm text-center text-gray-600 mt-2">
+                {acquisition.trend >= 0 
+                  ? 'Higher new customer rate this month!' 
+                  : 'More returning customers this month'}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Traffic Stats Cards */}
       <div className="mb-8">

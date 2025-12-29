@@ -27,9 +27,13 @@ export async function GET(request: NextRequest) {
     const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
     const weekStart = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+    
+    // Previous month range
+    const prevMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1).toISOString();
+    const prevMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59).toISOString();
 
     // Get counts
-    const [totalRes, todayRes, weekRes, monthRes, statusRes, recentRes] = await Promise.all([
+    const [totalRes, todayRes, weekRes, monthRes, statusRes, recentRes, currentMonthData, prevMonthData] = await Promise.all([
       supabase.from('pupperazi_leads').select('id', { count: 'exact', head: true }),
       supabase.from('pupperazi_leads').select('id', { count: 'exact', head: true }).gte('created_at', todayStart),
       supabase.from('pupperazi_leads').select('id', { count: 'exact', head: true }).gte('created_at', weekStart),
@@ -39,6 +43,15 @@ export async function GET(request: NextRequest) {
         .select('*')
         .order('created_at', { ascending: false })
         .limit(10),
+      // Current month: get is_new_customer data
+      supabase.from('pupperazi_leads')
+        .select('is_new_customer')
+        .gte('created_at', monthStart),
+      // Previous month: get is_new_customer data
+      supabase.from('pupperazi_leads')
+        .select('is_new_customer')
+        .gte('created_at', prevMonthStart)
+        .lte('created_at', prevMonthEnd),
     ]);
 
     // Calculate status breakdown
@@ -46,6 +59,21 @@ export async function GET(request: NextRequest) {
     statusRes.data?.forEach((row: { status: string }) => {
       byStatus[row.status] = (byStatus[row.status] || 0) + 1;
     });
+
+    // Calculate new customer acquisition stats
+    const currentMonthTotal = currentMonthData.data?.length || 0;
+    const currentMonthNew = currentMonthData.data?.filter((r: { is_new_customer: string }) => r.is_new_customer === 'yes').length || 0;
+    const currentMonthReturning = currentMonthData.data?.filter((r: { is_new_customer: string }) => r.is_new_customer === 'no').length || 0;
+    const currentMonthNewPct = currentMonthTotal > 0 ? Math.round((currentMonthNew / currentMonthTotal) * 100) : 0;
+
+    const prevMonthTotal = prevMonthData.data?.length || 0;
+    const prevMonthNew = prevMonthData.data?.filter((r: { is_new_customer: string }) => r.is_new_customer === 'yes').length || 0;
+    const prevMonthReturning = prevMonthData.data?.filter((r: { is_new_customer: string }) => r.is_new_customer === 'no').length || 0;
+    const prevMonthNewPct = prevMonthTotal > 0 ? Math.round((prevMonthNew / prevMonthTotal) * 100) : 0;
+
+    // Get month names
+    const currentMonthName = now.toLocaleString('default', { month: 'long' });
+    const prevMonthName = new Date(now.getFullYear(), now.getMonth() - 1, 1).toLocaleString('default', { month: 'long' });
 
     return NextResponse.json({
       success: true,
@@ -55,6 +83,23 @@ export async function GET(request: NextRequest) {
         thisWeek: weekRes.count || 0,
         thisMonth: monthRes.count || 0,
         byStatus,
+      },
+      customerAcquisition: {
+        currentMonth: {
+          name: currentMonthName,
+          total: currentMonthTotal,
+          newCustomers: currentMonthNew,
+          returningCustomers: currentMonthReturning,
+          newCustomerPct: currentMonthNewPct,
+        },
+        previousMonth: {
+          name: prevMonthName,
+          total: prevMonthTotal,
+          newCustomers: prevMonthNew,
+          returningCustomers: prevMonthReturning,
+          newCustomerPct: prevMonthNewPct,
+        },
+        trend: currentMonthNewPct - prevMonthNewPct,
       },
       recentLeads: recentRes.data || [],
     });
