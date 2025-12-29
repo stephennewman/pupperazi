@@ -227,46 +227,78 @@ function generateEmailHTML(
     <p style="margin-top: 15px;"><strong>🎯 We added 9 SEO landing pages</strong> targeting these exact searches. They should start ranking in Google over the next 2-3 months.</p>
   </div>
 
-  <h2>🆕 New Features Added This Month</h2>
+  <h2>🆕 What's New on Your Website</h2>
   
   <div class="feature-list">
     <div class="feature-item">
-      <strong>📊 Admin Dashboard</strong><br>
-      <span style="color: #6B7280;">View and manage all leads, track new vs returning customers, see real-time stats</span><br>
+      <strong>📊 Admin Dashboard & CRM</strong><br>
+      <span style="color: #6B7280;">Full lead management portal with real-time stats, customer tracking, and interactive charts</span><br>
       <span style="font-size: 12px; color: #9CA3AF;">Access: pupperazipetspa.com/admin/portal-login</span>
     </div>
     <div class="feature-item">
-      <strong>🔍 SEO Landing Pages (9 new pages)</strong><br>
-      <span style="color: #6B7280;">Breed-specific pages (Goldendoodle, Golden Retriever, Shih Tzu, Yorkie, French Bulldog, Husky) + city pages (Tarpon Springs, Dunedin, Clearwater)</span>
+      <strong>📈 Interactive Analytics Charts</strong><br>
+      <span style="color: #6B7280;">Daily, weekly, and monthly trend charts • Week-to-week comparison • New vs returning customer breakdowns</span>
     </div>
     <div class="feature-item">
-      <strong>📈 Customer Acquisition Tracking</strong><br>
-      <span style="color: #6B7280;">Dashboard now shows new customer % by month with trend analysis</span>
+      <strong>🔄 Repeat Customer Tracking</strong><br>
+      <span style="color: #6B7280;">See which customers have multiple appointments in the last 90 days — your VIP clients!</span>
     </div>
     <div class="feature-item">
-      <strong>📱 CTA Click Tracking</strong><br>
-      <span style="color: #6B7280;">Now tracking "Request Appointment" and phone clicks to measure engagement</span>
+      <strong>🔍 9 SEO Landing Pages</strong><br>
+      <span style="color: #6B7280;">Breed-specific: Goldendoodle, Golden Retriever, Shih Tzu, Yorkie, French Bulldog, Husky</span><br>
+      <span style="color: #6B7280;">Local cities: Tarpon Springs, Dunedin, Clearwater</span>
+    </div>
+    <div class="feature-item">
+      <strong>📱 CTA & Conversion Tracking</strong><br>
+      <span style="color: #6B7280;">Tracking form opens, submissions, phone clicks, and appointment request buttons</span>
+    </div>
+    <div class="feature-item">
+      <strong>📬 Automated Reports</strong><br>
+      <span style="color: #6B7280;">Weekly leads summary to Slack • Monthly recap emails (like this one!)</span>
     </div>
   </div>
 
   <div class="cta-box">
     <h3>🚀 Coming in Q1 2026</h3>
-    <p style="margin-bottom: 15px;">We're building some exciting new features:</p>
+    <p style="margin-bottom: 15px;">We're building some exciting new features to help you grow:</p>
     <p><strong>📅 Online Scheduling</strong> — Let customers book directly on your calendar</p>
-    <p><strong>🔔 Smart Reminders</strong> — Automated emails based on breed grooming schedules ("It's been 6 weeks since Scout's last groom!")</p>
+    <p><strong>🔔 Smart Grooming Reminders</strong> — Automated emails based on breed grooming schedules<br>
+    <span style="font-size: 14px; opacity: 0.9;">"Hi! It's been 6 weeks since Scout's last groom. Time for a fresh cut?"</span></p>
     <p><strong>💳 Book at Checkout</strong> — Prompt customers to schedule their next appointment at payment</p>
+  </div>
+
+  <h2 style="background: #FEF3C7; padding: 15px; border-radius: 8px; margin-top: 30px;">📝 Your Homework</h2>
+  
+  <div class="section" style="background: #FFFBEB; padding: 20px; border-radius: 12px; border: 2px solid #F59E0B;">
+    <p style="margin-top: 0;"><strong>To unlock even more insights, we need your help with a few things:</strong></p>
+    
+    <p><strong>1. ⭐ Google Search Console Access</strong><br>
+    <span style="color: #6B7280;">This will show us exactly what keywords people are typing to find you. We can then create content to capture more of these searches.</span><br>
+    <span style="font-size: 13px; color: #92400E;">→ Go to search.google.com/search-console and add us as a user, or share view access</span></p>
+    
+    <p><strong>2. 📸 5-10 Recent Grooming Photos</strong><br>
+    <span style="color: #6B7280;">Before/after shots of Goldendoodles, Yorkies, and other popular breeds. We'll add these to the SEO pages to improve engagement and rankings.</span><br>
+    <span style="font-size: 13px; color: #92400E;">→ Text or email them over whenever you get a chance!</span></p>
+    
+    <p><strong>3. 💬 Google Reviews Push</strong><br>
+    <span style="color: #6B7280;">After each appointment, send customers your Google review link. More reviews = higher rankings = more new customers.</span><br>
+    <span style="font-size: 13px; color: #92400E;">→ Copy/paste this text: "Thanks for coming in! If you have a moment, we'd love a review: [your Google link]"</span></p>
+    
+    <p style="margin-bottom: 0;"><strong>4. 📋 Your Typical Grooming Schedule by Breed</strong><br>
+    <span style="color: #6B7280;">For the smart reminders feature — how often should each breed come in? (e.g., Goldendoodles every 6-8 weeks, Yorkies every 4-6 weeks)</span><br>
+    <span style="font-size: 13px; color: #92400E;">→ Just reply to this email with your recommendations!</span></p>
   </div>
 
   <h2>💡 Recommendations</h2>
   
   <div class="section">
-    <p><strong>1. Respond quickly to new leads</strong> — 32% of new customers request ASAP appointments. First response within 2-4 hours converts best.</p>
+    <p><strong>1. Check your admin dashboard weekly</strong> — See who's requested appointments, track your new customer rate, and spot trends. Takes 2 minutes!</p>
     
-    <p><strong>2. Saturdays are gold</strong> — Most requested day by returning customers. Consider waitlist or priority booking for regulars.</p>
+    <p><strong>2. Respond quickly to new leads</strong> — ASAP requests convert best when you reply within 2-4 hours. The dashboard shows you who's new.</p>
     
-    <p><strong>3. Ask for Google Reviews</strong> — After appointments, send a quick text with your review link. More reviews = higher local rankings = more new customers.</p>
+    <p><strong>3. Saturdays are gold</strong> — Most requested day by returning customers. Consider a waitlist or priority booking for your regulars.</p>
     
-    <p><strong>4. Valentine's Day marketing</strong> — People want their pups looking good for photos! Plan a "Puppy Love" promo for early February.</p>
+    <p><strong>4. Valentine's Day promo?</strong> — People want their pups looking good for photos! A "Puppy Love" special in early February could drive bookings.</p>
   </div>
 
   <div class="footer">
