@@ -12,9 +12,6 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
 } from 'recharts';
 
 interface DashboardStats {
@@ -119,20 +116,13 @@ interface WeekToWeekDataPoint {
   lastWeekNew: number;
 }
 
-interface StatusChartData {
-  name: string;
-  value: number;
-}
-
 interface ChartData {
   weekly: ChartDataPoint[];
   monthly: ChartDataPoint[];
   daily: ChartDataPoint[];
-  status: StatusChartData[];
   weekToWeek: WeekToWeekDataPoint[];
 }
 
-const STATUS_COLORS = ['#3B82F6', '#EAB308', '#22C55E', '#6B7280'];
 const CHART_COLORS = {
   total: '#8B5CF6',
   new: '#A855F7',
@@ -485,101 +475,61 @@ export default function AdminDashboard() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-            {/* Main Bar Chart */}
-            <div className="lg:col-span-2 bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-              <h3 className="text-sm font-semibold text-gray-700 mb-4">
-                {activeChart === 'daily' && 'Last 14 Days'}
-                {activeChart === 'weekly' && 'Last 8 Weeks'}
-                {activeChart === 'monthly' && 'Last 6 Months'}
-              </h3>
-              <div className="h-80">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart
-                    data={
-                      activeChart === 'daily'
-                        ? chartData.daily
-                        : activeChart === 'weekly'
-                        ? chartData.weekly
-                        : chartData.monthly
-                    }
-                    margin={{ top: 5, right: 30, left: 0, bottom: 5 }}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
-                    <XAxis
-                      dataKey={activeChart === 'daily' ? 'day' : activeChart === 'weekly' ? 'label' : 'month'}
-                      tick={{ fontSize: 12, fill: '#6B7280' }}
-                      axisLine={{ stroke: '#E5E7EB' }}
-                    />
-                    <YAxis
-                      tick={{ fontSize: 12, fill: '#6B7280' }}
-                      axisLine={{ stroke: '#E5E7EB' }}
-                      allowDecimals={false}
-                    />
-                    <Tooltip
-                      contentStyle={{
-                        backgroundColor: '#fff',
-                        border: '1px solid #E5E7EB',
-                        borderRadius: '8px',
-                        boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
-                      }}
-                    />
-                    <Legend />
-                    <Bar
-                      dataKey="new"
-                      name="New Customers"
-                      fill={CHART_COLORS.new}
-                      radius={[4, 4, 0, 0]}
-                      stackId="a"
-                    />
-                    <Bar
-                      dataKey="returning"
-                      name="Returning"
-                      fill={CHART_COLORS.returning}
-                      radius={[4, 4, 0, 0]}
-                      stackId="a"
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-
-            {/* Status Pie Chart */}
-            <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-              <h3 className="text-sm font-semibold text-gray-700 mb-4">Lead Status Distribution</h3>
-              <div className="h-64">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={chartData.status}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={50}
-                      outerRadius={80}
-                      paddingAngle={2}
-                      dataKey="value"
-                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                      labelLine={false}
-                    >
-                      {chartData.status.map((_, index) => (
-                        <Cell key={`cell-${index}`} fill={STATUS_COLORS[index % STATUS_COLORS.length]} />
-                      ))}
-                    </Pie>
-                    <Tooltip />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-              <div className="flex flex-wrap justify-center gap-3 mt-4">
-                {chartData.status.map((entry, index) => (
-                  <div key={entry.name} className="flex items-center gap-2">
-                    <div
-                      className="w-3 h-3 rounded-full"
-                      style={{ backgroundColor: STATUS_COLORS[index % STATUS_COLORS.length] }}
-                    />
-                    <span className="text-xs text-gray-600">{entry.name}: {entry.value}</span>
-                  </div>
-                ))}
-              </div>
+          {/* Main Bar Chart */}
+          <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+            <h3 className="text-sm font-semibold text-gray-700 mb-4">
+              {activeChart === 'daily' && 'Last 14 Days'}
+              {activeChart === 'weekly' && 'Last 8 Weeks'}
+              {activeChart === 'monthly' && 'Last 6 Months'}
+            </h3>
+            <div className="h-80">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart
+                  data={
+                    activeChart === 'daily'
+                      ? chartData.daily
+                      : activeChart === 'weekly'
+                      ? chartData.weekly
+                      : chartData.monthly
+                  }
+                  margin={{ top: 5, right: 30, left: 0, bottom: 5 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
+                  <XAxis
+                    dataKey={activeChart === 'daily' ? 'day' : activeChart === 'weekly' ? 'label' : 'month'}
+                    tick={{ fontSize: 12, fill: '#6B7280' }}
+                    axisLine={{ stroke: '#E5E7EB' }}
+                  />
+                  <YAxis
+                    tick={{ fontSize: 12, fill: '#6B7280' }}
+                    axisLine={{ stroke: '#E5E7EB' }}
+                    allowDecimals={false}
+                  />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: '#fff',
+                      border: '1px solid #E5E7EB',
+                      borderRadius: '8px',
+                      boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
+                    }}
+                  />
+                  <Legend />
+                  <Bar
+                    dataKey="new"
+                    name="New Customers"
+                    fill={CHART_COLORS.new}
+                    radius={[4, 4, 0, 0]}
+                    stackId="a"
+                  />
+                  <Bar
+                    dataKey="returning"
+                    name="Returning"
+                    fill={CHART_COLORS.returning}
+                    radius={[4, 4, 0, 0]}
+                    stackId="a"
+                  />
+                </BarChart>
+              </ResponsiveContainer>
             </div>
           </div>
 
@@ -749,47 +699,13 @@ export default function AdminDashboard() {
         )}
       </div>
 
-      {/* Status Breakdown */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+      {/* Quick Actions */}
+      <div className="mb-8">
         <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Lead Status</h3>
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="flex items-center">
-                <span className="w-3 h-3 bg-blue-500 rounded-full mr-2"></span>
-                New
-              </span>
-              <span className="font-semibold">{stats?.byStatus?.new || 0}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="flex items-center">
-                <span className="w-3 h-3 bg-yellow-500 rounded-full mr-2"></span>
-                Contacted
-              </span>
-              <span className="font-semibold">{stats?.byStatus?.contacted || 0}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="flex items-center">
-                <span className="w-3 h-3 bg-green-500 rounded-full mr-2"></span>
-                Booked
-              </span>
-              <span className="font-semibold">{stats?.byStatus?.booked || 0}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="flex items-center">
-                <span className="w-3 h-3 bg-gray-500 rounded-full mr-2"></span>
-                Closed
-              </span>
-              <span className="font-semibold">{stats?.byStatus?.closed || 0}</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="lg:col-span-2 bg-white rounded-xl shadow-sm p-6 border border-gray-100">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-gray-900">Quick Actions</h3>
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <button
               onClick={() => router.push('/admin/leads')}
               className="p-4 bg-purple-50 hover:bg-purple-100 rounded-xl text-left transition-colors"
@@ -799,12 +715,12 @@ export default function AdminDashboard() {
               <p className="text-sm text-purple-700 mt-1">Manage customer inquiries</p>
             </button>
             <button
-              onClick={() => router.push('/admin/leads?status=new')}
-              className="p-4 bg-blue-50 hover:bg-blue-100 rounded-xl text-left transition-colors"
+              onClick={() => router.push('/admin/customers')}
+              className="p-4 bg-teal-50 hover:bg-teal-100 rounded-xl text-left transition-colors"
             >
-              <span className="text-2xl mb-2 block">🆕</span>
-              <span className="font-semibold text-blue-900">New Leads</span>
-              <p className="text-sm text-blue-700 mt-1">{stats?.byStatus?.new || 0} awaiting response</p>
+              <span className="text-2xl mb-2 block">🔄</span>
+              <span className="font-semibold text-teal-900">Repeat Customers</span>
+              <p className="text-sm text-teal-700 mt-1">View returning clients</p>
             </button>
             <a
               href="https://pupperazipetspa.com"
