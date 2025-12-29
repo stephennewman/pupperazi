@@ -120,6 +120,88 @@ export async function GET(request: NextRequest) {
     const dailyAvgThisWeek = daysThisWeek > 0 ? (currentWeekTotal / daysThisWeek).toFixed(1) : '0';
     const dailyAvgLastWeek = (prevWeekTotal / 7).toFixed(1);
 
+    // Get all leads for chart data
+    const allLeadsRes = await supabase
+      .from('pupperazi_leads')
+      .select('created_at, is_new_customer, status')
+      .order('created_at', { ascending: true });
+
+    const allLeads = allLeadsRes.data || [];
+
+    // Build weekly chart data (last 8 weeks)
+    const weeklyChartData = [];
+    for (let i = 7; i >= 0; i--) {
+      const weekEnd = new Date(now.getTime() - i * 7 * 24 * 60 * 60 * 1000);
+      const weekStartDate = new Date(weekEnd.getTime() - 7 * 24 * 60 * 60 * 1000);
+      
+      const weekLeads = allLeads.filter(l => {
+        const d = new Date(l.created_at);
+        return d >= weekStartDate && d < weekEnd;
+      });
+      
+      const newCount = weekLeads.filter(l => l.is_new_customer === 'yes').length;
+      const returningCount = weekLeads.filter(l => l.is_new_customer === 'no').length;
+      
+      weeklyChartData.push({
+        week: `W${Math.ceil((weekEnd.getDate()) / 7)}`,
+        label: weekStartDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+        total: weekLeads.length,
+        new: newCount,
+        returning: returningCount,
+      });
+    }
+
+    // Build monthly chart data (last 6 months)
+    const monthlyChartData = [];
+    for (let i = 5; i >= 0; i--) {
+      const monthDate = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const monthEndDate = new Date(now.getFullYear(), now.getMonth() - i + 1, 0, 23, 59, 59);
+      
+      const monthLeads = allLeads.filter(l => {
+        const d = new Date(l.created_at);
+        return d >= monthDate && d <= monthEndDate;
+      });
+      
+      const newCount = monthLeads.filter(l => l.is_new_customer === 'yes').length;
+      const returningCount = monthLeads.filter(l => l.is_new_customer === 'no').length;
+      
+      monthlyChartData.push({
+        month: monthDate.toLocaleDateString('en-US', { month: 'short' }),
+        total: monthLeads.length,
+        new: newCount,
+        returning: returningCount,
+      });
+    }
+
+    // Build daily chart data (last 14 days)
+    const dailyChartData = [];
+    for (let i = 13; i >= 0; i--) {
+      const dayDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i);
+      const dayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i, 23, 59, 59);
+      
+      const dayLeads = allLeads.filter(l => {
+        const d = new Date(l.created_at);
+        return d >= dayDate && d <= dayEnd;
+      });
+      
+      const newCount = dayLeads.filter(l => l.is_new_customer === 'yes').length;
+      const returningCount = dayLeads.filter(l => l.is_new_customer === 'no').length;
+      
+      dailyChartData.push({
+        day: dayDate.toLocaleDateString('en-US', { weekday: 'short' }),
+        date: dayDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+        total: dayLeads.length,
+        new: newCount,
+        returning: returningCount,
+      });
+    }
+
+    // Status distribution for pie chart
+    const statusChartData = Object.entries(byStatus).map(([status, count]) => ({
+      name: status.charAt(0).toUpperCase() + status.slice(1),
+      value: count,
+    }));
+
     return NextResponse.json({
       success: true,
       stats: {
@@ -164,6 +246,12 @@ export async function GET(request: NextRequest) {
           newCustomerPct: prevMonthNewPct,
         },
         trend: currentMonthNewPct - prevMonthNewPct,
+      },
+      chartData: {
+        weekly: weeklyChartData,
+        monthly: monthlyChartData,
+        daily: dailyChartData,
+        status: statusChartData,
       },
       recentLeads: recentRes.data || [],
     });

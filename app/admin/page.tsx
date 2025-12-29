@@ -3,6 +3,19 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import AdminLayout from '@/components/AdminLayout';
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+} from 'recharts';
 
 interface DashboardStats {
   total: number;
@@ -86,6 +99,36 @@ interface TrafficData {
   };
 }
 
+interface ChartDataPoint {
+  week?: string;
+  label?: string;
+  month?: string;
+  day?: string;
+  date?: string;
+  total: number;
+  new: number;
+  returning: number;
+}
+
+interface StatusChartData {
+  name: string;
+  value: number;
+}
+
+interface ChartData {
+  weekly: ChartDataPoint[];
+  monthly: ChartDataPoint[];
+  daily: ChartDataPoint[];
+  status: StatusChartData[];
+}
+
+const STATUS_COLORS = ['#3B82F6', '#EAB308', '#22C55E', '#6B7280'];
+const CHART_COLORS = {
+  total: '#8B5CF6',
+  new: '#A855F7',
+  returning: '#14B8A6',
+};
+
 export default function AdminDashboard() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
@@ -94,6 +137,8 @@ export default function AdminDashboard() {
   const [traffic, setTraffic] = useState<TrafficData | null>(null);
   const [acquisition, setAcquisition] = useState<CustomerAcquisition | null>(null);
   const [weeklyMetrics, setWeeklyMetrics] = useState<WeeklyMetrics | null>(null);
+  const [chartData, setChartData] = useState<ChartData | null>(null);
+  const [activeChart, setActiveChart] = useState<'weekly' | 'monthly' | 'daily'>('weekly');
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -133,6 +178,9 @@ export default function AdminDashboard() {
         }
         if (leadsData.weeklyMetrics) {
           setWeeklyMetrics(leadsData.weeklyMetrics);
+        }
+        if (leadsData.chartData) {
+          setChartData(leadsData.chartData);
         }
       } else {
         setError(leadsData.error || 'Failed to load data');
@@ -313,6 +361,169 @@ export default function AdminDashboard() {
                   {weeklyMetrics.weekOverWeekNewCustomerChange >= 0 ? '+' : ''}{weeklyMetrics.weekOverWeekNewCustomerChange}%
                 </p>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Charts Section */}
+      {chartData && (
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-semibold text-gray-900">📊 Lead Trends</h2>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setActiveChart('daily')}
+                className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
+                  activeChart === 'daily'
+                    ? 'bg-purple-600 text-white'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                Daily
+              </button>
+              <button
+                onClick={() => setActiveChart('weekly')}
+                className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
+                  activeChart === 'weekly'
+                    ? 'bg-purple-600 text-white'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                Weekly
+              </button>
+              <button
+                onClick={() => setActiveChart('monthly')}
+                className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
+                  activeChart === 'monthly'
+                    ? 'bg-purple-600 text-white'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                Monthly
+              </button>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            {/* Main Bar Chart */}
+            <div className="lg:col-span-2 bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+              <h3 className="text-sm font-semibold text-gray-700 mb-4">
+                {activeChart === 'daily' && 'Last 14 Days'}
+                {activeChart === 'weekly' && 'Last 8 Weeks'}
+                {activeChart === 'monthly' && 'Last 6 Months'}
+              </h3>
+              <div className="h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={
+                      activeChart === 'daily'
+                        ? chartData.daily
+                        : activeChart === 'weekly'
+                        ? chartData.weekly
+                        : chartData.monthly
+                    }
+                    margin={{ top: 5, right: 30, left: 0, bottom: 5 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
+                    <XAxis
+                      dataKey={activeChart === 'daily' ? 'day' : activeChart === 'weekly' ? 'label' : 'month'}
+                      tick={{ fontSize: 12, fill: '#6B7280' }}
+                      axisLine={{ stroke: '#E5E7EB' }}
+                    />
+                    <YAxis
+                      tick={{ fontSize: 12, fill: '#6B7280' }}
+                      axisLine={{ stroke: '#E5E7EB' }}
+                      allowDecimals={false}
+                    />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: '#fff',
+                        border: '1px solid #E5E7EB',
+                        borderRadius: '8px',
+                        boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
+                      }}
+                    />
+                    <Legend />
+                    <Bar
+                      dataKey="new"
+                      name="New Customers"
+                      fill={CHART_COLORS.new}
+                      radius={[4, 4, 0, 0]}
+                      stackId="a"
+                    />
+                    <Bar
+                      dataKey="returning"
+                      name="Returning"
+                      fill={CHART_COLORS.returning}
+                      radius={[4, 4, 0, 0]}
+                      stackId="a"
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            {/* Status Pie Chart */}
+            <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+              <h3 className="text-sm font-semibold text-gray-700 mb-4">Lead Status Distribution</h3>
+              <div className="h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={chartData.status}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={50}
+                      outerRadius={80}
+                      paddingAngle={2}
+                      dataKey="value"
+                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                      labelLine={false}
+                    >
+                      {chartData.status.map((_, index) => (
+                        <Cell key={`cell-${index}`} fill={STATUS_COLORS[index % STATUS_COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+              <div className="flex flex-wrap justify-center gap-3 mt-4">
+                {chartData.status.map((entry, index) => (
+                  <div key={entry.name} className="flex items-center gap-2">
+                    <div
+                      className="w-3 h-3 rounded-full"
+                      style={{ backgroundColor: STATUS_COLORS[index % STATUS_COLORS.length] }}
+                    />
+                    <span className="text-xs text-gray-600">{entry.name}: {entry.value}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* New vs Returning Comparison Chart */}
+          <div className="mt-4 bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+            <h3 className="text-sm font-semibold text-gray-700 mb-4">New vs Returning Customer Trends (Monthly)</h3>
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={chartData.monthly} margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
+                  <XAxis dataKey="month" tick={{ fontSize: 12, fill: '#6B7280' }} />
+                  <YAxis tick={{ fontSize: 12, fill: '#6B7280' }} allowDecimals={false} />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: '#fff',
+                      border: '1px solid #E5E7EB',
+                      borderRadius: '8px',
+                    }}
+                  />
+                  <Legend />
+                  <Bar dataKey="new" name="New Customers ⭐" fill="#A855F7" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="returning" name="Returning" fill="#14B8A6" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
             </div>
           </div>
         </div>
