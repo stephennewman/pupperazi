@@ -110,6 +110,15 @@ interface ChartDataPoint {
   returning: number;
 }
 
+interface WeekToWeekDataPoint {
+  day: string;
+  date: string;
+  thisWeek: number | null;
+  lastWeek: number;
+  thisWeekNew: number | null;
+  lastWeekNew: number;
+}
+
 interface StatusChartData {
   name: string;
   value: number;
@@ -120,6 +129,7 @@ interface ChartData {
   monthly: ChartDataPoint[];
   daily: ChartDataPoint[];
   status: StatusChartData[];
+  weekToWeek: WeekToWeekDataPoint[];
 }
 
 const STATUS_COLORS = ['#3B82F6', '#EAB308', '#22C55E', '#6B7280'];
@@ -363,6 +373,76 @@ export default function AdminDashboard() {
               </div>
             </div>
           </div>
+
+          {/* Week to Week Chart */}
+          {chartData?.weekToWeek && (
+            <div className="mt-4 bg-white rounded-xl shadow-sm p-5 border border-gray-100">
+              <h3 className="text-sm font-semibold text-gray-700 mb-4">📅 This Week vs Last Week (by Day)</h3>
+              <div className="h-72">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={chartData.weekToWeek} margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
+                    <XAxis 
+                      dataKey="day" 
+                      tick={{ fontSize: 12, fill: '#6B7280' }} 
+                      axisLine={{ stroke: '#E5E7EB' }}
+                    />
+                    <YAxis 
+                      tick={{ fontSize: 12, fill: '#6B7280' }} 
+                      axisLine={{ stroke: '#E5E7EB' }}
+                      allowDecimals={false}
+                    />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: '#fff',
+                        border: '1px solid #E5E7EB',
+                        borderRadius: '8px',
+                        boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
+                      }}
+                      formatter={(value, name) => {
+                        if (value === null) return ['—', name];
+                        return [value, name];
+                      }}
+                      labelFormatter={(label, payload) => {
+                        if (payload && payload[0]) {
+                          return payload[0].payload.date;
+                        }
+                        return label;
+                      }}
+                    />
+                    <Legend />
+                    <Bar 
+                      dataKey="thisWeek" 
+                      name="This Week" 
+                      fill="#8B5CF6" 
+                      radius={[4, 4, 0, 0]}
+                    />
+                    <Bar 
+                      dataKey="lastWeek" 
+                      name="Last Week" 
+                      fill="#CBD5E1" 
+                      radius={[4, 4, 0, 0]}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+              <div className="mt-4 flex justify-center gap-6 text-sm">
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 rounded bg-purple-500"></div>
+                  <span className="text-gray-600">This Week: <span className="font-semibold">{weeklyMetrics.currentWeek.total}</span></span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 rounded bg-slate-300"></div>
+                  <span className="text-gray-600">Last Week: <span className="font-semibold">{weeklyMetrics.previousWeek.total}</span></span>
+                </div>
+                <div className={`flex items-center gap-2 px-2 py-1 rounded ${weeklyMetrics.weekOverWeekChange >= 0 ? 'bg-green-100' : 'bg-red-100'}`}>
+                  <span className={`font-semibold ${weeklyMetrics.weekOverWeekChange >= 0 ? 'text-green-700' : 'text-red-700'}`}>
+                    {weeklyMetrics.weekOverWeekChange >= 0 ? '↑' : '↓'} {Math.abs(weeklyMetrics.weekOverWeekChange)}%
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       )}
 

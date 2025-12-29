@@ -202,6 +202,43 @@ export async function GET(request: NextRequest) {
       value: count,
     }));
 
+    // Build week-to-week comparison (this week vs last week by day)
+    const weekToWeekData = [];
+    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    
+    for (let i = 0; i < 7; i++) {
+      // This week's day
+      const thisWeekDay = new Date(now.getTime() - (6 - i) * 24 * 60 * 60 * 1000);
+      const thisWeekDayStart = new Date(thisWeekDay.getFullYear(), thisWeekDay.getMonth(), thisWeekDay.getDate());
+      const thisWeekDayEnd = new Date(thisWeekDay.getFullYear(), thisWeekDay.getMonth(), thisWeekDay.getDate(), 23, 59, 59);
+      
+      // Last week's same day
+      const lastWeekDay = new Date(thisWeekDay.getTime() - 7 * 24 * 60 * 60 * 1000);
+      const lastWeekDayStart = new Date(lastWeekDay.getFullYear(), lastWeekDay.getMonth(), lastWeekDay.getDate());
+      const lastWeekDayEnd = new Date(lastWeekDay.getFullYear(), lastWeekDay.getMonth(), lastWeekDay.getDate(), 23, 59, 59);
+      
+      const thisWeekLeads = allLeads.filter(l => {
+        const d = new Date(l.created_at);
+        return d >= thisWeekDayStart && d <= thisWeekDayEnd;
+      });
+      
+      const lastWeekLeads = allLeads.filter(l => {
+        const d = new Date(l.created_at);
+        return d >= lastWeekDayStart && d <= lastWeekDayEnd;
+      });
+      
+      const isFuture = thisWeekDay > now;
+      
+      weekToWeekData.push({
+        day: dayNames[thisWeekDayStart.getDay()],
+        date: thisWeekDayStart.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+        thisWeek: isFuture ? null : thisWeekLeads.length,
+        lastWeek: lastWeekLeads.length,
+        thisWeekNew: isFuture ? null : thisWeekLeads.filter(l => l.is_new_customer === 'yes').length,
+        lastWeekNew: lastWeekLeads.filter(l => l.is_new_customer === 'yes').length,
+      });
+    }
+
     return NextResponse.json({
       success: true,
       stats: {
@@ -252,6 +289,7 @@ export async function GET(request: NextRequest) {
         monthly: monthlyChartData,
         daily: dailyChartData,
         status: statusChartData,
+        weekToWeek: weekToWeekData,
       },
       recentLeads: recentRes.data || [],
     });
