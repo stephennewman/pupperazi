@@ -26,6 +26,8 @@ export async function GET(request: NextRequest) {
     const now = new Date();
     const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
     const weekStart = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
+    const prevWeekStart = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000).toISOString();
+    const prevWeekEnd = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
     
     // Previous month range
@@ -33,10 +35,23 @@ export async function GET(request: NextRequest) {
     const prevMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59).toISOString();
 
     // Get counts
-    const [totalRes, todayRes, weekRes, monthRes, statusRes, recentRes, currentMonthData, prevMonthData] = await Promise.all([
+    const [
+      totalRes, 
+      todayRes, 
+      weekRes, 
+      prevWeekRes,
+      monthRes, 
+      statusRes, 
+      recentRes, 
+      currentMonthData, 
+      prevMonthData,
+      currentWeekData,
+      prevWeekData,
+    ] = await Promise.all([
       supabase.from('pupperazi_leads').select('id', { count: 'exact', head: true }),
       supabase.from('pupperazi_leads').select('id', { count: 'exact', head: true }).gte('created_at', todayStart),
       supabase.from('pupperazi_leads').select('id', { count: 'exact', head: true }).gte('created_at', weekStart),
+      supabase.from('pupperazi_leads').select('id', { count: 'exact', head: true }).gte('created_at', prevWeekStart).lt('created_at', prevWeekEnd),
       supabase.from('pupperazi_leads').select('id', { count: 'exact', head: true }).gte('created_at', monthStart),
       supabase.from('pupperazi_leads').select('status'),
       supabase.from('pupperazi_leads')
@@ -52,6 +67,15 @@ export async function GET(request: NextRequest) {
         .select('is_new_customer')
         .gte('created_at', prevMonthStart)
         .lte('created_at', prevMonthEnd),
+      // Current week: get is_new_customer data
+      supabase.from('pupperazi_leads')
+        .select('is_new_customer, created_at')
+        .gte('created_at', weekStart),
+      // Previous week: get is_new_customer data
+      supabase.from('pupperazi_leads')
+        .select('is_new_customer, created_at')
+        .gte('created_at', prevWeekStart)
+        .lt('created_at', prevWeekEnd),
     ]);
 
     // Calculate status breakdown
@@ -75,14 +99,54 @@ export async function GET(request: NextRequest) {
     const currentMonthName = now.toLocaleString('default', { month: 'long' });
     const prevMonthName = new Date(now.getFullYear(), now.getMonth() - 1, 1).toLocaleString('default', { month: 'long' });
 
+    // Calculate weekly stats
+    const currentWeekTotal = currentWeekData.data?.length || 0;
+    const currentWeekNew = currentWeekData.data?.filter((r: { is_new_customer: string }) => r.is_new_customer === 'yes').length || 0;
+    const currentWeekReturning = currentWeekData.data?.filter((r: { is_new_customer: string }) => r.is_new_customer === 'no').length || 0;
+    const currentWeekNewPct = currentWeekTotal > 0 ? Math.round((currentWeekNew / currentWeekTotal) * 100) : 0;
+
+    const prevWeekTotal = prevWeekData.data?.length || 0;
+    const prevWeekNew = prevWeekData.data?.filter((r: { is_new_customer: string }) => r.is_new_customer === 'yes').length || 0;
+    const prevWeekReturning = prevWeekData.data?.filter((r: { is_new_customer: string }) => r.is_new_customer === 'no').length || 0;
+    const prevWeekNewPct = prevWeekTotal > 0 ? Math.round((prevWeekNew / prevWeekTotal) * 100) : 0;
+
+    // Week-over-week change
+    const weekOverWeekChange = prevWeekTotal > 0 
+      ? Math.round(((currentWeekTotal - prevWeekTotal) / prevWeekTotal) * 100) 
+      : currentWeekTotal > 0 ? 100 : 0;
+
+    // Calculate daily average for this week
+    const daysThisWeek = Math.min(7, Math.ceil((now.getTime() - new Date(weekStart).getTime()) / (24 * 60 * 60 * 1000)));
+    const dailyAvgThisWeek = daysThisWeek > 0 ? (currentWeekTotal / daysThisWeek).toFixed(1) : '0';
+    const dailyAvgLastWeek = (prevWeekTotal / 7).toFixed(1);
+
     return NextResponse.json({
       success: true,
       stats: {
         total: totalRes.count || 0,
         today: todayRes.count || 0,
         thisWeek: weekRes.count || 0,
+        lastWeek: prevWeekRes.count || 0,
         thisMonth: monthRes.count || 0,
         byStatus,
+      },
+      weeklyMetrics: {
+        currentWeek: {
+          total: currentWeekTotal,
+          newCustomers: currentWeekNew,
+          returningCustomers: currentWeekReturning,
+          newCustomerPct: currentWeekNewPct,
+          dailyAvg: parseFloat(dailyAvgThisWeek),
+        },
+        previousWeek: {
+          total: prevWeekTotal,
+          newCustomers: prevWeekNew,
+          returningCustomers: prevWeekReturning,
+          newCustomerPct: prevWeekNewPct,
+          dailyAvg: parseFloat(dailyAvgLastWeek),
+        },
+        weekOverWeekChange,
+        weekOverWeekNewCustomerChange: currentWeekNewPct - prevWeekNewPct,
       },
       customerAcquisition: {
         currentMonth: {

@@ -8,6 +8,7 @@ interface DashboardStats {
   total: number;
   today: number;
   thisWeek: number;
+  lastWeek: number;
   thisMonth: number;
   byStatus: Record<string, number>;
 }
@@ -28,6 +29,25 @@ interface CustomerAcquisition {
     newCustomerPct: number;
   };
   trend: number;
+}
+
+interface WeeklyMetrics {
+  currentWeek: {
+    total: number;
+    newCustomers: number;
+    returningCustomers: number;
+    newCustomerPct: number;
+    dailyAvg: number;
+  };
+  previousWeek: {
+    total: number;
+    newCustomers: number;
+    returningCustomers: number;
+    newCustomerPct: number;
+    dailyAvg: number;
+  };
+  weekOverWeekChange: number;
+  weekOverWeekNewCustomerChange: number;
 }
 
 interface RecentLead {
@@ -73,6 +93,7 @@ export default function AdminDashboard() {
   const [recentLeads, setRecentLeads] = useState<RecentLead[]>([]);
   const [traffic, setTraffic] = useState<TrafficData | null>(null);
   const [acquisition, setAcquisition] = useState<CustomerAcquisition | null>(null);
+  const [weeklyMetrics, setWeeklyMetrics] = useState<WeeklyMetrics | null>(null);
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -109,6 +130,9 @@ export default function AdminDashboard() {
         setRecentLeads(leadsData.recentLeads || []);
         if (leadsData.customerAcquisition) {
           setAcquisition(leadsData.customerAcquisition);
+        }
+        if (leadsData.weeklyMetrics) {
+          setWeeklyMetrics(leadsData.weeklyMetrics);
         }
       } else {
         setError(leadsData.error || 'Failed to load data');
@@ -185,6 +209,11 @@ export default function AdminDashboard() {
               <div>
                 <p className="text-sm text-gray-500 font-medium">This Week</p>
                 <p className="text-2xl font-bold text-gray-900 mt-1">{stats?.thisWeek || 0}</p>
+                {weeklyMetrics && (
+                  <p className={`text-xs mt-1 ${weeklyMetrics.weekOverWeekChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                    {weeklyMetrics.weekOverWeekChange >= 0 ? '↑' : '↓'} {Math.abs(weeklyMetrics.weekOverWeekChange)}% vs last week
+                  </p>
+                )}
               </div>
               <div className="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
                 <span className="text-xl">📈</span>
@@ -217,6 +246,77 @@ export default function AdminDashboard() {
           </div>
         </div>
       </div>
+
+      {/* Weekly Metrics */}
+      {weeklyMetrics && (
+        <div className="mb-8">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">📅 Weekly Performance</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* This Week vs Last Week */}
+            <div className="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl shadow-sm p-5 text-white">
+              <p className="text-sm font-medium opacity-90">This Week</p>
+              <p className="text-3xl font-bold mt-1">{weeklyMetrics.currentWeek.total}</p>
+              <p className="text-xs opacity-75 mt-2">vs {weeklyMetrics.previousWeek.total} last week</p>
+              <div className={`mt-2 inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold ${weeklyMetrics.weekOverWeekChange >= 0 ? 'bg-green-400/30 text-green-100' : 'bg-red-400/30 text-red-100'}`}>
+                {weeklyMetrics.weekOverWeekChange >= 0 ? '↑' : '↓'} {Math.abs(weeklyMetrics.weekOverWeekChange)}%
+              </div>
+            </div>
+
+            {/* Daily Average */}
+            <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-100">
+              <p className="text-sm text-gray-500 font-medium">Daily Avg (This Week)</p>
+              <p className="text-3xl font-bold text-gray-900 mt-1">{weeklyMetrics.currentWeek.dailyAvg}</p>
+              <p className="text-xs text-gray-500 mt-2">vs {weeklyMetrics.previousWeek.dailyAvg}/day last week</p>
+            </div>
+
+            {/* New Customers This Week */}
+            <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-100">
+              <p className="text-sm text-gray-500 font-medium">New Customers</p>
+              <div className="flex items-end gap-2 mt-1">
+                <p className="text-3xl font-bold text-purple-600">{weeklyMetrics.currentWeek.newCustomers}</p>
+                <p className="text-sm text-gray-500 mb-1">/ {weeklyMetrics.currentWeek.total}</p>
+              </div>
+              <p className="text-xs text-gray-500 mt-2">{weeklyMetrics.currentWeek.newCustomerPct}% of this week's leads</p>
+            </div>
+
+            {/* Returning Customers This Week */}
+            <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-100">
+              <p className="text-sm text-gray-500 font-medium">Returning Customers</p>
+              <div className="flex items-end gap-2 mt-1">
+                <p className="text-3xl font-bold text-teal-600">{weeklyMetrics.currentWeek.returningCustomers}</p>
+                <p className="text-sm text-gray-500 mb-1">/ {weeklyMetrics.currentWeek.total}</p>
+              </div>
+              <p className="text-xs text-gray-500 mt-2">{100 - weeklyMetrics.currentWeek.newCustomerPct}% of this week's leads</p>
+            </div>
+          </div>
+
+          {/* Week-over-Week Comparison */}
+          <div className="mt-4 bg-white rounded-xl shadow-sm p-5 border border-gray-100">
+            <h3 className="text-sm font-semibold text-gray-700 mb-4">Week-over-Week Comparison</h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="text-center p-3 bg-gray-50 rounded-lg">
+                <p className="text-xs text-gray-500 mb-1">Last Week Total</p>
+                <p className="text-xl font-bold text-gray-700">{weeklyMetrics.previousWeek.total}</p>
+              </div>
+              <div className="text-center p-3 bg-gray-50 rounded-lg">
+                <p className="text-xs text-gray-500 mb-1">Last Week New</p>
+                <p className="text-xl font-bold text-purple-600">{weeklyMetrics.previousWeek.newCustomers}</p>
+                <p className="text-xs text-gray-400">{weeklyMetrics.previousWeek.newCustomerPct}%</p>
+              </div>
+              <div className="text-center p-3 bg-gray-50 rounded-lg">
+                <p className="text-xs text-gray-500 mb-1">Last Week Returning</p>
+                <p className="text-xl font-bold text-teal-600">{weeklyMetrics.previousWeek.returningCustomers}</p>
+              </div>
+              <div className={`text-center p-3 rounded-lg ${weeklyMetrics.weekOverWeekNewCustomerChange >= 0 ? 'bg-green-50' : 'bg-orange-50'}`}>
+                <p className="text-xs text-gray-500 mb-1">New Customer Rate Δ</p>
+                <p className={`text-xl font-bold ${weeklyMetrics.weekOverWeekNewCustomerChange >= 0 ? 'text-green-600' : 'text-orange-600'}`}>
+                  {weeklyMetrics.weekOverWeekNewCustomerChange >= 0 ? '+' : ''}{weeklyMetrics.weekOverWeekNewCustomerChange}%
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Customer Acquisition */}
       {acquisition && (
