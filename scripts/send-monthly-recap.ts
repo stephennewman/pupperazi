@@ -1,18 +1,15 @@
-import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { createClient } from '@supabase/supabase-js';
 
-const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
+// Load env from .env.local if running locally
+import * as dotenv from 'dotenv';
+dotenv.config({ path: '.env.local' });
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const LEADS_SUPABASE_URL = process.env.LEADS_SUPABASE_URL || 'https://xsncgdnctnbzvokmxlex.supabase.co';
 const LEADS_SUPABASE_KEY = process.env.LEADS_SUPABASE_ANON_KEY || '';
-const supabase = LEADS_SUPABASE_KEY ? createClient(LEADS_SUPABASE_URL, LEADS_SUPABASE_KEY) : null;
-
-// Who receives the monthly recap
-const RECAP_RECIPIENTS = [
-  'stephen@outcomeview.com', // Your email
-  // Add client email when ready: 'pupperazipetspa@gmail.com'
-];
+const supabase = createClient(LEADS_SUPABASE_URL, LEADS_SUPABASE_KEY);
 
 interface AppointmentStats {
   total: number;
@@ -25,12 +22,9 @@ interface MonthData {
   name: string;
   stats: AppointmentStats;
   topBreeds: { breed: string; count: number }[];
-  topRequestTimes: { time: string; count: number }[];
 }
 
 async function getMonthStats(startDate: string, endDate: string): Promise<AppointmentStats> {
-  if (!supabase) return { total: 0, newCustomers: 0, returningCustomers: 0, newCustomerPct: 0 };
-  
   const { data } = await supabase
     .from('pupperazi_leads')
     .select('is_new_customer')
@@ -46,8 +40,6 @@ async function getMonthStats(startDate: string, endDate: string): Promise<Appoin
 }
 
 async function getBreedAnalysis(startDate: string, endDate: string): Promise<{ breed: string; count: number }[]> {
-  if (!supabase) return [];
-  
   const { data } = await supabase
     .from('pupperazi_leads')
     .select('pet_info')
@@ -80,7 +72,6 @@ async function getBreedAnalysis(startDate: string, endDate: string): Promise<{ b
 }
 
 async function getTotalAppointments(): Promise<number> {
-  if (!supabase) return 0;
   const { count } = await supabase
     .from('pupperazi_leads')
     .select('id', { count: 'exact', head: true });
@@ -311,90 +302,81 @@ function generateEmailHTML(
   `;
 }
 
-export async function GET(request: NextRequest) {
-  // Verify cron secret for automated runs
-  const authHeader = request.headers.get('authorization');
-  const cronSecret = process.env.CRON_SECRET;
-  const url = new URL(request.url);
-  const manualTrigger = url.searchParams.get('manual') === 'jan2026recap';
-  
-  // Allow manual trigger with specific key, or cron auth
-  const isAuthorized = manualTrigger || !cronSecret || authHeader === `Bearer ${cronSecret}`;
-  
-  if (!isAuthorized) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
+async function main() {
+  console.log('🐾 Generating Pupperazi Monthly Recap...\n');
 
-  if (!resend) {
-    return NextResponse.json({ error: 'Email service not configured' }, { status: 500 });
-  }
+  const now = new Date();
+  
+  // December 2025 data (the month we want to report on)
+  const currentMonthStart = new Date(2025, 11, 1); // December 1, 2025
+  const currentMonthEnd = new Date(2026, 0, 1); // January 1, 2026
+  
+  // November 2025 data (previous month)
+  const previousMonthStart = new Date(2025, 10, 1); // November 1, 2025
+  const previousMonthEnd = new Date(2025, 11, 1); // December 1, 2025
 
-  if (!supabase) {
-    return NextResponse.json({ error: 'Database not configured' }, { status: 500 });
-  }
+  console.log('📊 Fetching stats...');
+  
+  const [currentStats, previousStats, currentBreeds, totalAppointments] = await Promise.all([
+    getMonthStats(currentMonthStart.toISOString(), currentMonthEnd.toISOString()),
+    getMonthStats(previousMonthStart.toISOString(), previousMonthEnd.toISOString()),
+    getBreedAnalysis(currentMonthStart.toISOString(), currentMonthEnd.toISOString()),
+    getTotalAppointments(),
+  ]);
+
+  console.log('\n📈 December 2025 Stats:');
+  console.log(`   Total: ${currentStats.total}`);
+  console.log(`   New Customers: ${currentStats.newCustomers}`);
+  console.log(`   Returning: ${currentStats.returningCustomers}`);
+  console.log(`   New Customer %: ${currentStats.newCustomerPct}%`);
+
+  console.log('\n📈 November 2025 Stats:');
+  console.log(`   Total: ${previousStats.total}`);
+  console.log(`   New Customers: ${previousStats.newCustomers}`);
+  console.log(`   Returning: ${previousStats.returningCustomers}`);
+  console.log(`   New Customer %: ${previousStats.newCustomerPct}%`);
+
+  console.log('\n🐕 Top Breeds (December):');
+  currentBreeds.forEach(b => console.log(`   ${b.breed}: ${b.count}`));
+
+  console.log(`\n📊 All-time total: ${totalAppointments}`);
+
+  const currentMonth: MonthData = {
+    name: 'December',
+    stats: currentStats,
+    topBreeds: currentBreeds,
+  };
+
+  const previousMonth: MonthData = {
+    name: 'November',
+    stats: previousStats,
+    topBreeds: [],
+  };
+
+  const emailHTML = generateEmailHTML(currentMonth, previousMonth, totalAppointments, now);
+
+  console.log('\n📧 Sending email to stephen@outcomeview.com...');
 
   try {
-    const now = new Date();
-    
-    // Get current month (the month that just ended)
-    const currentMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-    const currentMonthEnd = new Date(now.getFullYear(), now.getMonth(), 1);
-    
-    // Get previous month
-    const previousMonthStart = new Date(now.getFullYear(), now.getMonth() - 2, 1);
-    const previousMonthEnd = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-
-    // Fetch all data
-    const [currentStats, previousStats, currentBreeds, totalAppointments] = await Promise.all([
-      getMonthStats(currentMonthStart.toISOString(), currentMonthEnd.toISOString()),
-      getMonthStats(previousMonthStart.toISOString(), previousMonthEnd.toISOString()),
-      getBreedAnalysis(currentMonthStart.toISOString(), currentMonthEnd.toISOString()),
-      getTotalAppointments(),
-    ]);
-
-    const currentMonth: MonthData = {
-      name: currentMonthStart.toLocaleString('default', { month: 'long' }),
-      stats: currentStats,
-      topBreeds: currentBreeds,
-      topRequestTimes: [],
-    };
-
-    const previousMonth: MonthData = {
-      name: previousMonthStart.toLocaleString('default', { month: 'long' }),
-      stats: previousStats,
-      topBreeds: [],
-      topRequestTimes: [],
-    };
-
-    const emailHTML = generateEmailHTML(currentMonth, previousMonth, totalAppointments, now);
-
-    // Send email
     const { data, error } = await resend.emails.send({
       from: 'Pupperazi Reports <reports@pupperazipetspa.com>',
-      to: RECAP_RECIPIENTS,
-      subject: `🐾 Pupperazi Monthly Recap: ${currentMonth.name} Results`,
+      to: ['stephen@outcomeview.com'],
+      subject: `🐾 Pupperazi Monthly Recap: December 2025 Results`,
       html: emailHTML,
     });
 
     if (error) {
-      console.error('Email send error:', error);
-      return NextResponse.json({ error: 'Failed to send email', details: error }, { status: 500 });
+      console.error('❌ Error sending email:', error);
+      process.exit(1);
     }
 
-    return NextResponse.json({
-      success: true,
-      message: 'Monthly recap email sent',
-      emailId: data?.id,
-      stats: {
-        currentMonth: currentMonth.stats,
-        previousMonth: previousMonth.stats,
-        totalAllTime: totalAppointments,
-      },
-    });
-
-  } catch (error) {
-    console.error('Monthly recap error:', error);
-    return NextResponse.json({ error: 'Failed to generate report' }, { status: 500 });
+    console.log('✅ Email sent successfully!');
+    console.log(`   Email ID: ${data?.id}`);
+  } catch (err) {
+    console.error('❌ Failed to send email:', err);
+    process.exit(1);
   }
 }
+
+main();
 
