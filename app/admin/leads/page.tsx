@@ -148,14 +148,14 @@ export default function AdminLeads() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading leads...</p>
+          <p className="mt-4 text-gray-600">Loading appointments...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <AdminLayout title="Leads" subtitle="Manage customer inquiries" activeTab="leads">
+    <AdminLayout title="Appointments" subtitle="Manage appointment requests" activeTab="appointments">
       {error && (
         <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
           {error}
@@ -231,8 +231,8 @@ export default function AdminLeads() {
                 <tr>
                   <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
                     {searchTerm || statusFilter !== 'all' 
-                      ? 'No leads match your filters.' 
-                      : 'No leads yet. They\'ll appear here when customers submit the form.'}
+                      ? 'No appointments match your filters.' 
+                      : 'No appointments yet. They\'ll appear here when customers submit the form.'}
                   </td>
                 </tr>
               ) : (
@@ -300,7 +300,7 @@ export default function AdminLeads() {
 
       {/* Results count */}
       <p className="text-sm text-gray-500 mt-4">
-        Showing {filteredLeads.length} of {leads.length} leads
+        Showing {filteredLeads.length} of {leads.length} appointments
       </p>
     </AdminLayout>
   );

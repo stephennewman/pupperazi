@@ -8,7 +8,7 @@ interface AdminLayoutProps {
   children: ReactNode;
   title: string;
   subtitle: string;
-  activeTab?: 'dashboard' | 'leads' | 'customers' | 'appointments' | 'calendar' | 'settings';
+  activeTab?: 'dashboard' | 'appointments' | 'customers' | 'calendar' | 'settings';
 }
 
 export default function AdminLayout({ children, title, subtitle, activeTab }: AdminLayoutProps) {

@@ -14,7 +14,7 @@ const RECAP_RECIPIENTS = [
   // Add client email when ready: 'pupperazipetspa@gmail.com'
 ];
 
-interface LeadStats {
+interface AppointmentStats {
   total: number;
   newCustomers: number;
   returningCustomers: number;
@@ -23,12 +23,12 @@ interface LeadStats {
 
 interface MonthData {
   name: string;
-  stats: LeadStats;
+  stats: AppointmentStats;
   topBreeds: { breed: string; count: number }[];
   topRequestTimes: { time: string; count: number }[];
 }
 
-async function getMonthStats(startDate: string, endDate: string): Promise<LeadStats> {
+async function getMonthStats(startDate: string, endDate: string): Promise<AppointmentStats> {
   if (!supabase) return { total: 0, newCustomers: 0, returningCustomers: 0, newCustomerPct: 0 };
   
   const { data } = await supabase
@@ -79,7 +79,7 @@ async function getBreedAnalysis(startDate: string, endDate: string): Promise<{ b
     .slice(0, 5);
 }
 
-async function getTotalLeads(): Promise<number> {
+async function getTotalAppointments(): Promise<number> {
   if (!supabase) return 0;
   const { count } = await supabase
     .from('pupperazi_leads')
@@ -146,7 +146,7 @@ function generateEmailHTML(
   <div class="stat-grid">
     <div class="stat-card">
       <div class="stat-number">${currentMonth.stats.total}</div>
-      <div class="stat-label">Total Leads</div>
+      <div class="stat-label">Total Appointments</div>
     </div>
     <div class="stat-card">
       <div class="stat-number">${currentMonth.stats.newCustomers}</div>
@@ -172,7 +172,7 @@ function generateEmailHTML(
       <th>Change</th>
     </tr>
     <tr>
-      <td>Total Leads</td>
+      <td>Total Appointments</td>
       <td>${previousMonth.stats.total}</td>
       <td>${currentMonth.stats.total}</td>
       <td class="${currentMonth.stats.total >= previousMonth.stats.total ? 'growth-positive' : 'growth-negative'}">
@@ -198,7 +198,7 @@ function generateEmailHTML(
   </table>
 
   <div class="insight-box">
-    <strong>💡 All-Time Total:</strong> ${totalAllTime} leads captured since launch (Nov 1, 2025)
+    <strong>💡 All-Time Total:</strong> ${totalAllTime} appointment requests since launch (Nov 1, 2025)
   </div>
 
   <h2>🐕 Top Breeds Requesting Appointments</h2>
@@ -232,7 +232,7 @@ function generateEmailHTML(
   <div class="feature-list">
     <div class="feature-item">
       <strong>📊 Admin Dashboard & CRM</strong><br>
-      <span style="color: #6B7280;">Full lead management portal with real-time stats, customer tracking, and interactive charts</span><br>
+      <span style="color: #6B7280;">Full appointment management portal with real-time stats, customer tracking, and interactive charts</span><br>
       <span style="font-size: 12px; color: #9CA3AF;">Access: pupperazipetspa.com/admin/portal-login</span>
     </div>
     <div class="feature-item">
@@ -254,7 +254,7 @@ function generateEmailHTML(
     </div>
     <div class="feature-item">
       <strong>📬 Automated Reports</strong><br>
-      <span style="color: #6B7280;">Weekly leads summary to Slack • Monthly recap emails (like this one!)</span>
+      <span style="color: #6B7280;">Weekly appointment summaries to Slack • Monthly recap emails (like this one!)</span>
     </div>
   </div>
 
@@ -294,7 +294,7 @@ function generateEmailHTML(
   <div class="section">
     <p><strong>1. Check your admin dashboard weekly</strong> — See who's requested appointments, track your new customer rate, and spot trends. Takes 2 minutes!</p>
     
-    <p><strong>2. Respond quickly to new leads</strong> — ASAP requests convert best when you reply within 2-4 hours. The dashboard shows you who's new.</p>
+    <p><strong>2. Respond quickly to new requests</strong> — ASAP requests convert best when you reply within 2-4 hours. The dashboard shows you who's new.</p>
     
     <p><strong>3. Saturdays are gold</strong> — Most requested day by returning customers. Consider a waitlist or priority booking for your regulars.</p>
     
@@ -343,11 +343,11 @@ export async function GET(request: NextRequest) {
     const previousMonthEnd = new Date(now.getFullYear(), now.getMonth() - 1, 1);
 
     // Fetch all data
-    const [currentStats, previousStats, currentBreeds, totalLeads] = await Promise.all([
+    const [currentStats, previousStats, currentBreeds, totalAppointments] = await Promise.all([
       getMonthStats(currentMonthStart.toISOString(), currentMonthEnd.toISOString()),
       getMonthStats(previousMonthStart.toISOString(), previousMonthEnd.toISOString()),
       getBreedAnalysis(currentMonthStart.toISOString(), currentMonthEnd.toISOString()),
-      getTotalLeads(),
+      getTotalAppointments(),
     ]);
 
     const currentMonth: MonthData = {
@@ -364,7 +364,7 @@ export async function GET(request: NextRequest) {
       topRequestTimes: [],
     };
 
-    const emailHTML = generateEmailHTML(currentMonth, previousMonth, totalLeads, now);
+    const emailHTML = generateEmailHTML(currentMonth, previousMonth, totalAppointments, now);
 
     // Send email
     const { data, error } = await resend.emails.send({
@@ -386,7 +386,7 @@ export async function GET(request: NextRequest) {
       stats: {
         currentMonth: currentMonth.stats,
         previousMonth: previousMonth.stats,
-        totalAllTime: totalLeads,
+        totalAllTime: totalAppointments,
       },
     });
 

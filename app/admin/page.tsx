@@ -60,7 +60,7 @@ interface WeeklyMetrics {
   weekOverWeekNewCustomerChange: number;
 }
 
-interface RecentLead {
+interface RecentAppointment {
   id: number;
   name: string;
   email: string;
@@ -133,7 +133,7 @@ export default function AdminDashboard() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [stats, setStats] = useState<DashboardStats | null>(null);
-  const [recentLeads, setRecentLeads] = useState<RecentLead[]>([]);
+  const [recentAppointments, setRecentAppointments] = useState<RecentAppointment[]>([]);
   const [traffic, setTraffic] = useState<TrafficData | null>(null);
   const [acquisition, setAcquisition] = useState<CustomerAcquisition | null>(null);
   const [weeklyMetrics, setWeeklyMetrics] = useState<WeeklyMetrics | null>(null);
@@ -153,8 +153,8 @@ export default function AdminDashboard() {
 
   const fetchDashboardData = async (token: string) => {
     try {
-      // Fetch leads stats and traffic data in parallel
-      const [leadsResponse, trafficResponse] = await Promise.all([
+      // Fetch appointments stats and traffic data in parallel
+      const [appointmentsResponse, trafficResponse] = await Promise.all([
         fetch('/api/admin/leads/stats', {
           headers: { 'Authorization': `Bearer ${token}` },
         }),
@@ -163,27 +163,27 @@ export default function AdminDashboard() {
         }),
       ]);
 
-      if (leadsResponse.status === 401) {
+      if (appointmentsResponse.status === 401) {
         localStorage.removeItem('adminToken');
         router.push('/admin/portal-login');
         return;
       }
 
-      const leadsData = await leadsResponse.json();
-      if (leadsData.success) {
-        setStats(leadsData.stats);
-        setRecentLeads(leadsData.recentLeads || []);
-        if (leadsData.customerAcquisition) {
-          setAcquisition(leadsData.customerAcquisition);
+      const appointmentsData = await appointmentsResponse.json();
+      if (appointmentsData.success) {
+        setStats(appointmentsData.stats);
+        setRecentAppointments(appointmentsData.recentLeads || []);
+        if (appointmentsData.customerAcquisition) {
+          setAcquisition(appointmentsData.customerAcquisition);
         }
-        if (leadsData.weeklyMetrics) {
-          setWeeklyMetrics(leadsData.weeklyMetrics);
+        if (appointmentsData.weeklyMetrics) {
+          setWeeklyMetrics(appointmentsData.weeklyMetrics);
         }
-        if (leadsData.chartData) {
-          setChartData(leadsData.chartData);
+        if (appointmentsData.chartData) {
+          setChartData(appointmentsData.chartData);
         }
       } else {
-        setError(leadsData.error || 'Failed to load data');
+        setError(appointmentsData.error || 'Failed to load data');
       }
 
       // Traffic data (may not be configured)
@@ -236,9 +236,9 @@ export default function AdminDashboard() {
         </div>
       )}
 
-      {/* Leads Stats Cards */}
+      {/* Appointments Stats Cards */}
       <div className="mb-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">📋 Leads</h2>
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">📅 Appointments</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-100">
             <div className="flex items-center justify-between">
@@ -324,7 +324,7 @@ export default function AdminDashboard() {
                 <p className="text-3xl font-bold text-purple-600">{weeklyMetrics.currentWeek.newCustomers}</p>
                 <p className="text-sm text-gray-500 mb-1">/ {weeklyMetrics.currentWeek.total}</p>
               </div>
-              <p className="text-xs text-gray-500 mt-2">{weeklyMetrics.currentWeek.newCustomerPct}% of this week's leads</p>
+              <p className="text-xs text-gray-500 mt-2">{weeklyMetrics.currentWeek.newCustomerPct}% of this week</p>
             </div>
 
             {/* Returning Customers This Week */}
@@ -334,7 +334,7 @@ export default function AdminDashboard() {
                 <p className="text-3xl font-bold text-teal-600">{weeklyMetrics.currentWeek.returningCustomers}</p>
                 <p className="text-sm text-gray-500 mb-1">/ {weeklyMetrics.currentWeek.total}</p>
               </div>
-              <p className="text-xs text-gray-500 mt-2">{100 - weeklyMetrics.currentWeek.newCustomerPct}% of this week's leads</p>
+              <p className="text-xs text-gray-500 mt-2">{100 - weeklyMetrics.currentWeek.newCustomerPct}% of this week</p>
             </div>
           </div>
 
@@ -440,7 +440,7 @@ export default function AdminDashboard() {
       {chartData && (
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-gray-900">📊 Lead Trends</h2>
+            <h2 className="text-lg font-semibold text-gray-900">📊 Appointment Trends</h2>
             <div className="flex gap-2">
               <button
                 onClick={() => setActiveChart('daily')}
@@ -584,7 +584,7 @@ export default function AdminDashboard() {
                   <p className="text-gray-600 text-xs">Returning</p>
                 </div>
               </div>
-              <p className="text-xs text-gray-400 mt-2 text-center">{acquisition.currentMonth.total} total leads</p>
+              <p className="text-xs text-gray-400 mt-2 text-center">{acquisition.currentMonth.total} total appointments</p>
             </div>
 
             {/* Previous Month */}
@@ -607,7 +607,7 @@ export default function AdminDashboard() {
                   <p className="text-gray-600 text-xs">Returning</p>
                 </div>
               </div>
-              <p className="text-xs text-gray-400 mt-2 text-center">{acquisition.previousMonth.total} total leads</p>
+              <p className="text-xs text-gray-400 mt-2 text-center">{acquisition.previousMonth.total} total appointments</p>
             </div>
 
             {/* Trend Card */}
@@ -710,9 +710,9 @@ export default function AdminDashboard() {
               onClick={() => router.push('/admin/leads')}
               className="p-4 bg-purple-50 hover:bg-purple-100 rounded-xl text-left transition-colors"
             >
-              <span className="text-2xl mb-2 block">📋</span>
-              <span className="font-semibold text-purple-900">View All Leads</span>
-              <p className="text-sm text-purple-700 mt-1">Manage customer inquiries</p>
+              <span className="text-2xl mb-2 block">📅</span>
+              <span className="font-semibold text-purple-900">View All Appointments</span>
+              <p className="text-sm text-purple-700 mt-1">Manage appointment requests</p>
             </button>
             <button
               onClick={() => router.push('/admin/customers')}
@@ -744,11 +744,11 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      {/* Recent Leads */}
+      {/* Recent Appointments */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100">
         <div className="p-6 border-b border-gray-100">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold text-gray-900">Recent Leads</h3>
+            <h3 className="text-lg font-semibold text-gray-900">Recent Appointments</h3>
             <button
               onClick={() => router.push('/admin/leads')}
               className="text-purple-600 hover:text-purple-700 text-sm font-medium"
@@ -769,38 +769,38 @@ export default function AdminDashboard() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {recentLeads.length === 0 ? (
+              {recentAppointments.length === 0 ? (
                 <tr>
                   <td colSpan={5} className="px-6 py-8 text-center text-gray-500">
-                    No leads yet. They'll appear here when customers submit the form.
+                    No appointments yet. They'll appear here when customers submit the form.
                   </td>
                 </tr>
               ) : (
-                recentLeads.slice(0, 5).map((lead) => (
+                recentAppointments.slice(0, 5).map((appt) => (
                   <tr 
-                    key={lead.id} 
+                    key={appt.id} 
                     className="hover:bg-gray-50 cursor-pointer"
-                    onClick={() => router.push(`/admin/leads/${lead.id}`)}
+                    onClick={() => router.push(`/admin/leads/${appt.id}`)}
                   >
                     <td className="px-6 py-4">
-                      <span className="font-medium text-gray-900">{lead.name || 'Unknown'}</span>
+                      <span className="font-medium text-gray-900">{appt.name || 'Unknown'}</span>
                     </td>
                     <td className="px-6 py-4">
                       <div className="text-sm">
-                        <p className="text-gray-900">{lead.email}</p>
-                        {lead.phone && <p className="text-gray-500">{lead.phone}</p>}
+                        <p className="text-gray-900">{appt.email}</p>
+                        {appt.phone && <p className="text-gray-500">{appt.phone}</p>}
                       </div>
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-600">
-                      {lead.utm_source || lead.source || 'Direct'}
+                      {appt.utm_source || appt.source || 'Direct'}
                     </td>
                     <td className="px-6 py-4">
-                      <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(lead.status)}`}>
-                        {lead.status}
+                      <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(appt.status)}`}>
+                        {appt.status}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-500">
-                      {formatDate(lead.created_at)}
+                      {formatDate(appt.created_at)}
                     </td>
                   </tr>
                 ))
