@@ -372,9 +372,9 @@ export async function GET(request: NextRequest) {
 
     const emailHTML = generateEmailHTML(currentMonth, previousMonth, totalAppointments, now);
 
-    // Send email
+    // Send email (using Resend's default domain since custom domain isn't verified)
     const { data, error } = await resend.emails.send({
-      from: 'Pupperazi Reports <reports@pupperazipetspa.com>',
+      from: 'Pupperazi Reports <onboarding@resend.dev>',
       to: RECAP_RECIPIENTS,
       subject: `🐾 Pupperazi Monthly Recap: ${currentMonth.name} Results`,
       html: emailHTML,
