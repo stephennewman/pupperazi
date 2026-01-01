@@ -9,9 +9,10 @@ const LEADS_SUPABASE_KEY = process.env.LEADS_SUPABASE_ANON_KEY || '';
 const supabase = LEADS_SUPABASE_KEY ? createClient(LEADS_SUPABASE_URL, LEADS_SUPABASE_KEY) : null;
 
 // Who receives the monthly recap
+// Note: Resend in test mode can only send to stephen@krezzo.com
+// Once domain is verified at resend.com/domains, add: stephen@outcomeview.com, pupperazipetspa@gmail.com
 const RECAP_RECIPIENTS = [
-  'stephen@outcomeview.com', // Your email
-  // Add client email when ready: 'pupperazipetspa@gmail.com'
+  'stephen@krezzo.com', // Test email (Resend verified account)
 ];
 
 interface AppointmentStats {
