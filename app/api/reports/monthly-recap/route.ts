@@ -312,17 +312,21 @@ function generateEmailHTML(
 }
 
 export async function GET(request: NextRequest) {
-  // Verify cron secret for automated runs
-  const authHeader = request.headers.get('authorization');
-  const cronSecret = process.env.CRON_SECRET;
-  const url = new URL(request.url);
-  const manualTrigger = url.searchParams.get('manual') === 'jan2026recap';
-  
-  // Allow manual trigger with specific key, or cron auth
-  const isAuthorized = manualTrigger || !cronSecret || authHeader === `Bearer ${cronSecret}`;
-  
-  if (!isAuthorized) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  // Check for manual trigger first - bypass all auth
+  const { searchParams } = new URL(request.url);
+  if (searchParams.get('manual') === 'jan2026recap') {
+    console.log('Manual trigger activated');
+    // Continue to send email
+  } else {
+    // Verify cron secret for automated runs
+    const authHeader = request.headers.get('authorization');
+    const cronSecret = process.env.CRON_SECRET;
+    
+    const isAuthorized = !cronSecret || authHeader === `Bearer ${cronSecret}`;
+    
+    if (!isAuthorized) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
   }
 
   if (!resend) {
