@@ -36,7 +36,8 @@ async function getMonthStats(startDate: string, endDate: string): Promise<Appoin
     .from('pupperazi_leads')
     .select('is_new_customer')
     .gte('created_at', startDate)
-    .lt('created_at', endDate);
+    .lt('created_at', endDate)
+    .or('is_test.is.null,is_test.eq.false');
 
   const total = data?.length || 0;
   const newCustomers = data?.filter(r => r.is_new_customer === 'yes').length || 0;
@@ -53,7 +54,8 @@ async function getBreedAnalysis(startDate: string, endDate: string): Promise<{ b
     .from('pupperazi_leads')
     .select('pet_info')
     .gte('created_at', startDate)
-    .lt('created_at', endDate);
+    .lt('created_at', endDate)
+    .or('is_test.is.null,is_test.eq.false');
 
   const breedCounts: Record<string, number> = {};
   const breedKeywords = [
@@ -84,7 +86,8 @@ async function getTotalAppointments(): Promise<number> {
   if (!supabase) return 0;
   const { count } = await supabase
     .from('pupperazi_leads')
-    .select('id', { count: 'exact', head: true });
+    .select('id', { count: 'exact', head: true })
+    .or('is_test.is.null,is_test.eq.false');
   return count || 0;
 }
 

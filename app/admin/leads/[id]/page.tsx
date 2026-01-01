@@ -22,6 +22,7 @@ interface Lead {
   utm_term?: string;
   utm_content?: string;
   notes?: string;
+  is_test?: boolean;
 }
 
 export default function LeadDetail() {
@@ -280,6 +281,30 @@ export default function LeadDetail() {
                 </button>
               ))}
             </div>
+          </div>
+
+          {/* Exclude from Stats */}
+          <div className={`rounded-xl shadow-sm border p-6 ${lead.is_test ? 'bg-orange-50 border-orange-200' : 'bg-white border-gray-100'}`}>
+            <h3 className="text-lg font-semibold text-gray-900 mb-3">Exclude from Stats</h3>
+            <p className="text-sm text-gray-600 mb-4">
+              Mark this as a test record to exclude it from all dashboard statistics and reports.
+            </p>
+            <button
+              onClick={() => updateLead({ is_test: !lead.is_test })}
+              disabled={isSaving}
+              className={`w-full px-4 py-3 rounded-lg font-medium transition-colors ${
+                lead.is_test
+                  ? 'bg-orange-500 hover:bg-orange-600 text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              } disabled:opacity-50`}
+            >
+              {lead.is_test ? '🚫 Excluded (Click to Include)' : '✓ Included (Click to Exclude)'}
+            </button>
+            {lead.is_test && (
+              <p className="text-xs text-orange-700 mt-2 text-center">
+                This record is excluded from all stats
+              </p>
+            )}
           </div>
 
           {/* Quick Actions */}

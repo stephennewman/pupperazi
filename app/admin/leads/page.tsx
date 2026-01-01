@@ -19,6 +19,7 @@ interface Lead {
   utm_source?: string;
   utm_medium?: string;
   utm_campaign?: string;
+  is_test?: boolean;
 }
 
 export default function AdminLeads() {
@@ -240,7 +241,14 @@ export default function AdminLeads() {
                   <tr key={lead.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4">
                       <div>
-                        <p className="font-medium text-gray-900">{lead.name || 'Unknown'}</p>
+                        <p className="font-medium text-gray-900">
+                          {lead.name || 'Unknown'}
+                          {lead.is_test && (
+                            <span className="ml-2 inline-block px-2 py-0.5 text-xs bg-orange-100 text-orange-700 rounded">
+                              TEST
+                            </span>
+                          )}
+                        </p>
                         <p className="text-sm text-gray-600">{lead.email}</p>
                         {lead.phone && <p className="text-sm text-gray-500">{lead.phone}</p>}
                         {lead.is_new_customer === 'yes' && (

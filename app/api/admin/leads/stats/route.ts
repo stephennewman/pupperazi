@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
     const prevMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1).toISOString();
     const prevMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59).toISOString();
 
-    // Get counts
+    // Get counts (excluding test records with is_test = true)
     const [
       totalRes, 
       todayRes, 
@@ -48,34 +48,39 @@ export async function GET(request: NextRequest) {
       currentWeekData,
       prevWeekData,
     ] = await Promise.all([
-      supabase.from('pupperazi_leads').select('id', { count: 'exact', head: true }),
-      supabase.from('pupperazi_leads').select('id', { count: 'exact', head: true }).gte('created_at', todayStart),
-      supabase.from('pupperazi_leads').select('id', { count: 'exact', head: true }).gte('created_at', weekStart),
-      supabase.from('pupperazi_leads').select('id', { count: 'exact', head: true }).gte('created_at', prevWeekStart).lt('created_at', prevWeekEnd),
-      supabase.from('pupperazi_leads').select('id', { count: 'exact', head: true }).gte('created_at', monthStart),
-      supabase.from('pupperazi_leads').select('status'),
+      supabase.from('pupperazi_leads').select('id', { count: 'exact', head: true }).or('is_test.is.null,is_test.eq.false'),
+      supabase.from('pupperazi_leads').select('id', { count: 'exact', head: true }).gte('created_at', todayStart).or('is_test.is.null,is_test.eq.false'),
+      supabase.from('pupperazi_leads').select('id', { count: 'exact', head: true }).gte('created_at', weekStart).or('is_test.is.null,is_test.eq.false'),
+      supabase.from('pupperazi_leads').select('id', { count: 'exact', head: true }).gte('created_at', prevWeekStart).lt('created_at', prevWeekEnd).or('is_test.is.null,is_test.eq.false'),
+      supabase.from('pupperazi_leads').select('id', { count: 'exact', head: true }).gte('created_at', monthStart).or('is_test.is.null,is_test.eq.false'),
+      supabase.from('pupperazi_leads').select('status').or('is_test.is.null,is_test.eq.false'),
       supabase.from('pupperazi_leads')
         .select('*')
+        .or('is_test.is.null,is_test.eq.false')
         .order('created_at', { ascending: false })
         .limit(10),
       // Current month: get is_new_customer data
       supabase.from('pupperazi_leads')
         .select('is_new_customer')
-        .gte('created_at', monthStart),
+        .gte('created_at', monthStart)
+        .or('is_test.is.null,is_test.eq.false'),
       // Previous month: get is_new_customer data
       supabase.from('pupperazi_leads')
         .select('is_new_customer')
         .gte('created_at', prevMonthStart)
-        .lte('created_at', prevMonthEnd),
+        .lte('created_at', prevMonthEnd)
+        .or('is_test.is.null,is_test.eq.false'),
       // Current week: get is_new_customer data
       supabase.from('pupperazi_leads')
         .select('is_new_customer, created_at')
-        .gte('created_at', weekStart),
+        .gte('created_at', weekStart)
+        .or('is_test.is.null,is_test.eq.false'),
       // Previous week: get is_new_customer data
       supabase.from('pupperazi_leads')
         .select('is_new_customer, created_at')
         .gte('created_at', prevWeekStart)
-        .lt('created_at', prevWeekEnd),
+        .lt('created_at', prevWeekEnd)
+        .or('is_test.is.null,is_test.eq.false'),
     ]);
 
     // Calculate status breakdown
@@ -120,10 +125,11 @@ export async function GET(request: NextRequest) {
     const dailyAvgThisWeek = daysThisWeek > 0 ? (currentWeekTotal / daysThisWeek).toFixed(1) : '0';
     const dailyAvgLastWeek = (prevWeekTotal / 7).toFixed(1);
 
-    // Get all leads for chart data
+    // Get all leads for chart data (excluding test records)
     const allLeadsRes = await supabase
       .from('pupperazi_leads')
       .select('created_at, is_new_customer, status')
+      .or('is_test.is.null,is_test.eq.false')
       .order('created_at', { ascending: true });
 
     const allLeads = allLeadsRes.data || [];
