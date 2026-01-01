@@ -129,7 +129,7 @@ export default function LeadDetail() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading lead details...</p>
+          <p className="mt-4 text-gray-600">Loading appointment details...</p>
         </div>
       </div>
     );
@@ -137,28 +137,28 @@ export default function LeadDetail() {
 
   if (error || !lead) {
     return (
-      <AdminLayout title="Lead Not Found" subtitle="" activeTab="leads">
+      <AdminLayout title="Appointment Not Found" subtitle="" activeTab="appointments">
         <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
-          {error || 'Lead not found'}
+          {error || 'Appointment not found'}
         </div>
         <button
           onClick={() => router.push('/admin/leads')}
           className="mt-4 text-purple-600 hover:text-purple-700 font-medium"
         >
-          ← Back to Leads
+          ← Back to Appointments
         </button>
       </AdminLayout>
     );
   }
 
   return (
-    <AdminLayout title="Lead Details" subtitle={lead.name || 'Customer Inquiry'} activeTab="leads">
+    <AdminLayout title="Appointment Details" subtitle={lead.name || 'Customer Inquiry'} activeTab="appointments">
       {/* Back button */}
       <button
         onClick={() => router.push('/admin/leads')}
         className="mb-6 text-purple-600 hover:text-purple-700 font-medium flex items-center"
       >
-        ← Back to Leads
+        ← Back to Appointments
       </button>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
