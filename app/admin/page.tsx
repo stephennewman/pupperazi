@@ -69,6 +69,8 @@ interface RecentAppointment {
   source: string;
   created_at: string;
   utm_source?: string;
+  pet_info?: string;
+  is_new_customer?: string;
 }
 
 interface TrafficData {
@@ -763,8 +765,8 @@ export default function AdminDashboard() {
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Contact</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Source</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Pet</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Type</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
               </tr>
             </thead>
@@ -792,11 +794,15 @@ export default function AdminDashboard() {
                       </div>
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-600">
-                      {appt.utm_source || appt.source || 'Direct'}
+                      {appt.pet_info || '-'}
                     </td>
                     <td className="px-6 py-4">
-                      <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(appt.status)}`}>
-                        {appt.status}
+                      <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                        appt.is_new_customer === 'yes' 
+                          ? 'bg-purple-100 text-purple-700' 
+                          : 'bg-teal-100 text-teal-700'
+                      }`}>
+                        {appt.is_new_customer === 'yes' ? '⭐ New' : '🔄 Returning'}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-500">

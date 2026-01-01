@@ -30,7 +30,6 @@ export default function AdminLeads() {
   const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
-  const [updatingId, setUpdatingId] = useState<number | null>(null);
 
   // Read status filter from URL on mount
   useEffect(() => {
@@ -78,9 +77,11 @@ export default function AdminLeads() {
   useEffect(() => {
     let filtered = leads;
 
-    // Filter by status
-    if (statusFilter !== 'all') {
-      filtered = filtered.filter(lead => lead.status === statusFilter);
+    // Filter by customer type
+    if (statusFilter === 'new_customer') {
+      filtered = filtered.filter(lead => lead.is_new_customer === 'yes');
+    } else if (statusFilter === 'returning') {
+      filtered = filtered.filter(lead => lead.is_new_customer === 'no');
     }
 
     // Filter by search term
@@ -96,43 +97,6 @@ export default function AdminLeads() {
 
     setFilteredLeads(filtered);
   }, [leads, statusFilter, searchTerm]);
-
-  const updateLeadStatus = async (leadId: number, newStatus: string) => {
-    const token = localStorage.getItem('adminToken');
-    if (!token) return;
-
-    setUpdatingId(leadId);
-    try {
-      const response = await fetch(`/api/admin/leads/${leadId}`, {
-        method: 'PATCH',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ status: newStatus }),
-      });
-
-      if (response.ok) {
-        setLeads(prev => prev.map(lead =>
-          lead.id === leadId ? { ...lead, status: newStatus } : lead
-        ));
-      }
-    } catch {
-      console.error('Failed to update status');
-    } finally {
-      setUpdatingId(null);
-    }
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'new': return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 'contacted': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'booked': return 'bg-green-100 text-green-800 border-green-200';
-      case 'closed': return 'bg-gray-100 text-gray-800 border-gray-200';
-      default: return 'bg-gray-100 text-gray-800 border-gray-200';
-    }
-  };
 
   const formatDate = (dateStr: string) => {
     return new Date(dateStr).toLocaleDateString('en-US', {
@@ -176,17 +140,17 @@ export default function AdminLeads() {
             />
           </div>
           <div className="flex gap-2">
-            {['all', 'new', 'contacted', 'booked', 'closed'].map((status) => (
+            {['all', 'new_customer', 'returning'].map((filter) => (
               <button
-                key={status}
-                onClick={() => setStatusFilter(status)}
+                key={filter}
+                onClick={() => setStatusFilter(filter)}
                 className={`px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer ${
-                  statusFilter === status
+                  statusFilter === filter
                     ? 'bg-purple-600 text-white'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
               >
-                {status.charAt(0).toUpperCase() + status.slice(1)}
+                {filter === 'all' ? 'All' : filter === 'new_customer' ? '⭐ New Customers' : '🔄 Returning'}
               </button>
             ))}
           </div>
@@ -194,18 +158,14 @@ export default function AdminLeads() {
       </div>
 
       {/* Stats Bar */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-blue-50 rounded-lg p-3 text-center">
-          <p className="text-2xl font-bold text-blue-700">{leads.filter(l => l.status === 'new').length}</p>
-          <p className="text-sm text-blue-600">New</p>
+      <div className="grid grid-cols-3 gap-4 mb-6">
+        <div className="bg-purple-50 rounded-lg p-3 text-center">
+          <p className="text-2xl font-bold text-purple-700">{leads.filter(l => l.is_new_customer === 'yes').length}</p>
+          <p className="text-sm text-purple-600">⭐ New Customers</p>
         </div>
-        <div className="bg-yellow-50 rounded-lg p-3 text-center">
-          <p className="text-2xl font-bold text-yellow-700">{leads.filter(l => l.status === 'contacted').length}</p>
-          <p className="text-sm text-yellow-600">Contacted</p>
-        </div>
-        <div className="bg-green-50 rounded-lg p-3 text-center">
-          <p className="text-2xl font-bold text-green-700">{leads.filter(l => l.status === 'booked').length}</p>
-          <p className="text-sm text-green-600">Booked</p>
+        <div className="bg-teal-50 rounded-lg p-3 text-center">
+          <p className="text-2xl font-bold text-teal-700">{leads.filter(l => l.is_new_customer === 'no').length}</p>
+          <p className="text-sm text-teal-600">🔄 Returning</p>
         </div>
         <div className="bg-gray-50 rounded-lg p-3 text-center">
           <p className="text-2xl font-bold text-gray-700">{leads.length}</p>
@@ -221,8 +181,7 @@ export default function AdminLeads() {
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Customer</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Pet Info</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Source</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Type</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
               </tr>
@@ -230,7 +189,7 @@ export default function AdminLeads() {
             <tbody className="divide-y divide-gray-100">
               {filteredLeads.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
+                  <td colSpan={5} className="px-6 py-12 text-center text-gray-500">
                     {searchTerm || statusFilter !== 'all' 
                       ? 'No appointments match your filters.' 
                       : 'No appointments yet. They\'ll appear here when customers submit the form.'}
@@ -251,11 +210,6 @@ export default function AdminLeads() {
                         </p>
                         <p className="text-sm text-gray-600">{lead.email}</p>
                         {lead.phone && <p className="text-sm text-gray-500">{lead.phone}</p>}
-                        {lead.is_new_customer === 'yes' && (
-                          <span className="inline-block mt-1 px-2 py-0.5 text-xs bg-purple-100 text-purple-700 rounded">
-                            New Customer
-                          </span>
-                        )}
                       </div>
                     </td>
                     <td className="px-6 py-4">
@@ -267,25 +221,13 @@ export default function AdminLeads() {
                       )}
                     </td>
                     <td className="px-6 py-4">
-                      <div className="text-sm">
-                        <p className="text-gray-900">{lead.utm_source || lead.source || 'Direct'}</p>
-                        {lead.utm_campaign && (
-                          <p className="text-xs text-gray-500">{lead.utm_campaign}</p>
-                        )}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <select
-                        value={lead.status}
-                        onChange={(e) => updateLeadStatus(lead.id, e.target.value)}
-                        disabled={updatingId === lead.id}
-                        className={`px-2 py-1 text-xs font-medium rounded-lg border ${getStatusColor(lead.status)} cursor-pointer`}
-                      >
-                        <option value="new">New</option>
-                        <option value="contacted">Contacted</option>
-                        <option value="booked">Booked</option>
-                        <option value="closed">Closed</option>
-                      </select>
+                      <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                        lead.is_new_customer === 'yes' 
+                          ? 'bg-purple-100 text-purple-700' 
+                          : 'bg-teal-100 text-teal-700'
+                      }`}>
+                        {lead.is_new_customer === 'yes' ? '⭐ New' : '🔄 Returning'}
+                      </span>
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-500">
                       {formatDate(lead.created_at)}

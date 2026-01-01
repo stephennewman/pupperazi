@@ -258,31 +258,6 @@ export default function LeadDetail() {
 
         {/* Sidebar */}
         <div className="space-y-6">
-          {/* Status Update */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Update Status</h3>
-            <div className="space-y-2">
-              {['new', 'contacted', 'booked', 'closed'].map((status) => (
-                <button
-                  key={status}
-                  onClick={() => updateLead({ status })}
-                  disabled={isSaving || lead.status === status}
-                  className={`w-full px-4 py-3 rounded-lg font-medium transition-colors cursor-pointer ${
-                    lead.status === status
-                      ? 'bg-purple-600 text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  } disabled:opacity-50 disabled:cursor-not-allowed`}
-                >
-                  {status === 'new' && '🆕 '}
-                  {status === 'contacted' && '📞 '}
-                  {status === 'booked' && '✅ '}
-                  {status === 'closed' && '📁 '}
-                  {status.charAt(0).toUpperCase() + status.slice(1)}
-                </button>
-              ))}
-            </div>
-          </div>
-
           {/* Exclude from Stats */}
           <div className={`rounded-xl shadow-sm border p-6 ${lead.is_test ? 'bg-orange-50 border-orange-200' : 'bg-white border-gray-100'}`}>
             <h3 className="text-lg font-semibold text-gray-900 mb-3">Exclude from Stats</h3>
