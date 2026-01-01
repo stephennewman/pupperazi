@@ -6,7 +6,7 @@
 **Tech Stack:** Next.js 16.1.1, React 19, TypeScript, Tailwind CSS 4  
 **Location:** Palm Harbor, FL  
 
-## Current Status (December 28, 2025)
+## Current Status (January 1, 2026)
 - ✅ Complete Pupperazi Pet Spa website with all features
 - ✅ Beautiful photo gallery with 9 showcase images
 - ✅ Phone number prominently displayed in navigation
@@ -27,6 +27,24 @@
 - ✅ Easy phone access in navigation
 
 ## Activity Log (Most Recent First)
+
+### January 1, 2026 - 📧 MONTHLY RECAP EMAIL SENT + TERMINOLOGY UPDATE
+- **Activity:** Renamed all "leads" terminology to "appointments" throughout admin portal, API routes, and email templates
+- **Status:** ✅ DEPLOYED to GitHub and Vercel
+- **Monthly Recap Email Sent:** Successfully triggered and delivered
+- **Data Summary (November vs December 2025):**
+  - **December:** 42 appointments, 16 new customers (38%), 26 returning
+  - **November:** 25 appointments, 9 new customers (36%), 16 returning
+  - **Growth:** +68% total appointments, +78% new customers month-over-month
+  - **Total All-Time:** 67 appointment requests since Nov 1, 2025
+- **Changes Made:**
+  - Admin navigation: "Leads" tab renamed to "Appointments"
+  - Dashboard: All "leads" labels changed to "appointments"
+  - Leads list page: Updated title, labels, and messages
+  - Lead detail page: Updated titles, labels, and back buttons
+  - Monthly recap email: All "leads" references updated to "appointments"
+  - Email sent to stephen@krezzo.com (Resend test mode limitation)
+- **Note:** To send to stephen@outcomeview.com, need to verify domain at resend.com/domains
 
 ### December 28, 2025 - 🏢 ADMIN PORTAL / CRM BUILT
 - **Activity:** Built password-protected admin portal for lead management
