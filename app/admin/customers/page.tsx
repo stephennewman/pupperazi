@@ -220,7 +220,7 @@ export default function AdminCustomers() {
           <div className="flex gap-2">
             <button
               onClick={() => setFilter('all')}
-              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+              className={`px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer ${
                 filter === 'all' 
                   ? 'bg-purple-600 text-white' 
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -230,7 +230,7 @@ export default function AdminCustomers() {
             </button>
             <button
               onClick={() => setFilter('repeat')}
-              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+              className={`px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer ${
                 filter === 'repeat' 
                   ? 'bg-purple-600 text-white' 
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -240,7 +240,7 @@ export default function AdminCustomers() {
             </button>
             <button
               onClick={() => setFilter('active90')}
-              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+              className={`px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer ${
                 filter === 'active90' 
                   ? 'bg-green-600 text-white' 
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -250,7 +250,7 @@ export default function AdminCustomers() {
             </button>
             <button
               onClick={() => setFilter('active30')}
-              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+              className={`px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer ${
                 filter === 'active30' 
                   ? 'bg-blue-600 text-white' 
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'

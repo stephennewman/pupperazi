@@ -444,7 +444,7 @@ export default function AdminDashboard() {
             <div className="flex gap-2">
               <button
                 onClick={() => setActiveChart('daily')}
-                className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
+                className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors cursor-pointer ${
                   activeChart === 'daily'
                     ? 'bg-purple-600 text-white'
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
@@ -454,7 +454,7 @@ export default function AdminDashboard() {
               </button>
               <button
                 onClick={() => setActiveChart('weekly')}
-                className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
+                className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors cursor-pointer ${
                   activeChart === 'weekly'
                     ? 'bg-purple-600 text-white'
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
@@ -464,7 +464,7 @@ export default function AdminDashboard() {
               </button>
               <button
                 onClick={() => setActiveChart('monthly')}
-                className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
+                className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors cursor-pointer ${
                   activeChart === 'monthly'
                     ? 'bg-purple-600 text-white'
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
@@ -708,7 +708,7 @@ export default function AdminDashboard() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <button
               onClick={() => router.push('/admin/leads')}
-              className="p-4 bg-purple-50 hover:bg-purple-100 rounded-xl text-left transition-colors"
+              className="p-4 bg-purple-50 hover:bg-purple-100 rounded-xl text-left transition-colors cursor-pointer"
             >
               <span className="text-2xl mb-2 block">📅</span>
               <span className="font-semibold text-purple-900">View All Appointments</span>
@@ -716,7 +716,7 @@ export default function AdminDashboard() {
             </button>
             <button
               onClick={() => router.push('/admin/customers')}
-              className="p-4 bg-teal-50 hover:bg-teal-100 rounded-xl text-left transition-colors"
+              className="p-4 bg-teal-50 hover:bg-teal-100 rounded-xl text-left transition-colors cursor-pointer"
             >
               <span className="text-2xl mb-2 block">🔄</span>
               <span className="font-semibold text-teal-900">Repeat Customers</span>
@@ -726,7 +726,7 @@ export default function AdminDashboard() {
               href="https://pupperazipetspa.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="p-4 bg-green-50 hover:bg-green-100 rounded-xl text-left transition-colors"
+              className="p-4 bg-green-50 hover:bg-green-100 rounded-xl text-left transition-colors cursor-pointer"
             >
               <span className="text-2xl mb-2 block">🌐</span>
               <span className="font-semibold text-green-900">View Website</span>
@@ -734,7 +734,7 @@ export default function AdminDashboard() {
             </a>
             <button
               onClick={() => router.push('/admin/settings')}
-              className="p-4 bg-gray-50 hover:bg-gray-100 rounded-xl text-left transition-colors"
+              className="p-4 bg-gray-50 hover:bg-gray-100 rounded-xl text-left transition-colors cursor-pointer"
             >
               <span className="text-2xl mb-2 block">⚙️</span>
               <span className="font-semibold text-gray-900">Settings</span>
@@ -751,7 +751,7 @@ export default function AdminDashboard() {
             <h3 className="text-lg font-semibold text-gray-900">Recent Appointments</h3>
             <button
               onClick={() => router.push('/admin/leads')}
-              className="text-purple-600 hover:text-purple-700 text-sm font-medium"
+              className="text-purple-600 hover:text-purple-700 text-sm font-medium cursor-pointer"
             >
               View All →
             </button>

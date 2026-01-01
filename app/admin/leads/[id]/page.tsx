@@ -144,7 +144,7 @@ export default function LeadDetail() {
         </div>
         <button
           onClick={() => router.push('/admin/leads')}
-          className="mt-4 text-purple-600 hover:text-purple-700 font-medium"
+          className="mt-4 text-purple-600 hover:text-purple-700 font-medium cursor-pointer"
         >
           ← Back to Appointments
         </button>
@@ -157,7 +157,7 @@ export default function LeadDetail() {
       {/* Back button */}
       <button
         onClick={() => router.push('/admin/leads')}
-        className="mb-6 text-purple-600 hover:text-purple-700 font-medium flex items-center"
+        className="mb-6 text-purple-600 hover:text-purple-700 font-medium flex items-center cursor-pointer"
       >
         ← Back to Appointments
       </button>
@@ -249,7 +249,7 @@ export default function LeadDetail() {
             <button
               onClick={() => updateLead({ notes })}
               disabled={isSaving}
-              className="mt-3 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg font-medium transition-colors disabled:opacity-50"
+              className="mt-3 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSaving ? 'Saving...' : 'Save Notes'}
             </button>
@@ -267,11 +267,11 @@ export default function LeadDetail() {
                   key={status}
                   onClick={() => updateLead({ status })}
                   disabled={isSaving || lead.status === status}
-                  className={`w-full px-4 py-3 rounded-lg font-medium transition-colors ${
+                  className={`w-full px-4 py-3 rounded-lg font-medium transition-colors cursor-pointer ${
                     lead.status === status
                       ? 'bg-purple-600 text-white'
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  } disabled:opacity-50`}
+                  } disabled:opacity-50 disabled:cursor-not-allowed`}
                 >
                   {status === 'new' && '🆕 '}
                   {status === 'contacted' && '📞 '}
@@ -292,11 +292,11 @@ export default function LeadDetail() {
             <button
               onClick={() => updateLead({ is_test: !lead.is_test })}
               disabled={isSaving}
-              className={`w-full px-4 py-3 rounded-lg font-medium transition-colors ${
+              className={`w-full px-4 py-3 rounded-lg font-medium transition-colors cursor-pointer ${
                 lead.is_test
                   ? 'bg-orange-500 hover:bg-orange-600 text-white'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              } disabled:opacity-50`}
+              } disabled:opacity-50 disabled:cursor-not-allowed`}
             >
               {lead.is_test ? '🚫 Excluded (Click to Include)' : '✓ Included (Click to Exclude)'}
             </button>

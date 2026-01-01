@@ -180,7 +180,7 @@ export default function AdminLeads() {
               <button
                 key={status}
                 onClick={() => setStatusFilter(status)}
-                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                className={`px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer ${
                   statusFilter === status
                     ? 'bg-purple-600 text-white'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -293,7 +293,7 @@ export default function AdminLeads() {
                     <td className="px-6 py-4">
                       <button
                         onClick={() => router.push(`/admin/leads/${lead.id}`)}
-                        className="text-purple-600 hover:text-purple-700 text-sm font-medium"
+                        className="text-purple-600 hover:text-purple-700 text-sm font-medium cursor-pointer"
                       >
                         View →
                       </button>
