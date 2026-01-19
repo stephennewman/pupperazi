@@ -3,7 +3,7 @@
 import { useRouter, usePathname } from 'next/navigation';
 
 interface AdminNavigationProps {
-  activeTab?: 'dashboard' | 'appointments' | 'customers' | 'calendar' | 'settings';
+  activeTab?: 'dashboard' | 'appointments' | 'customers' | 'calendar' | 'analytics' | 'settings';
 }
 
 export default function AdminNavigation({ activeTab }: AdminNavigationProps) {
@@ -18,6 +18,7 @@ export default function AdminNavigation({ activeTab }: AdminNavigationProps) {
     if (pathname?.includes('/admin/leads')) return 'appointments';
     if (pathname?.includes('/admin/customers')) return 'customers';
     if (pathname?.includes('/admin/calendar')) return 'calendar';
+    if (pathname?.includes('/admin/analytics')) return 'analytics';
     if (pathname?.includes('/admin/settings')) return 'settings';
 
     return 'dashboard';
@@ -30,6 +31,7 @@ export default function AdminNavigation({ activeTab }: AdminNavigationProps) {
     { key: 'appointments', label: 'Appointments', icon: '📅', path: '/admin/leads' },
     { key: 'customers', label: 'Customers', icon: '👥', path: '/admin/customers' },
     { key: 'calendar', label: 'Calendar', icon: '📆', path: '/admin/calendar' },
+    { key: 'analytics', label: 'Analytics', icon: '📈', path: '/admin/analytics' },
     { key: 'settings', label: 'Settings', icon: '⚙️', path: '/admin/settings' }
   ];
 

@@ -462,6 +462,102 @@ export function formatSlackMessage(data: AnalyticsData, type: "daily" | "weekly"
   return { blocks };
 }
 
+export interface ConversionDataPoint {
+  date: string;
+  label: string;
+  appointmentClicks: number;
+  formSubmits: number;
+  conversionRate: number;
+}
+
+export async function getConversionFunnelByDay(
+  startDate: string,
+  endDate: string
+): Promise<ConversionDataPoint[]> {
+  const client = getAnalyticsClient();
+
+  try {
+    // Fetch appointment clicks by date
+    const [appointmentResponse] = await client.runReport({
+      property: `properties/${PROPERTY_ID}`,
+      dateRanges: [{ startDate, endDate }],
+      dimensions: [{ name: "date" }],
+      metrics: [{ name: "eventCount" }],
+      dimensionFilter: {
+        filter: {
+          fieldName: "eventName",
+          stringFilter: { value: "appointment_click" },
+        },
+      },
+      orderBys: [{ dimension: { dimensionName: "date" } }],
+    });
+
+    // Fetch form submits by date
+    const [formSubmitResponse] = await client.runReport({
+      property: `properties/${PROPERTY_ID}`,
+      dateRanges: [{ startDate, endDate }],
+      dimensions: [{ name: "date" }],
+      metrics: [{ name: "eventCount" }],
+      dimensionFilter: {
+        filter: {
+          fieldName: "eventName",
+          stringFilter: { value: "form_submit_success" },
+        },
+      },
+      orderBys: [{ dimension: { dimensionName: "date" } }],
+    });
+
+    // Build a map of date -> appointment clicks
+    const appointmentMap: Record<string, number> = {};
+    appointmentResponse.rows?.forEach((row) => {
+      const date = row.dimensionValues?.[0]?.value || "";
+      const count = parseInt(row.metricValues?.[0]?.value || "0");
+      appointmentMap[date] = count;
+    });
+
+    // Build a map of date -> form submits
+    const formSubmitMap: Record<string, number> = {};
+    formSubmitResponse.rows?.forEach((row) => {
+      const date = row.dimensionValues?.[0]?.value || "";
+      const count = parseInt(row.metricValues?.[0]?.value || "0");
+      formSubmitMap[date] = count;
+    });
+
+    // Generate all dates in range
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const results: ConversionDataPoint[] = [];
+
+    for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+      const dateStr = d.toISOString().split("T")[0].replace(/-/g, "");
+      const displayDate = new Date(d);
+      const label = displayDate.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+      });
+
+      const appointmentClicks = appointmentMap[dateStr] || 0;
+      const formSubmits = formSubmitMap[dateStr] || 0;
+      const conversionRate = appointmentClicks > 0 
+        ? Math.round((formSubmits / appointmentClicks) * 100) 
+        : 0;
+
+      results.push({
+        date: dateStr,
+        label,
+        appointmentClicks,
+        formSubmits,
+        conversionRate,
+      });
+    }
+
+    return results;
+  } catch (error) {
+    console.error("Error fetching conversion funnel data:", error);
+    return [];
+  }
+}
+
 export async function sendToSlack(message: object): Promise<boolean> {
   const webhookUrl = process.env.SLACK_ANALYTICS_WEBHOOK;
   
