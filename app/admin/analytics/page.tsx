@@ -389,9 +389,9 @@ export default function AnalyticsPage() {
                           borderRadius: '8px',
                           boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
                         }}
-                        formatter={(value: number, name: string) => {
+                        formatter={(value, name) => {
                           const displayName = name === 'appointmentClicks' ? 'Clicked Appointment' : 'Did Not Click';
-                          return [value.toLocaleString(), displayName];
+                          return [typeof value === 'number' ? value.toLocaleString() : String(value), displayName];
                         }}
                         labelFormatter={(label) => `${activeTab === 'daily' ? 'Date' : activeTab === 'weekly' ? 'Week of' : 'Month'}: ${label}`}
                       />
@@ -442,7 +442,7 @@ export default function AnalyticsPage() {
                             border: '1px solid #E5E7EB',
                             borderRadius: '8px',
                           }}
-                          formatter={(value: number) => [`${value}%`, 'Click-Through Rate']}
+                          formatter={(value) => [`${value}%`, 'Click-Through Rate']}
                         />
                         <Line 
                           type="monotone" 
@@ -521,7 +521,7 @@ export default function AnalyticsPage() {
                           borderRadius: '8px',
                           boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
                         }}
-                        formatter={(value: number, name: string) => {
+                        formatter={(value, name) => {
                           const displayName = name === 'appointmentClicks' ? 'Appointment Clicks' : 'Form Fills';
                           return [value, displayName];
                         }}
@@ -575,7 +575,7 @@ export default function AnalyticsPage() {
                             border: '1px solid #E5E7EB',
                             borderRadius: '8px',
                           }}
-                          formatter={(value: number) => [`${value}%`, 'Conversion Rate']}
+                          formatter={(value) => [`${value}%`, 'Conversion Rate']}
                         />
                         <Line 
                           type="monotone" 
@@ -660,13 +660,13 @@ export default function AnalyticsPage() {
                           borderRadius: '8px',
                           boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
                         }}
-                        formatter={(value: number, name: string) => {
+                        formatter={(value, name) => {
                           const names: Record<string, string> = {
                             visitors: 'Visitors',
                             appointmentClicks: 'Appointment Clicks',
                             formSubmits: 'Form Fills',
                           };
-                          return [value.toLocaleString(), names[name] || name];
+                          return [typeof value === 'number' ? value.toLocaleString() : String(value), names[String(name)] || String(name)];
                         }}
                       />
                       <Legend 
@@ -727,7 +727,7 @@ export default function AnalyticsPage() {
                             border: '1px solid #E5E7EB',
                             borderRadius: '8px',
                           }}
-                          formatter={(value: number) => [`${value}%`, 'Click-Through Rate']}
+                          formatter={(value) => [`${value}%`, 'Click-Through Rate']}
                         />
                         <Line 
                           type="monotone" 
@@ -816,13 +816,13 @@ export default function AnalyticsPage() {
                           borderRadius: '8px',
                           boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
                         }}
-                        formatter={(value: number, name: string) => {
+                        formatter={(value, name) => {
                           const names: Record<string, string> = {
                             visitors: 'Visitors',
                             appointmentClicks: 'Appointment Clicks',
                             formSubmits: 'Form Fills',
                           };
-                          return [value.toLocaleString(), names[name] || name];
+                          return [typeof value === 'number' ? value.toLocaleString() : String(value), names[String(name)] || String(name)];
                         }}
                         labelFormatter={(label, payload) => {
                           const item = payload?.[0]?.payload as TimeOfDayDataPoint | undefined;
@@ -998,7 +998,7 @@ export default function AnalyticsPage() {
                     </thead>
                     <tbody>
                       {['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map(day => {
-                        const daySlots = data.dayTimeHeatmap.filter(s => s.day === day);
+                        const daySlots = data.dayTimeHeatmap?.filter(s => s.day === day) || [];
                         return (
                           <tr key={day} className="border-t border-gray-100">
                             <td className="py-2 px-3 font-medium text-gray-900">{day.slice(0, 3)}</td>
