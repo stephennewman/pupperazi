@@ -9,6 +9,13 @@ const supabase = LEADS_SUPABASE_KEY
   ? createClient(LEADS_SUPABASE_URL, LEADS_SUPABASE_KEY)
   : null;
 
+interface AdditionalInfo {
+  dateRequested: string | null;
+  timeRequested: string | null;
+  newCustomer: string | null;
+  message: string | null;
+}
+
 interface RepeatCustomer {
   email: string;
   name: string;
@@ -20,6 +27,7 @@ interface RepeatCustomer {
   lastVisit: string;
   petInfo: string[];
   avgDaysBetweenVisits: number | null;
+  additionalInfo: AdditionalInfo[];
 }
 
 export async function GET(request: NextRequest) {
@@ -55,6 +63,7 @@ export async function GET(request: NextRequest) {
       phones: string[];
       pets: string[];
       visits: Date[];
+      additionalInfo: AdditionalInfo[];
     }>();
 
     allLeads?.forEach(lead => {
@@ -68,6 +77,7 @@ export async function GET(request: NextRequest) {
           phones: [],
           pets: [],
           visits: [],
+          additionalInfo: [],
         });
       }
 
@@ -82,6 +92,14 @@ export async function GET(request: NextRequest) {
         customer.pets.push(lead.pet_info);
       }
       customer.visits.push(new Date(lead.created_at));
+      
+      // Capture additional form info from most recent lead
+      customer.additionalInfo.push({
+        dateRequested: lead.date_requested || null,
+        timeRequested: lead.time_requested || null,
+        newCustomer: lead.new_customer || null,
+        message: lead.message || null,
+      });
     });
 
     // Build repeat customer list
@@ -117,6 +135,7 @@ export async function GET(request: NextRequest) {
         lastVisit: customer.visits[customer.visits.length - 1]?.toISOString() || '',
         petInfo: customer.pets,
         avgDaysBetweenVisits: avgDays,
+        additionalInfo: customer.additionalInfo,
       });
     });
 

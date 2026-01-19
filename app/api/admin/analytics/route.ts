@@ -1,6 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { validateToken } from '@/lib/auth';
-import { getAnalyticsData, getConversionFunnelByDay, AnalyticsData, ConversionDataPoint } from '@/lib/googleAnalytics';
+import { 
+  getAnalyticsData, 
+  getConversionFunnelByDay, 
+  getConversionFunnelByWeek,
+  getConversionFunnelByMonth,
+  getVisitorConversionByDay,
+  getVisitorConversionByWeek,
+  getVisitorConversionByMonth,
+  getDayOfWeekPerformance,
+  getTimeOfDayPerformance,
+  getDayTimeHeatmap,
+  AnalyticsData, 
+  ConversionDataPoint,
+  VisitorConversionDataPoint,
+  DayOfWeekDataPoint,
+  TimeOfDayDataPoint,
+  DayTimeSlot
+} from '@/lib/googleAnalytics';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -8,13 +25,21 @@ export const dynamic = 'force-dynamic';
 interface AnalyticsResponse {
   success: boolean;
   configured: boolean;
-  daily?: AnalyticsData;
-  weekly?: AnalyticsData;
-  monthly?: AnalyticsData;
-  conversionChart?: {
-    daily: ConversionDataPoint[];  // Last 14 days
-    weekly: ConversionDataPoint[]; // Last 7 days
+  daily?: AnalyticsData & { 
+    chart: ConversionDataPoint[];
+    visitorChart: VisitorConversionDataPoint[];
   };
+  weekly?: AnalyticsData & { 
+    chart: ConversionDataPoint[];
+    visitorChart: VisitorConversionDataPoint[];
+  };
+  monthly?: AnalyticsData & { 
+    chart: ConversionDataPoint[];
+    visitorChart: VisitorConversionDataPoint[];
+  };
+  dayOfWeek?: DayOfWeekDataPoint[];
+  timeOfDay?: TimeOfDayDataPoint[];
+  dayTimeHeatmap?: DayTimeSlot[];
   error?: string;
 }
 
@@ -89,35 +114,50 @@ export async function GET(request: NextRequest) {
       day: 'numeric',
     })}`;
 
-    // Conversion chart dates: last 14 days for daily, last 7 days for weekly
-    const chartEnd = new Date(today);
-    chartEnd.setDate(chartEnd.getDate() - 1);
-    
-    const chart14DaysStart = new Date(chartEnd);
-    chart14DaysStart.setDate(chart14DaysStart.getDate() - 13);
-    
-    const chart7DaysStart = new Date(chartEnd);
-    chart7DaysStart.setDate(chart7DaysStart.getDate() - 6);
+    // Daily chart: last 14 days
+    const dailyChartEnd = new Date(today);
+    dailyChartEnd.setDate(dailyChartEnd.getDate() - 1);
+    const dailyChartStart = new Date(dailyChartEnd);
+    dailyChartStart.setDate(dailyChartStart.getDate() - 13);
 
     // Fetch all data in parallel
-    const [dailyData, weeklyData, monthlyData, conversionDaily, conversionWeekly] = await Promise.all([
+    const [
+      dailyData, 
+      weeklyData, 
+      monthlyData, 
+      dailyChart, 
+      weeklyChart, 
+      monthlyChart,
+      dailyVisitorChart,
+      weeklyVisitorChart,
+      monthlyVisitorChart,
+      dayOfWeekData,
+      timeOfDayData,
+      dayTimeHeatmapData
+    ] = await Promise.all([
       getAnalyticsData(dailyStartDate, dailyEndDate, dailyPeriodLabel, true),
       getAnalyticsData(weeklyStartStr, weeklyEndStr, weeklyPeriodLabel, true),
       getAnalyticsData(monthlyStartStr, monthlyEndStr, monthlyPeriodLabel, true),
-      getConversionFunnelByDay(chart14DaysStart.toISOString().split('T')[0], chartEnd.toISOString().split('T')[0]),
-      getConversionFunnelByDay(chart7DaysStart.toISOString().split('T')[0], chartEnd.toISOString().split('T')[0]),
+      getConversionFunnelByDay(dailyChartStart.toISOString().split('T')[0], dailyChartEnd.toISOString().split('T')[0]),
+      getConversionFunnelByWeek(8), // Last 8 weeks
+      getConversionFunnelByMonth(6), // Last 6 months
+      getVisitorConversionByDay(dailyChartStart.toISOString().split('T')[0], dailyChartEnd.toISOString().split('T')[0]),
+      getVisitorConversionByWeek(8), // Last 8 weeks
+      getVisitorConversionByMonth(6), // Last 6 months
+      getDayOfWeekPerformance(), // Last 30 days aggregated by day of week
+      getTimeOfDayPerformance(), // Last 30 days aggregated by time bucket
+      getDayTimeHeatmap(), // Last 30 days day + time combined
     ]);
 
     const response: AnalyticsResponse = {
       success: true,
       configured: true,
-      daily: dailyData,
-      weekly: weeklyData,
-      monthly: monthlyData,
-      conversionChart: {
-        daily: conversionDaily,
-        weekly: conversionWeekly,
-      },
+      daily: { ...dailyData, chart: dailyChart, visitorChart: dailyVisitorChart },
+      weekly: { ...weeklyData, chart: weeklyChart, visitorChart: weeklyVisitorChart },
+      monthly: { ...monthlyData, chart: monthlyChart, visitorChart: monthlyVisitorChart },
+      dayOfWeek: dayOfWeekData,
+      timeOfDay: timeOfDayData,
+      dayTimeHeatmap: dayTimeHeatmapData,
     };
 
     return NextResponse.json(response);

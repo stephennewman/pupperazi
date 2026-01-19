@@ -4,6 +4,13 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import AdminLayout from '@/components/AdminLayout';
 
+interface AdditionalInfo {
+  dateRequested: string | null;
+  timeRequested: string | null;
+  newCustomer: string | null;
+  message: string | null;
+}
+
 interface RepeatCustomer {
   email: string;
   name: string;
@@ -15,6 +22,7 @@ interface RepeatCustomer {
   lastVisit: string;
   petInfo: string[];
   avgDaysBetweenVisits: number | null;
+  additionalInfo: AdditionalInfo[];
 }
 
 interface Summary {
@@ -277,6 +285,9 @@ export default function AdminCustomers() {
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                   Pet(s)
                 </th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                  Additional Info
+                </th>
                 <th 
                   className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-100"
                   onClick={() => handleSort('totalAppointments')}
@@ -315,7 +326,7 @@ export default function AdminCustomers() {
             <tbody className="divide-y divide-gray-100">
               {sortedCustomers.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="px-4 py-8 text-center text-gray-500">
+                  <td colSpan={9} className="px-4 py-8 text-center text-gray-500">
                     No customers found matching your criteria.
                   </td>
                 </tr>
@@ -338,6 +349,47 @@ export default function AdminCustomers() {
                         ))}
                         {customer.petInfo.length > 2 && (
                           <p className="text-xs text-gray-400">+{customer.petInfo.length - 2} more</p>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="min-w-[140px] max-w-[200px] text-xs break-words">
+                        {customer.additionalInfo && customer.additionalInfo.length > 0 && (
+                          <>
+                            {customer.additionalInfo[customer.additionalInfo.length - 1]?.dateRequested && (
+                              <p className="text-gray-600">
+                                <span className="font-medium">Date:</span> {customer.additionalInfo[customer.additionalInfo.length - 1].dateRequested}
+                              </p>
+                            )}
+                            {customer.additionalInfo[customer.additionalInfo.length - 1]?.timeRequested && (
+                              <p className="text-gray-600">
+                                <span className="font-medium">Time:</span> {customer.additionalInfo[customer.additionalInfo.length - 1].timeRequested}
+                              </p>
+                            )}
+                            {customer.additionalInfo[customer.additionalInfo.length - 1]?.newCustomer && (
+                              <p className="text-gray-500">
+                                <span className={`inline-block px-1.5 py-0.5 rounded text-xs ${
+                                  customer.additionalInfo[customer.additionalInfo.length - 1].newCustomer === 'yes' 
+                                    ? 'bg-green-100 text-green-700' 
+                                    : 'bg-blue-100 text-blue-700'
+                                }`}>
+                                  {customer.additionalInfo[customer.additionalInfo.length - 1].newCustomer === 'yes' ? 'New' : 'Returning'}
+                                </span>
+                              </p>
+                            )}
+                            {customer.additionalInfo[customer.additionalInfo.length - 1]?.message && (
+                              <p className="text-gray-400 whitespace-normal break-words">
+                                {customer.additionalInfo[customer.additionalInfo.length - 1].message}
+                              </p>
+                            )}
+                          </>
+                        )}
+                        {(!customer.additionalInfo || customer.additionalInfo.length === 0 || 
+                          (!customer.additionalInfo[customer.additionalInfo.length - 1]?.dateRequested && 
+                           !customer.additionalInfo[customer.additionalInfo.length - 1]?.timeRequested && 
+                           !customer.additionalInfo[customer.additionalInfo.length - 1]?.newCustomer && 
+                           !customer.additionalInfo[customer.additionalInfo.length - 1]?.message)) && (
+                          <span className="text-gray-300">-</span>
                         )}
                       </div>
                     </td>
@@ -448,6 +500,550 @@ export default function AdminCustomers() {
             {customers.filter(c => c.totalAppointments >= 3).length}
           </p>
           <p className="text-xs text-green-600 mt-1">Consider a loyalty reward or referral program</p>
+        </div>
+      </div>
+
+      {/* Doggy Breed Power Rankings */}
+      <div className="mt-6 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-6 border border-purple-100">
+        <h3 className="font-semibold text-purple-900 mb-4 text-lg">🏆 Doggy Breed Power Rankings</h3>
+        <p className="text-purple-700 text-sm mb-4">Most popular breeds based on customer pet info</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+          {(() => {
+            // SEO pages that exist for breeds
+            const breedSeoPages: Record<string, string> = {
+              'Golden Retriever': '/golden-retriever-grooming-palm-harbor',
+              'Goldendoodle': '/goldendoodle-grooming-palm-harbor',
+              'French Bulldog': '/french-bulldog-grooming-palm-harbor',
+              'Husky': '/husky-grooming-palm-harbor',
+              'Shih Tzu': '/shih-tzu-grooming-palm-harbor',
+              'Yorkie': '/yorkie-grooming-palm-harbor',
+              'Labradoodle': '/labradoodle-grooming-palm-harbor',
+              'Poodle': '/poodle-grooming-palm-harbor',
+              'Dachshund': '/dachshund-grooming-palm-harbor',
+              'Corgi': '/corgi-grooming-palm-harbor',
+            };
+            
+            // Parse all pet info to extract and count breeds
+            const breedCounts = new Map<string, number>();
+            
+            customers.forEach(customer => {
+              customer.petInfo.forEach(petStr => {
+                // Common patterns: "Name - Breed", "Name (Breed)", "Breed", "Name, Breed"
+                const normalized = petStr.toLowerCase().trim();
+                
+                // Skip empty or very short entries
+                if (normalized.length < 2) return;
+                
+                // Common breed keywords to look for
+                const knownBreeds = [
+                  'goldendoodle', 'doodle', 'labradoodle', 'bernedoodle', 'aussiedoodle',
+                  'golden retriever', 'golden', 'labrador', 'lab',
+                  'poodle', 'standard poodle', 'toy poodle', 'mini poodle',
+                  'french bulldog', 'frenchie', 'bulldog', 'english bulldog',
+                  'german shepherd', 'shepherd',
+                  'husky', 'siberian husky',
+                  'shih tzu', 'shihtzu',
+                  'yorkie', 'yorkshire terrier', 'yorkshire',
+                  'maltese', 'maltipoo',
+                  'chihuahua',
+                  'beagle',
+                  'boxer',
+                  'rottweiler',
+                  'dachshund', 'weiner', 'wiener',
+                  'corgi', 'pembroke', 'welsh corgi',
+                  'schnauzer', 'mini schnauzer',
+                  'cocker spaniel', 'spaniel',
+                  'boston terrier', 'terrier',
+                  'pomeranian', 'pom',
+                  'pit bull', 'pitbull', 'bully',
+                  'australian shepherd', 'aussie',
+                  'border collie', 'collie',
+                  'cavalier', 'cavalier king charles',
+                  'great dane', 'dane',
+                  'doberman',
+                  'havanese',
+                  'bichon', 'bichon frise',
+                  'shiba', 'shiba inu',
+                  'akita',
+                  'bernese', 'bernese mountain',
+                  'samoyed',
+                  'newfoundland',
+                  'vizsla',
+                  'weimaraner',
+                  'pug',
+                  'basset', 'basset hound',
+                  'bloodhound',
+                  'mastiff',
+                  'cane corso',
+                  'mixed', 'mix', 'mutt',
+                ];
+                
+                // Find matching breeds in the pet string
+                let foundBreed = false;
+                for (const breed of knownBreeds) {
+                  if (normalized.includes(breed)) {
+                    // Normalize similar breeds
+                    let displayBreed = breed;
+                    if (['golden', 'golden retriever'].includes(breed)) displayBreed = 'Golden Retriever';
+                    else if (['doodle', 'goldendoodle'].includes(breed)) displayBreed = 'Goldendoodle';
+                    else if (['labradoodle'].includes(breed)) displayBreed = 'Labradoodle';
+                    else if (['bernedoodle'].includes(breed)) displayBreed = 'Bernedoodle';
+                    else if (['aussiedoodle'].includes(breed)) displayBreed = 'Aussiedoodle';
+                    else if (['labrador', 'lab'].includes(breed)) displayBreed = 'Labrador';
+                    else if (['french bulldog', 'frenchie'].includes(breed)) displayBreed = 'French Bulldog';
+                    else if (['english bulldog', 'bulldog'].includes(breed)) displayBreed = 'Bulldog';
+                    else if (['shih tzu', 'shihtzu'].includes(breed)) displayBreed = 'Shih Tzu';
+                    else if (['yorkie', 'yorkshire terrier', 'yorkshire'].includes(breed)) displayBreed = 'Yorkie';
+                    else if (['husky', 'siberian husky'].includes(breed)) displayBreed = 'Husky';
+                    else if (['german shepherd', 'shepherd'].includes(breed)) displayBreed = 'German Shepherd';
+                    else if (['poodle', 'standard poodle', 'toy poodle', 'mini poodle'].includes(breed)) displayBreed = 'Poodle';
+                    else if (['corgi', 'pembroke', 'welsh corgi'].includes(breed)) displayBreed = 'Corgi';
+                    else if (['pit bull', 'pitbull', 'bully'].includes(breed)) displayBreed = 'Pit Bull';
+                    else if (['australian shepherd', 'aussie'].includes(breed)) displayBreed = 'Australian Shepherd';
+                    else if (['cavalier', 'cavalier king charles'].includes(breed)) displayBreed = 'Cavalier King Charles';
+                    else if (['pomeranian', 'pom'].includes(breed)) displayBreed = 'Pomeranian';
+                    else if (['schnauzer', 'mini schnauzer'].includes(breed)) displayBreed = 'Schnauzer';
+                    else if (['dachshund', 'weiner', 'wiener'].includes(breed)) displayBreed = 'Dachshund';
+                    else if (['bichon', 'bichon frise'].includes(breed)) displayBreed = 'Bichon Frise';
+                    else if (['shiba', 'shiba inu'].includes(breed)) displayBreed = 'Shiba Inu';
+                    else if (['bernese', 'bernese mountain'].includes(breed)) displayBreed = 'Bernese Mountain Dog';
+                    else if (['great dane', 'dane'].includes(breed)) displayBreed = 'Great Dane';
+                    else if (['mixed', 'mix', 'mutt'].includes(breed)) displayBreed = 'Mixed Breed';
+                    else if (['maltipoo'].includes(breed)) displayBreed = 'Maltipoo';
+                    else if (['border collie', 'collie'].includes(breed)) displayBreed = 'Border Collie';
+                    else if (['cocker spaniel', 'spaniel'].includes(breed)) displayBreed = 'Cocker Spaniel';
+                    else if (['boston terrier'].includes(breed)) displayBreed = 'Boston Terrier';
+                    else if (['basset', 'basset hound'].includes(breed)) displayBreed = 'Basset Hound';
+                    else displayBreed = breed.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+                    
+                    breedCounts.set(displayBreed, (breedCounts.get(displayBreed) || 0) + 1);
+                    foundBreed = true;
+                    break; // Only count first match per pet
+                  }
+                }
+                
+                // If no known breed found, try to extract from common patterns
+                if (!foundBreed && normalized.length > 3) {
+                  // Try "Name - Breed" pattern
+                  const dashMatch = petStr.match(/[-–]\s*(.+)$/);
+                  if (dashMatch) {
+                    const breed = dashMatch[1].trim();
+                    if (breed.length > 2 && breed.length < 40) {
+                      const displayBreed = breed.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
+                      breedCounts.set(displayBreed, (breedCounts.get(displayBreed) || 0) + 1);
+                    }
+                  }
+                }
+              });
+            });
+            
+            // Sort by count descending and take top entries
+            const sortedBreeds = Array.from(breedCounts.entries())
+              .sort((a, b) => b[1] - a[1])
+              .slice(0, 15);
+            
+            const maxCount = sortedBreeds[0]?.[1] || 1;
+            
+            if (sortedBreeds.length === 0) {
+              return <p className="text-purple-500 text-sm col-span-full">No breed data available yet</p>;
+            }
+            
+            return sortedBreeds.map(([breed, count], idx) => {
+              const hasSeoPage = breed in breedSeoPages;
+              const seoUrl = breedSeoPages[breed];
+              
+              return (
+                <div key={breed} className={`flex items-center gap-3 rounded-lg p-3 ${hasSeoPage ? 'bg-green-50/80' : 'bg-white/60'}`}>
+                  <span className={`font-bold text-lg w-8 text-center ${
+                    idx === 0 ? 'text-yellow-500' :
+                    idx === 1 ? 'text-gray-400' :
+                    idx === 2 ? 'text-amber-600' :
+                    'text-purple-400'
+                  }`}>
+                    {idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `#${idx + 1}`}
+                  </span>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <p className="font-medium text-gray-800 truncate">{breed}</p>
+                      {hasSeoPage ? (
+                        <a 
+                          href={seoUrl} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-green-100 text-green-700 text-xs rounded font-medium hover:bg-green-200 transition-colors"
+                          title={`View SEO page: ${seoUrl}`}
+                        >
+                          SEO ✓
+                        </a>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-red-100 text-red-600 text-xs rounded font-medium" title="No SEO landing page exists for this breed">
+                          No SEO
+                        </span>
+                      )}
+                    </div>
+                    <div className="mt-1 h-2 bg-purple-100 rounded-full overflow-hidden">
+                      <div 
+                        className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"
+                        style={{ width: `${(count / maxCount) * 100}%` }}
+                      />
+                    </div>
+                  </div>
+                  <span className="text-sm font-semibold text-purple-700 ml-2">{count}</span>
+                </div>
+              );
+            });
+          })()}
+        </div>
+        
+        {/* SEO Coverage Summary */}
+        {(() => {
+          const breedSeoPages: Record<string, string> = {
+            'Golden Retriever': '/golden-retriever-grooming-palm-harbor',
+            'Goldendoodle': '/goldendoodle-grooming-palm-harbor',
+            'French Bulldog': '/french-bulldog-grooming-palm-harbor',
+            'Husky': '/husky-grooming-palm-harbor',
+            'Shih Tzu': '/shih-tzu-grooming-palm-harbor',
+            'Yorkie': '/yorkie-grooming-palm-harbor',
+            'Labradoodle': '/labradoodle-grooming-palm-harbor',
+            'Poodle': '/poodle-grooming-palm-harbor',
+            'Dachshund': '/dachshund-grooming-palm-harbor',
+            'Corgi': '/corgi-grooming-palm-harbor',
+          };
+          
+          // Recalculate breed counts for summary
+          const breedCounts = new Map<string, number>();
+          customers.forEach(customer => {
+            customer.petInfo.forEach(petStr => {
+              const normalized = petStr.toLowerCase().trim();
+              if (normalized.length < 2) return;
+              
+              const breedMappings: [string[], string][] = [
+                [['golden', 'golden retriever'], 'Golden Retriever'],
+                [['doodle', 'goldendoodle'], 'Goldendoodle'],
+                [['french bulldog', 'frenchie'], 'French Bulldog'],
+                [['husky', 'siberian husky'], 'Husky'],
+                [['shih tzu', 'shihtzu'], 'Shih Tzu'],
+                [['yorkie', 'yorkshire terrier', 'yorkshire'], 'Yorkie'],
+                [['labradoodle'], 'Labradoodle'],
+                [['bernedoodle'], 'Bernedoodle'],
+                [['aussiedoodle'], 'Aussiedoodle'],
+                [['labrador', 'lab'], 'Labrador'],
+                [['poodle', 'standard poodle', 'toy poodle', 'mini poodle'], 'Poodle'],
+                [['german shepherd', 'shepherd'], 'German Shepherd'],
+                [['corgi', 'pembroke', 'welsh corgi'], 'Corgi'],
+                [['maltipoo'], 'Maltipoo'],
+                [['maltese'], 'Maltese'],
+                [['dachshund', 'weiner', 'wiener'], 'Dachshund'],
+                [['pomeranian', 'pom'], 'Pomeranian'],
+                [['chihuahua'], 'Chihuahua'],
+                [['beagle'], 'Beagle'],
+                [['boxer'], 'Boxer'],
+                [['bichon', 'bichon frise'], 'Bichon Frise'],
+                [['schnauzer', 'mini schnauzer'], 'Schnauzer'],
+                [['pit bull', 'pitbull', 'bully'], 'Pit Bull'],
+                [['australian shepherd', 'aussie'], 'Australian Shepherd'],
+                [['cavalier', 'cavalier king charles'], 'Cavalier King Charles'],
+                [['border collie', 'collie'], 'Border Collie'],
+                [['boston terrier'], 'Boston Terrier'],
+              ];
+              
+              for (const [keywords, displayBreed] of breedMappings) {
+                if (keywords.some(k => normalized.includes(k))) {
+                  breedCounts.set(displayBreed, (breedCounts.get(displayBreed) || 0) + 1);
+                  break;
+                }
+              }
+            });
+          });
+          
+          const topBreeds = Array.from(breedCounts.entries()).sort((a, b) => b[1] - a[1]).slice(0, 15);
+          const withSeo = topBreeds.filter(([breed]) => breed in breedSeoPages);
+          const withoutSeo = topBreeds.filter(([breed]) => !(breed in breedSeoPages));
+          const coveragePercent = topBreeds.length > 0 ? Math.round((withSeo.length / topBreeds.length) * 100) : 0;
+          const missedCustomers = withoutSeo.reduce((sum, [, count]) => sum + count, 0);
+          
+          return (
+            <div className="mt-4 pt-4 border-t border-purple-200">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="text-center p-3 bg-green-50 rounded-lg">
+                  <p className="text-2xl font-bold text-green-600">{withSeo.length}/{topBreeds.length}</p>
+                  <p className="text-xs text-green-700">Top Breeds with SEO</p>
+                  <p className="text-lg font-semibold text-green-600">{coveragePercent}% coverage</p>
+                </div>
+                <div className="text-center p-3 bg-red-50 rounded-lg">
+                  <p className="text-2xl font-bold text-red-600">{withoutSeo.length}</p>
+                  <p className="text-xs text-red-700">Missing SEO Pages</p>
+                  <p className="text-sm text-red-600">{missedCustomers} potential customers</p>
+                </div>
+                <div className="text-center p-3 bg-purple-50 rounded-lg">
+                  <p className="text-sm font-medium text-purple-800 mb-1">Top Missing:</p>
+                  {withoutSeo.slice(0, 3).map(([breed, count]) => (
+                    <p key={breed} className="text-xs text-purple-600">{breed} ({count})</p>
+                  ))}
+                </div>
+              </div>
+            </div>
+          );
+        })()}
+        
+        <p className="text-xs text-purple-500 mt-4">
+          Based on {customers.reduce((sum, c) => sum + c.petInfo.length, 0)} pet entries from {customers.length} customers
+        </p>
+      </div>
+
+      {/* Day & Time Power Rankings */}
+      <div className="mt-6 grid md:grid-cols-2 gap-6">
+        {/* Day of Week Power Rankings */}
+        <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl p-6 border border-blue-100">
+          <h3 className="font-semibold text-blue-900 mb-4 text-lg">📅 Requested Day Power Rankings</h3>
+          <p className="text-blue-700 text-sm mb-4">Most requested appointment days</p>
+          
+          {(() => {
+            const dayCounts = new Map<string, number>();
+            const dayOrder = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+            const shortDays = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+            
+            // Helper function to extract day from a string
+            const extractDay = (text: string): string | null => {
+              if (!text) return null;
+              const normalized = text.toLowerCase();
+              
+              // Check for full day names
+              for (const day of dayOrder) {
+                if (normalized.includes(day.toLowerCase())) {
+                  return day;
+                }
+              }
+              
+              // Check for short day names (but be careful with partial matches)
+              for (let i = 0; i < shortDays.length; i++) {
+                // Use word boundary to avoid false matches
+                const regex = new RegExp(`\\b${shortDays[i]}\\b|\\b${shortDays[i]}s?day\\b`, 'i');
+                if (regex.test(normalized)) {
+                  return dayOrder[i];
+                }
+              }
+              
+              // Try to parse as a date
+              const parsed = new Date(text);
+              if (!isNaN(parsed.getTime()) && parsed.getFullYear() > 2020) {
+                const dayIdx = parsed.getDay();
+                return dayOrder[dayIdx === 0 ? 6 : dayIdx - 1];
+              }
+              
+              // Check for "next week", "this week" patterns with day
+              const nextDayMatch = normalized.match(/next\s+(monday|tuesday|wednesday|thursday|friday|saturday|sunday)/i);
+              if (nextDayMatch) {
+                return nextDayMatch[1].charAt(0).toUpperCase() + nextDayMatch[1].slice(1).toLowerCase();
+              }
+              
+              return null;
+            };
+            
+            customers.forEach(customer => {
+              customer.additionalInfo?.forEach(info => {
+                // Check dateRequested field
+                const dayFromDate = extractDay(info.dateRequested || '');
+                if (dayFromDate) {
+                  dayCounts.set(dayFromDate, (dayCounts.get(dayFromDate) || 0) + 1);
+                }
+                
+                // Also parse the message field for day mentions
+                if (info.message) {
+                  const dayFromMessage = extractDay(info.message);
+                  if (dayFromMessage && !dayFromDate) { // Only count if not already counted from dateRequested
+                    dayCounts.set(dayFromMessage, (dayCounts.get(dayFromMessage) || 0) + 1);
+                  }
+                }
+              });
+            });
+            
+            // Sort by count descending
+            const sortedDays = Array.from(dayCounts.entries())
+              .sort((a, b) => b[1] - a[1]);
+            
+            const maxCount = sortedDays[0]?.[1] || 1;
+            const totalRequests = sortedDays.reduce((sum, [, count]) => sum + count, 0);
+            
+            if (sortedDays.length === 0) {
+              return <p className="text-blue-500 text-sm">No day preference data available yet</p>;
+            }
+            
+            return (
+              <>
+                <div className="space-y-2">
+                  {sortedDays.map(([day, count], idx) => (
+                    <div key={day} className="flex items-center gap-3 bg-white/60 rounded-lg p-2.5">
+                      <span className={`font-bold text-base w-7 text-center ${
+                        idx === 0 ? 'text-yellow-500' :
+                        idx === 1 ? 'text-gray-400' :
+                        idx === 2 ? 'text-amber-600' :
+                        'text-blue-400'
+                      }`}>
+                        {idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `#${idx + 1}`}
+                      </span>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between mb-1">
+                          <p className="font-medium text-gray-800">{day}</p>
+                          <span className="text-xs text-blue-600">{Math.round((count / totalRequests) * 100)}%</span>
+                        </div>
+                        <div className="h-2 bg-blue-100 rounded-full overflow-hidden">
+                          <div 
+                            className="h-full bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full"
+                            style={{ width: `${(count / maxCount) * 100}%` }}
+                          />
+                        </div>
+                      </div>
+                      <span className="text-sm font-semibold text-blue-700 ml-2 w-8 text-right">{count}</span>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-xs text-blue-500 mt-3">
+                  Based on {totalRequests} date requests (from form fields + messages)
+                </p>
+              </>
+            );
+          })()}
+        </div>
+
+        {/* Time of Day Power Rankings */}
+        <div className="bg-gradient-to-br from-amber-50 to-yellow-50 rounded-xl p-6 border border-amber-100">
+          <h3 className="font-semibold text-amber-900 mb-4 text-lg">🕐 Requested Time Power Rankings</h3>
+          <p className="text-amber-700 text-sm mb-4">Most requested appointment times</p>
+          
+          {(() => {
+            const timeCounts = new Map<string, number>();
+            
+            // Helper function to extract time slot from text
+            const extractTimeSlot = (text: string): string | null => {
+              if (!text) return null;
+              const normalized = text.toLowerCase();
+              
+              // Check for specific time patterns (e.g., "2pm", "10:00 am", "3:30pm")
+              const specificTimeMatch = normalized.match(/(\d{1,2})(?::(\d{2}))?\s*(am|pm|a\.m\.?|p\.m\.?)/i);
+              if (specificTimeMatch) {
+                let hour = parseInt(specificTimeMatch[1]);
+                const isPM = /pm|p\.m\.?/i.test(specificTimeMatch[3]);
+                
+                if (isPM && hour < 12) hour += 12;
+                if (!isPM && hour === 12) hour = 0;
+                
+                if (hour >= 7 && hour < 9) return 'Early Morning (7-9am)';
+                if (hour >= 9 && hour < 11) return 'Mid Morning (9-11am)';
+                if (hour >= 11 && hour < 12) return 'Late Morning (11am-12pm)';
+                if (hour >= 12 && hour < 13) return 'Noon (12-1pm)';
+                if (hour >= 13 && hour < 15) return 'Early Afternoon (1-3pm)';
+                if (hour >= 15 && hour < 17) return 'Late Afternoon (3-5pm)';
+                if (hour >= 17) return 'Evening (5pm+)';
+              }
+              
+              // Check for general time-of-day keywords
+              if (normalized.includes('early morning') || /\b[7-8]\s*(am)?\b/.test(normalized)) {
+                return 'Early Morning (7-9am)';
+              }
+              if (normalized.includes('morning') || normalized.includes('am')) {
+                if (/\b(9|10)\b/.test(normalized)) return 'Mid Morning (9-11am)';
+                if (/\b11\b/.test(normalized)) return 'Late Morning (11am-12pm)';
+                return 'Morning';
+              }
+              if (normalized.includes('noon') || normalized.includes('midday') || /\b12\s*(pm)?\b/.test(normalized)) {
+                return 'Noon (12-1pm)';
+              }
+              if (normalized.includes('early afternoon') || /\b[1-2]\s*(pm)?\b/.test(normalized)) {
+                return 'Early Afternoon (1-3pm)';
+              }
+              if (normalized.includes('late afternoon') || /\b[3-4]\s*(pm)?\b/.test(normalized)) {
+                return 'Late Afternoon (3-5pm)';
+              }
+              if (normalized.includes('afternoon') || normalized.includes('pm')) {
+                return 'Afternoon';
+              }
+              if (normalized.includes('evening') || /\b[5-7]\s*(pm)?\b/.test(normalized)) {
+                return 'Evening (5pm+)';
+              }
+              if (normalized.includes('flexible') || normalized.includes('any time') || normalized.includes('anytime') || normalized.includes('whenever')) {
+                return 'Flexible/Any Time';
+              }
+              if (normalized.includes('asap') || normalized.includes('soon') || normalized.includes('earliest') || normalized.includes('first available')) {
+                return 'ASAP/Earliest Available';
+              }
+              
+              return null;
+            };
+            
+            customers.forEach(customer => {
+              customer.additionalInfo?.forEach(info => {
+                // Check timeRequested field
+                const timeFromField = extractTimeSlot(info.timeRequested || '');
+                if (timeFromField) {
+                  timeCounts.set(timeFromField, (timeCounts.get(timeFromField) || 0) + 1);
+                }
+                
+                // Check dateRequested field (often contains combined date/time like "Tuesday at 2pm")
+                if (!timeFromField && info.dateRequested) {
+                  const timeFromDate = extractTimeSlot(info.dateRequested);
+                  if (timeFromDate) {
+                    timeCounts.set(timeFromDate, (timeCounts.get(timeFromDate) || 0) + 1);
+                  }
+                }
+                
+                // Also parse the message field for time mentions
+                if (info.message && !timeFromField) {
+                  const timeFromMessage = extractTimeSlot(info.message);
+                  if (timeFromMessage) {
+                    timeCounts.set(timeFromMessage, (timeCounts.get(timeFromMessage) || 0) + 1);
+                  }
+                }
+              });
+            });
+            
+            // Sort by count descending
+            const sortedTimes = Array.from(timeCounts.entries())
+              .sort((a, b) => b[1] - a[1])
+              .slice(0, 10); // Limit to top 10
+            
+            const maxCount = sortedTimes[0]?.[1] || 1;
+            const totalRequests = sortedTimes.reduce((sum, [, count]) => sum + count, 0);
+            
+            if (sortedTimes.length === 0) {
+              return <p className="text-amber-500 text-sm">No time preference data available yet</p>;
+            }
+            
+            return (
+              <>
+                <div className="space-y-2">
+                  {sortedTimes.map(([time, count], idx) => (
+                    <div key={time} className="flex items-center gap-3 bg-white/60 rounded-lg p-2.5">
+                      <span className={`font-bold text-base w-7 text-center ${
+                        idx === 0 ? 'text-yellow-500' :
+                        idx === 1 ? 'text-gray-400' :
+                        idx === 2 ? 'text-amber-600' :
+                        'text-amber-400'
+                      }`}>
+                        {idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `#${idx + 1}`}
+                      </span>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between mb-1">
+                          <p className="font-medium text-gray-800 text-sm truncate">{time}</p>
+                          <span className="text-xs text-amber-600">{Math.round((count / totalRequests) * 100)}%</span>
+                        </div>
+                        <div className="h-2 bg-amber-100 rounded-full overflow-hidden">
+                          <div 
+                            className="h-full bg-gradient-to-r from-amber-500 to-yellow-500 rounded-full"
+                            style={{ width: `${(count / maxCount) * 100}%` }}
+                          />
+                        </div>
+                      </div>
+                      <span className="text-sm font-semibold text-amber-700 ml-2 w-8 text-right">{count}</span>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-xs text-amber-500 mt-3">
+                  Based on {totalRequests} time requests (from form fields + messages)
+                </p>
+              </>
+            );
+          })()}
         </div>
       </div>
     </AdminLayout>

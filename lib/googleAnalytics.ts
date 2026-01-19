@@ -470,6 +470,48 @@ export interface ConversionDataPoint {
   conversionRate: number;
 }
 
+export interface VisitorConversionDataPoint {
+  date: string;
+  label: string;
+  totalVisitors: number;
+  appointmentClicks: number;
+  conversionRate: number;
+}
+
+export interface DayOfWeekDataPoint {
+  day: string;
+  dayIndex: number;
+  visitors: number;
+  appointmentClicks: number;
+  formSubmits: number;
+  clickRate: number;
+  conversionRate: number;
+}
+
+export interface TimeOfDayDataPoint {
+  bucket: string;
+  timeRange: string;
+  visitors: number;
+  appointmentClicks: number;
+  formSubmits: number;
+  clickRate: number;
+  conversionRate: number;
+}
+
+export interface DayTimeSlot {
+  day: string;
+  dayIndex: number;
+  bucket: string;
+  timeRange: string;
+  visitors: number;
+  appointmentClicks: number;
+  formSubmits: number;
+  clickRate: number;
+  intensity: number; // 0-100 scale for heatmap
+  isOpportunity: boolean; // Low traffic = opportunity for promos
+}
+
+// Get day-by-day conversion data
 export async function getConversionFunnelByDay(
   startDate: string,
   endDate: string
@@ -477,7 +519,6 @@ export async function getConversionFunnelByDay(
   const client = getAnalyticsClient();
 
   try {
-    // Fetch appointment clicks by date
     const [appointmentResponse] = await client.runReport({
       property: `properties/${PROPERTY_ID}`,
       dateRanges: [{ startDate, endDate }],
@@ -492,7 +533,6 @@ export async function getConversionFunnelByDay(
       orderBys: [{ dimension: { dimensionName: "date" } }],
     });
 
-    // Fetch form submits by date
     const [formSubmitResponse] = await client.runReport({
       property: `properties/${PROPERTY_ID}`,
       dateRanges: [{ startDate, endDate }],
@@ -507,7 +547,6 @@ export async function getConversionFunnelByDay(
       orderBys: [{ dimension: { dimensionName: "date" } }],
     });
 
-    // Build a map of date -> appointment clicks
     const appointmentMap: Record<string, number> = {};
     appointmentResponse.rows?.forEach((row) => {
       const date = row.dimensionValues?.[0]?.value || "";
@@ -515,7 +554,6 @@ export async function getConversionFunnelByDay(
       appointmentMap[date] = count;
     });
 
-    // Build a map of date -> form submits
     const formSubmitMap: Record<string, number> = {};
     formSubmitResponse.rows?.forEach((row) => {
       const date = row.dimensionValues?.[0]?.value || "";
@@ -523,7 +561,6 @@ export async function getConversionFunnelByDay(
       formSubmitMap[date] = count;
     });
 
-    // Generate all dates in range
     const start = new Date(startDate);
     const end = new Date(endDate);
     const results: ConversionDataPoint[] = [];
@@ -554,6 +591,617 @@ export async function getConversionFunnelByDay(
     return results;
   } catch (error) {
     console.error("Error fetching conversion funnel data:", error);
+    return [];
+  }
+}
+
+// Get week-by-week conversion data (last N weeks)
+export async function getConversionFunnelByWeek(numWeeks: number = 8): Promise<ConversionDataPoint[]> {
+  const client = getAnalyticsClient();
+  const results: ConversionDataPoint[] = [];
+
+  try {
+    const today = new Date();
+    
+    for (let i = numWeeks - 1; i >= 0; i--) {
+      const weekEnd = new Date(today);
+      weekEnd.setDate(weekEnd.getDate() - 1 - (i * 7)); // End of week (yesterday minus i weeks)
+      const weekStart = new Date(weekEnd);
+      weekStart.setDate(weekStart.getDate() - 6); // Start of week (7 days before end)
+
+      const startStr = weekStart.toISOString().split("T")[0];
+      const endStr = weekEnd.toISOString().split("T")[0];
+
+      const [appointmentClicks, formSubmits] = await Promise.all([
+        getEventCount(client, startStr, endStr, "appointment_click"),
+        getEventCount(client, startStr, endStr, "form_submit_success"),
+      ]);
+
+      const conversionRate = appointmentClicks > 0 
+        ? Math.round((formSubmits / appointmentClicks) * 100) 
+        : 0;
+
+      const label = `${weekStart.toLocaleDateString("en-US", { month: "short", day: "numeric" })}`;
+
+      results.push({
+        date: startStr.replace(/-/g, ""),
+        label,
+        appointmentClicks,
+        formSubmits,
+        conversionRate,
+      });
+    }
+
+    return results;
+  } catch (error) {
+    console.error("Error fetching weekly conversion data:", error);
+    return [];
+  }
+}
+
+// Get month-by-month conversion data (last N months)
+export async function getConversionFunnelByMonth(numMonths: number = 6): Promise<ConversionDataPoint[]> {
+  const client = getAnalyticsClient();
+  const results: ConversionDataPoint[] = [];
+
+  try {
+    const today = new Date();
+    
+    for (let i = numMonths - 1; i >= 0; i--) {
+      const monthDate = new Date(today.getFullYear(), today.getMonth() - i, 1);
+      const monthStart = new Date(monthDate.getFullYear(), monthDate.getMonth(), 1);
+      const monthEnd = new Date(monthDate.getFullYear(), monthDate.getMonth() + 1, 0);
+
+      // Don't go past yesterday
+      const yesterday = new Date(today);
+      yesterday.setDate(yesterday.getDate() - 1);
+      if (monthEnd > yesterday) {
+        monthEnd.setTime(yesterday.getTime());
+      }
+
+      const startStr = monthStart.toISOString().split("T")[0];
+      const endStr = monthEnd.toISOString().split("T")[0];
+
+      const [appointmentClicks, formSubmits] = await Promise.all([
+        getEventCount(client, startStr, endStr, "appointment_click"),
+        getEventCount(client, startStr, endStr, "form_submit_success"),
+      ]);
+
+      const conversionRate = appointmentClicks > 0 
+        ? Math.round((formSubmits / appointmentClicks) * 100) 
+        : 0;
+
+      const label = monthStart.toLocaleDateString("en-US", { month: "short" });
+
+      results.push({
+        date: startStr.replace(/-/g, ""),
+        label,
+        appointmentClicks,
+        formSubmits,
+        conversionRate,
+      });
+    }
+
+    return results;
+  } catch (error) {
+    console.error("Error fetching monthly conversion data:", error);
+    return [];
+  }
+}
+
+// Get day-by-day visitor to appointment click conversion
+export async function getVisitorConversionByDay(
+  startDate: string,
+  endDate: string
+): Promise<VisitorConversionDataPoint[]> {
+  const client = getAnalyticsClient();
+
+  try {
+    // Fetch visitors by date
+    const [visitorsResponse] = await client.runReport({
+      property: `properties/${PROPERTY_ID}`,
+      dateRanges: [{ startDate, endDate }],
+      dimensions: [{ name: "date" }],
+      metrics: [{ name: "totalUsers" }],
+      orderBys: [{ dimension: { dimensionName: "date" } }],
+    });
+
+    // Fetch appointment clicks by date
+    const [appointmentResponse] = await client.runReport({
+      property: `properties/${PROPERTY_ID}`,
+      dateRanges: [{ startDate, endDate }],
+      dimensions: [{ name: "date" }],
+      metrics: [{ name: "eventCount" }],
+      dimensionFilter: {
+        filter: {
+          fieldName: "eventName",
+          stringFilter: { value: "appointment_click" },
+        },
+      },
+      orderBys: [{ dimension: { dimensionName: "date" } }],
+    });
+
+    const visitorsMap: Record<string, number> = {};
+    visitorsResponse.rows?.forEach((row) => {
+      const date = row.dimensionValues?.[0]?.value || "";
+      const count = parseInt(row.metricValues?.[0]?.value || "0");
+      visitorsMap[date] = count;
+    });
+
+    const appointmentMap: Record<string, number> = {};
+    appointmentResponse.rows?.forEach((row) => {
+      const date = row.dimensionValues?.[0]?.value || "";
+      const count = parseInt(row.metricValues?.[0]?.value || "0");
+      appointmentMap[date] = count;
+    });
+
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const results: VisitorConversionDataPoint[] = [];
+
+    for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+      const dateStr = d.toISOString().split("T")[0].replace(/-/g, "");
+      const displayDate = new Date(d);
+      const label = displayDate.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+      });
+
+      const totalVisitors = visitorsMap[dateStr] || 0;
+      const appointmentClicks = appointmentMap[dateStr] || 0;
+      const conversionRate = totalVisitors > 0 
+        ? Math.round((appointmentClicks / totalVisitors) * 100) 
+        : 0;
+
+      results.push({
+        date: dateStr,
+        label,
+        totalVisitors,
+        appointmentClicks,
+        conversionRate,
+      });
+    }
+
+    return results;
+  } catch (error) {
+    console.error("Error fetching visitor conversion data:", error);
+    return [];
+  }
+}
+
+// Get week-by-week visitor to appointment click conversion
+export async function getVisitorConversionByWeek(numWeeks: number = 8): Promise<VisitorConversionDataPoint[]> {
+  const client = getAnalyticsClient();
+  const results: VisitorConversionDataPoint[] = [];
+
+  try {
+    const today = new Date();
+    
+    for (let i = numWeeks - 1; i >= 0; i--) {
+      const weekEnd = new Date(today);
+      weekEnd.setDate(weekEnd.getDate() - 1 - (i * 7));
+      const weekStart = new Date(weekEnd);
+      weekStart.setDate(weekStart.getDate() - 6);
+
+      const startStr = weekStart.toISOString().split("T")[0];
+      const endStr = weekEnd.toISOString().split("T")[0];
+
+      const [basicMetrics, appointmentClicks] = await Promise.all([
+        getBasicMetrics(client, startStr, endStr),
+        getEventCount(client, startStr, endStr, "appointment_click"),
+      ]);
+
+      const totalVisitors = basicMetrics.totalUsers;
+      const conversionRate = totalVisitors > 0 
+        ? Math.round((appointmentClicks / totalVisitors) * 100) 
+        : 0;
+
+      const label = `${weekStart.toLocaleDateString("en-US", { month: "short", day: "numeric" })}`;
+
+      results.push({
+        date: startStr.replace(/-/g, ""),
+        label,
+        totalVisitors,
+        appointmentClicks,
+        conversionRate,
+      });
+    }
+
+    return results;
+  } catch (error) {
+    console.error("Error fetching weekly visitor conversion data:", error);
+    return [];
+  }
+}
+
+// Get month-by-month visitor to appointment click conversion
+export async function getVisitorConversionByMonth(numMonths: number = 6): Promise<VisitorConversionDataPoint[]> {
+  const client = getAnalyticsClient();
+  const results: VisitorConversionDataPoint[] = [];
+
+  try {
+    const today = new Date();
+    
+    for (let i = numMonths - 1; i >= 0; i--) {
+      const monthDate = new Date(today.getFullYear(), today.getMonth() - i, 1);
+      const monthStart = new Date(monthDate.getFullYear(), monthDate.getMonth(), 1);
+      const monthEnd = new Date(monthDate.getFullYear(), monthDate.getMonth() + 1, 0);
+
+      const yesterday = new Date(today);
+      yesterday.setDate(yesterday.getDate() - 1);
+      if (monthEnd > yesterday) {
+        monthEnd.setTime(yesterday.getTime());
+      }
+
+      const startStr = monthStart.toISOString().split("T")[0];
+      const endStr = monthEnd.toISOString().split("T")[0];
+
+      const [basicMetrics, appointmentClicks] = await Promise.all([
+        getBasicMetrics(client, startStr, endStr),
+        getEventCount(client, startStr, endStr, "appointment_click"),
+      ]);
+
+      const totalVisitors = basicMetrics.totalUsers;
+      const conversionRate = totalVisitors > 0 
+        ? Math.round((appointmentClicks / totalVisitors) * 100) 
+        : 0;
+
+      const label = monthStart.toLocaleDateString("en-US", { month: "short" });
+
+      results.push({
+        date: startStr.replace(/-/g, ""),
+        label,
+        totalVisitors,
+        appointmentClicks,
+        conversionRate,
+      });
+    }
+
+    return results;
+  } catch (error) {
+    console.error("Error fetching monthly visitor conversion data:", error);
+    return [];
+  }
+}
+
+// Get performance by day of week (last 30 days)
+export async function getDayOfWeekPerformance(): Promise<DayOfWeekDataPoint[]> {
+  const client = getAnalyticsClient();
+  const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+  try {
+    const today = new Date();
+    const endDate = new Date(today);
+    endDate.setDate(endDate.getDate() - 1);
+    const startDate = new Date(endDate);
+    startDate.setDate(startDate.getDate() - 29); // Last 30 days
+
+    const startStr = startDate.toISOString().split("T")[0];
+    const endStr = endDate.toISOString().split("T")[0];
+
+    // Fetch visitors by day of week
+    const [visitorsResponse] = await client.runReport({
+      property: `properties/${PROPERTY_ID}`,
+      dateRanges: [{ startDate: startStr, endDate: endStr }],
+      dimensions: [{ name: "dayOfWeek" }],
+      metrics: [{ name: "totalUsers" }],
+      orderBys: [{ dimension: { dimensionName: "dayOfWeek" } }],
+    });
+
+    // Fetch appointment clicks by day of week
+    const [appointmentResponse] = await client.runReport({
+      property: `properties/${PROPERTY_ID}`,
+      dateRanges: [{ startDate: startStr, endDate: endStr }],
+      dimensions: [{ name: "dayOfWeek" }],
+      metrics: [{ name: "eventCount" }],
+      dimensionFilter: {
+        filter: {
+          fieldName: "eventName",
+          stringFilter: { value: "appointment_click" },
+        },
+      },
+      orderBys: [{ dimension: { dimensionName: "dayOfWeek" } }],
+    });
+
+    // Fetch form submits by day of week
+    const [formSubmitResponse] = await client.runReport({
+      property: `properties/${PROPERTY_ID}`,
+      dateRanges: [{ startDate: startStr, endDate: endStr }],
+      dimensions: [{ name: "dayOfWeek" }],
+      metrics: [{ name: "eventCount" }],
+      dimensionFilter: {
+        filter: {
+          fieldName: "eventName",
+          stringFilter: { value: "form_submit_success" },
+        },
+      },
+      orderBys: [{ dimension: { dimensionName: "dayOfWeek" } }],
+    });
+
+    // Build maps
+    const visitorsMap: Record<string, number> = {};
+    visitorsResponse.rows?.forEach((row) => {
+      const dayIndex = row.dimensionValues?.[0]?.value || "0";
+      visitorsMap[dayIndex] = parseInt(row.metricValues?.[0]?.value || "0");
+    });
+
+    const appointmentMap: Record<string, number> = {};
+    appointmentResponse.rows?.forEach((row) => {
+      const dayIndex = row.dimensionValues?.[0]?.value || "0";
+      appointmentMap[dayIndex] = parseInt(row.metricValues?.[0]?.value || "0");
+    });
+
+    const formSubmitMap: Record<string, number> = {};
+    formSubmitResponse.rows?.forEach((row) => {
+      const dayIndex = row.dimensionValues?.[0]?.value || "0";
+      formSubmitMap[dayIndex] = parseInt(row.metricValues?.[0]?.value || "0");
+    });
+
+    // Build results for all 7 days
+    const results: DayOfWeekDataPoint[] = [];
+    for (let i = 0; i < 7; i++) {
+      const visitors = visitorsMap[String(i)] || 0;
+      const appointmentClicks = appointmentMap[String(i)] || 0;
+      const formSubmits = formSubmitMap[String(i)] || 0;
+      const clickRate = visitors > 0 ? Math.round((appointmentClicks / visitors) * 100) : 0;
+      const conversionRate = appointmentClicks > 0 ? Math.round((formSubmits / appointmentClicks) * 100) : 0;
+
+      results.push({
+        day: dayNames[i],
+        dayIndex: i,
+        visitors,
+        appointmentClicks,
+        formSubmits,
+        clickRate,
+        conversionRate,
+      });
+    }
+
+    return results;
+  } catch (error) {
+    console.error("Error fetching day of week data:", error);
+    return [];
+  }
+}
+
+// Get performance by time of day (last 30 days)
+// Buckets: Morning (8-11am), Lunch/Afternoon (11am-2pm), Late Afternoon (2-6pm), Other
+export async function getTimeOfDayPerformance(): Promise<TimeOfDayDataPoint[]> {
+  const client = getAnalyticsClient();
+
+  // Define time buckets
+  const buckets = [
+    { name: 'Morning', range: '8am - 11am', hours: [8, 9, 10] },
+    { name: 'Lunch/Afternoon', range: '11am - 2pm', hours: [11, 12, 13] },
+    { name: 'Late Afternoon', range: '2pm - 6pm', hours: [14, 15, 16, 17] },
+    { name: 'Other', range: 'Before 8am / After 6pm', hours: [0, 1, 2, 3, 4, 5, 6, 7, 18, 19, 20, 21, 22, 23] },
+  ];
+
+  try {
+    const today = new Date();
+    const endDate = new Date(today);
+    endDate.setDate(endDate.getDate() - 1);
+    const startDate = new Date(endDate);
+    startDate.setDate(startDate.getDate() - 29); // Last 30 days
+
+    const startStr = startDate.toISOString().split("T")[0];
+    const endStr = endDate.toISOString().split("T")[0];
+
+    // Fetch visitors by hour
+    const [visitorsResponse] = await client.runReport({
+      property: `properties/${PROPERTY_ID}`,
+      dateRanges: [{ startDate: startStr, endDate: endStr }],
+      dimensions: [{ name: "hour" }],
+      metrics: [{ name: "totalUsers" }],
+      orderBys: [{ dimension: { dimensionName: "hour" } }],
+    });
+
+    // Fetch appointment clicks by hour
+    const [appointmentResponse] = await client.runReport({
+      property: `properties/${PROPERTY_ID}`,
+      dateRanges: [{ startDate: startStr, endDate: endStr }],
+      dimensions: [{ name: "hour" }],
+      metrics: [{ name: "eventCount" }],
+      dimensionFilter: {
+        filter: {
+          fieldName: "eventName",
+          stringFilter: { value: "appointment_click" },
+        },
+      },
+      orderBys: [{ dimension: { dimensionName: "hour" } }],
+    });
+
+    // Fetch form submits by hour
+    const [formSubmitResponse] = await client.runReport({
+      property: `properties/${PROPERTY_ID}`,
+      dateRanges: [{ startDate: startStr, endDate: endStr }],
+      dimensions: [{ name: "hour" }],
+      metrics: [{ name: "eventCount" }],
+      dimensionFilter: {
+        filter: {
+          fieldName: "eventName",
+          stringFilter: { value: "form_submit_success" },
+        },
+      },
+      orderBys: [{ dimension: { dimensionName: "hour" } }],
+    });
+
+    // Build maps by hour
+    const visitorsMap: Record<number, number> = {};
+    visitorsResponse.rows?.forEach((row) => {
+      const hour = parseInt(row.dimensionValues?.[0]?.value || "0");
+      visitorsMap[hour] = parseInt(row.metricValues?.[0]?.value || "0");
+    });
+
+    const appointmentMap: Record<number, number> = {};
+    appointmentResponse.rows?.forEach((row) => {
+      const hour = parseInt(row.dimensionValues?.[0]?.value || "0");
+      appointmentMap[hour] = parseInt(row.metricValues?.[0]?.value || "0");
+    });
+
+    const formSubmitMap: Record<number, number> = {};
+    formSubmitResponse.rows?.forEach((row) => {
+      const hour = parseInt(row.dimensionValues?.[0]?.value || "0");
+      formSubmitMap[hour] = parseInt(row.metricValues?.[0]?.value || "0");
+    });
+
+    // Aggregate into buckets
+    const results: TimeOfDayDataPoint[] = buckets.map(bucket => {
+      const visitors = bucket.hours.reduce((sum, h) => sum + (visitorsMap[h] || 0), 0);
+      const appointmentClicks = bucket.hours.reduce((sum, h) => sum + (appointmentMap[h] || 0), 0);
+      const formSubmits = bucket.hours.reduce((sum, h) => sum + (formSubmitMap[h] || 0), 0);
+      const clickRate = visitors > 0 ? Math.round((appointmentClicks / visitors) * 100) : 0;
+      const conversionRate = appointmentClicks > 0 ? Math.round((formSubmits / appointmentClicks) * 100) : 0;
+
+      return {
+        bucket: bucket.name,
+        timeRange: bucket.range,
+        visitors,
+        appointmentClicks,
+        formSubmits,
+        clickRate,
+        conversionRate,
+      };
+    });
+
+    return results;
+  } catch (error) {
+    console.error("Error fetching time of day data:", error);
+    return [];
+  }
+}
+
+// Get combined day + time performance for heatmap (last 30 days)
+export async function getDayTimeHeatmap(): Promise<DayTimeSlot[]> {
+  const client = getAnalyticsClient();
+  const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  
+  const buckets = [
+    { name: 'Morning', range: '8am-11am', hours: [8, 9, 10] },
+    { name: 'Lunch', range: '11am-2pm', hours: [11, 12, 13] },
+    { name: 'Afternoon', range: '2pm-6pm', hours: [14, 15, 16, 17] },
+    { name: 'Other', range: 'Off-hours', hours: [0, 1, 2, 3, 4, 5, 6, 7, 18, 19, 20, 21, 22, 23] },
+  ];
+
+  try {
+    const today = new Date();
+    const endDate = new Date(today);
+    endDate.setDate(endDate.getDate() - 1);
+    const startDate = new Date(endDate);
+    startDate.setDate(startDate.getDate() - 29);
+
+    const startStr = startDate.toISOString().split("T")[0];
+    const endStr = endDate.toISOString().split("T")[0];
+
+    // Fetch visitors by day + hour
+    const [visitorsResponse] = await client.runReport({
+      property: `properties/${PROPERTY_ID}`,
+      dateRanges: [{ startDate: startStr, endDate: endStr }],
+      dimensions: [{ name: "dayOfWeek" }, { name: "hour" }],
+      metrics: [{ name: "totalUsers" }],
+    });
+
+    // Fetch appointment clicks by day + hour
+    const [appointmentResponse] = await client.runReport({
+      property: `properties/${PROPERTY_ID}`,
+      dateRanges: [{ startDate: startStr, endDate: endStr }],
+      dimensions: [{ name: "dayOfWeek" }, { name: "hour" }],
+      metrics: [{ name: "eventCount" }],
+      dimensionFilter: {
+        filter: {
+          fieldName: "eventName",
+          stringFilter: { value: "appointment_click" },
+        },
+      },
+    });
+
+    // Fetch form submits by day + hour
+    const [formResponse] = await client.runReport({
+      property: `properties/${PROPERTY_ID}`,
+      dateRanges: [{ startDate: startStr, endDate: endStr }],
+      dimensions: [{ name: "dayOfWeek" }, { name: "hour" }],
+      metrics: [{ name: "eventCount" }],
+      dimensionFilter: {
+        filter: {
+          fieldName: "eventName",
+          stringFilter: { value: "form_submit_success" },
+        },
+      },
+    });
+
+    // Build maps: key = "dayIndex-hour"
+    const visitorsMap: Record<string, number> = {};
+    visitorsResponse.rows?.forEach((row) => {
+      const day = row.dimensionValues?.[0]?.value || "0";
+      const hour = row.dimensionValues?.[1]?.value || "0";
+      const key = `${day}-${hour}`;
+      visitorsMap[key] = parseInt(row.metricValues?.[0]?.value || "0");
+    });
+
+    const appointmentMap: Record<string, number> = {};
+    appointmentResponse.rows?.forEach((row) => {
+      const day = row.dimensionValues?.[0]?.value || "0";
+      const hour = row.dimensionValues?.[1]?.value || "0";
+      const key = `${day}-${hour}`;
+      appointmentMap[key] = parseInt(row.metricValues?.[0]?.value || "0");
+    });
+
+    const formMap: Record<string, number> = {};
+    formResponse.rows?.forEach((row) => {
+      const day = row.dimensionValues?.[0]?.value || "0";
+      const hour = row.dimensionValues?.[1]?.value || "0";
+      const key = `${day}-${hour}`;
+      formMap[key] = parseInt(row.metricValues?.[0]?.value || "0");
+    });
+
+    // Aggregate into day + bucket combinations (exclude "Other" bucket for business hours focus)
+    const businessBuckets = buckets.filter(b => b.name !== 'Other');
+    const results: DayTimeSlot[] = [];
+    
+    for (let dayIndex = 0; dayIndex < 7; dayIndex++) {
+      for (const bucket of businessBuckets) {
+        let visitors = 0;
+        let clicks = 0;
+        let fills = 0;
+
+        for (const hour of bucket.hours) {
+          const key = `${dayIndex}-${hour}`;
+          visitors += visitorsMap[key] || 0;
+          clicks += appointmentMap[key] || 0;
+          fills += formMap[key] || 0;
+        }
+
+        const clickRate = visitors > 0 ? Math.round((clicks / visitors) * 100) : 0;
+
+        results.push({
+          day: dayNames[dayIndex],
+          dayIndex,
+          bucket: bucket.name,
+          timeRange: bucket.range,
+          visitors,
+          appointmentClicks: clicks,
+          formSubmits: fills,
+          clickRate,
+          intensity: 0, // Will calculate after
+          isOpportunity: false, // Will calculate after
+        });
+      }
+    }
+
+    // Calculate intensity (0-100) based on visitor count
+    const maxVisitors = Math.max(...results.map(r => r.visitors), 1);
+    const visitorValues = results.map(r => r.visitors).sort((a, b) => a - b);
+    const lowThreshold = visitorValues[Math.floor(visitorValues.length * 0.33)]; // Bottom 33%
+
+    results.forEach(slot => {
+      slot.intensity = Math.round((slot.visitors / maxVisitors) * 100);
+      // Mark as opportunity if in bottom 33% of traffic but during business hours
+      slot.isOpportunity = slot.visitors <= lowThreshold && slot.visitors > 0;
+    });
+
+    return results;
+  } catch (error) {
+    console.error("Error fetching day/time heatmap data:", error);
     return [];
   }
 }

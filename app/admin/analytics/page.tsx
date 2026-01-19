@@ -63,16 +63,61 @@ interface ConversionDataPoint {
   conversionRate: number;
 }
 
+interface VisitorConversionDataPoint {
+  date: string;
+  label: string;
+  totalVisitors: number;
+  appointmentClicks: number;
+  conversionRate: number;
+}
+
+interface DayOfWeekDataPoint {
+  day: string;
+  dayIndex: number;
+  visitors: number;
+  appointmentClicks: number;
+  formSubmits: number;
+  clickRate: number;
+  conversionRate: number;
+}
+
+interface TimeOfDayDataPoint {
+  bucket: string;
+  timeRange: string;
+  visitors: number;
+  appointmentClicks: number;
+  formSubmits: number;
+  clickRate: number;
+  conversionRate: number;
+}
+
+interface DayTimeSlot {
+  day: string;
+  dayIndex: number;
+  bucket: string;
+  timeRange: string;
+  visitors: number;
+  appointmentClicks: number;
+  formSubmits: number;
+  clickRate: number;
+  intensity: number;
+  isOpportunity: boolean;
+}
+
+interface AnalyticsDataWithChart extends AnalyticsData {
+  chart: ConversionDataPoint[];
+  visitorChart: VisitorConversionDataPoint[];
+}
+
 interface AnalyticsResponse {
   success: boolean;
   configured: boolean;
-  daily?: AnalyticsData;
-  weekly?: AnalyticsData;
-  monthly?: AnalyticsData;
-  conversionChart?: {
-    daily: ConversionDataPoint[];
-    weekly: ConversionDataPoint[];
-  };
+  daily?: AnalyticsDataWithChart;
+  weekly?: AnalyticsDataWithChart;
+  monthly?: AnalyticsDataWithChart;
+  dayOfWeek?: DayOfWeekDataPoint[];
+  timeOfDay?: TimeOfDayDataPoint[];
+  dayTimeHeatmap?: DayTimeSlot[];
   error?: string;
 }
 
@@ -106,7 +151,6 @@ export default function AnalyticsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState<AnalyticsResponse | null>(null);
   const [activeTab, setActiveTab] = useState<'daily' | 'weekly' | 'monthly'>('weekly');
-  const [conversionChartView, setConversionChartView] = useState<'7days' | '14days'>('7days');
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -281,43 +325,157 @@ export default function AnalyticsPage() {
             </div>
           </div>
 
-          {/* Conversion Funnel Chart */}
-          {data?.conversionChart && (
+          {/* Visitor to Appointment Click Chart */}
+          {currentData?.visitorChart && currentData.visitorChart.length > 0 && (
             <div className="mb-8">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-gray-900">📈 Appointment Clicks → Form Fills</h3>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => setConversionChartView('7days')}
-                    className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors cursor-pointer ${
-                      conversionChartView === '7days'
-                        ? 'bg-purple-600 text-white'
-                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                    }`}
-                  >
-                    Last 7 Days
-                  </button>
-                  <button
-                    onClick={() => setConversionChartView('14days')}
-                    className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors cursor-pointer ${
-                      conversionChartView === '14days'
-                        ? 'bg-purple-600 text-white'
-                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                    }`}
-                  >
-                    Last 14 Days
-                  </button>
-                </div>
-              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                👥 Visitors → Appointment Clicks
+                <span className="text-sm font-normal text-gray-500 ml-2">
+                  ({activeTab === 'daily' ? 'Last 14 Days' : activeTab === 'weekly' ? 'Last 8 Weeks' : 'Last 6 Months'})
+                </span>
+              </h3>
 
               <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
                 {/* Summary Stats */}
                 {(() => {
-                  const chartData = conversionChartView === '7days' 
-                    ? data.conversionChart?.weekly 
-                    : data.conversionChart?.daily;
-                  const totalClicks = chartData?.reduce((sum, d) => sum + d.appointmentClicks, 0) || 0;
-                  const totalFills = chartData?.reduce((sum, d) => sum + d.formSubmits, 0) || 0;
+                  const chartData = currentData.visitorChart;
+                  const totalVisitors = chartData.reduce((sum, d) => sum + d.totalVisitors, 0);
+                  const totalClicks = chartData.reduce((sum, d) => sum + d.appointmentClicks, 0);
+                  const avgConversion = totalVisitors > 0 ? Math.round((totalClicks / totalVisitors) * 100) : 0;
+
+                  return (
+                    <div className="grid grid-cols-3 gap-4 mb-6">
+                      <div className="text-center p-4 bg-blue-50 rounded-lg">
+                        <p className="text-3xl font-bold text-blue-600">{totalVisitors.toLocaleString()}</p>
+                        <p className="text-sm text-blue-700">Total Visitors</p>
+                      </div>
+                      <div className="text-center p-4 bg-purple-50 rounded-lg">
+                        <p className="text-3xl font-bold text-purple-600">{totalClicks}</p>
+                        <p className="text-sm text-purple-700">Appointment Clicks</p>
+                      </div>
+                      <div className="text-center p-4 bg-amber-50 rounded-lg">
+                        <p className="text-3xl font-bold text-amber-600">{avgConversion}%</p>
+                        <p className="text-sm text-amber-700">Click-Through Rate</p>
+                      </div>
+                    </div>
+                  );
+                })()}
+
+                {/* Stacked Bar Chart */}
+                <div className="h-80">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart 
+                      data={currentData.visitorChart.map(d => ({
+                        ...d,
+                        nonClickers: d.totalVisitors - d.appointmentClicks,
+                      }))}
+                      margin={{ top: 10, right: 30, left: 0, bottom: 5 }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
+                      <XAxis 
+                        dataKey="label" 
+                        tick={{ fontSize: 12, fill: '#6B7280' }}
+                        axisLine={{ stroke: '#E5E7EB' }}
+                      />
+                      <YAxis 
+                        tick={{ fontSize: 12, fill: '#6B7280' }}
+                        axisLine={{ stroke: '#E5E7EB' }}
+                        allowDecimals={false}
+                      />
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: '#fff',
+                          border: '1px solid #E5E7EB',
+                          borderRadius: '8px',
+                          boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
+                        }}
+                        formatter={(value: number, name: string) => {
+                          const displayName = name === 'appointmentClicks' ? 'Clicked Appointment' : 'Did Not Click';
+                          return [value.toLocaleString(), displayName];
+                        }}
+                        labelFormatter={(label) => `${activeTab === 'daily' ? 'Date' : activeTab === 'weekly' ? 'Week of' : 'Month'}: ${label}`}
+                      />
+                      <Legend 
+                        formatter={(value) => value === 'appointmentClicks' ? 'Clicked Appointment' : 'Did Not Click'}
+                      />
+                      <Bar 
+                        dataKey="nonClickers" 
+                        name="nonClickers"
+                        fill="#CBD5E1" 
+                        stackId="visitors"
+                      />
+                      <Bar 
+                        dataKey="appointmentClicks" 
+                        name="appointmentClicks"
+                        fill="#8B5CF6" 
+                        stackId="visitors"
+                        radius={[4, 4, 0, 0]}
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+
+                {/* Conversion Rate Line */}
+                <div className="mt-6 pt-4 border-t border-gray-100">
+                  <h4 className="text-sm font-semibold text-gray-700 mb-4">
+                    📉 {activeTab === 'daily' ? 'Daily' : activeTab === 'weekly' ? 'Weekly' : 'Monthly'} Click-Through Rate
+                  </h4>
+                  <div className="h-48">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart 
+                        data={currentData.visitorChart}
+                        margin={{ top: 5, right: 30, left: 0, bottom: 5 }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
+                        <XAxis 
+                          dataKey="label" 
+                          tick={{ fontSize: 12, fill: '#6B7280' }}
+                        />
+                        <YAxis 
+                          tick={{ fontSize: 12, fill: '#6B7280' }}
+                          domain={[0, 'auto']}
+                          tickFormatter={(value) => `${value}%`}
+                        />
+                        <Tooltip
+                          contentStyle={{
+                            backgroundColor: '#fff',
+                            border: '1px solid #E5E7EB',
+                            borderRadius: '8px',
+                          }}
+                          formatter={(value: number) => [`${value}%`, 'Click-Through Rate']}
+                        />
+                        <Line 
+                          type="monotone" 
+                          dataKey="conversionRate" 
+                          stroke="#F59E0B" 
+                          strokeWidth={2}
+                          dot={{ fill: '#F59E0B', strokeWidth: 2, r: 4 }}
+                          activeDot={{ r: 6, fill: '#F59E0B' }}
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Appointment Click to Form Fill Chart */}
+          {currentData?.chart && currentData.chart.length > 0 && (
+            <div className="mb-8">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                📈 Appointment Clicks → Form Fills
+                <span className="text-sm font-normal text-gray-500 ml-2">
+                  ({activeTab === 'daily' ? 'Last 14 Days' : activeTab === 'weekly' ? 'Last 8 Weeks' : 'Last 6 Months'})
+                </span>
+              </h3>
+
+              <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                {/* Summary Stats */}
+                {(() => {
+                  const chartData = currentData.chart;
+                  const totalClicks = chartData.reduce((sum, d) => sum + d.appointmentClicks, 0);
+                  const totalFills = chartData.reduce((sum, d) => sum + d.formSubmits, 0);
                   const avgConversion = totalClicks > 0 ? Math.round((totalFills / totalClicks) * 100) : 0;
 
                   return (
@@ -342,7 +500,7 @@ export default function AnalyticsPage() {
                 <div className="h-80">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart 
-                      data={conversionChartView === '7days' ? data.conversionChart?.weekly : data.conversionChart?.daily}
+                      data={currentData.chart}
                       margin={{ top: 10, right: 30, left: 0, bottom: 5 }}
                     >
                       <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
@@ -367,7 +525,7 @@ export default function AnalyticsPage() {
                           const displayName = name === 'appointmentClicks' ? 'Appointment Clicks' : 'Form Fills';
                           return [value, displayName];
                         }}
-                        labelFormatter={(label) => `Date: ${label}`}
+                        labelFormatter={(label) => `${activeTab === 'daily' ? 'Date' : activeTab === 'weekly' ? 'Week of' : 'Month'}: ${label}`}
                       />
                       <Legend 
                         formatter={(value) => value === 'appointmentClicks' ? 'Appointment Clicks' : 'Form Fills'}
@@ -392,11 +550,13 @@ export default function AnalyticsPage() {
 
                 {/* Conversion Rate Line */}
                 <div className="mt-6 pt-4 border-t border-gray-100">
-                  <h4 className="text-sm font-semibold text-gray-700 mb-4">📉 Daily Conversion Rate</h4>
+                  <h4 className="text-sm font-semibold text-gray-700 mb-4">
+                    📉 {activeTab === 'daily' ? 'Daily' : activeTab === 'weekly' ? 'Weekly' : 'Monthly'} Conversion Rate
+                  </h4>
                   <div className="h-48">
                     <ResponsiveContainer width="100%" height="100%">
                       <LineChart 
-                        data={conversionChartView === '7days' ? data.conversionChart?.weekly : data.conversionChart?.daily}
+                        data={currentData.chart}
                         margin={{ top: 5, right: 30, left: 0, bottom: 5 }}
                       >
                         <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
@@ -432,6 +592,473 @@ export default function AnalyticsPage() {
 
                 <p className="text-xs text-gray-400 mt-4 text-center">
                   Updated daily from Google Analytics
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Day of Week Performance */}
+          {data?.dayOfWeek && data.dayOfWeek.length > 0 && (
+            <div className="mb-8">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                📅 Day of Week Performance
+                <span className="text-sm font-normal text-gray-500 ml-2">(Last 30 Days)</span>
+              </h3>
+
+              <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                {/* Best/Worst Days */}
+                {(() => {
+                  const sorted = [...data.dayOfWeek].sort((a, b) => b.visitors - a.visitors);
+                  const bestDay = sorted[0];
+                  const worstDay = sorted[sorted.length - 1];
+                  const bestConversion = [...data.dayOfWeek].sort((a, b) => b.clickRate - a.clickRate)[0];
+
+                  return (
+                    <div className="grid grid-cols-3 gap-4 mb-6">
+                      <div className="text-center p-4 bg-green-50 rounded-lg">
+                        <p className="text-sm text-green-700 mb-1">Most Visitors</p>
+                        <p className="text-2xl font-bold text-green-600">{bestDay.day}</p>
+                        <p className="text-xs text-green-600">{bestDay.visitors} visitors</p>
+                      </div>
+                      <div className="text-center p-4 bg-purple-50 rounded-lg">
+                        <p className="text-sm text-purple-700 mb-1">Best Click Rate</p>
+                        <p className="text-2xl font-bold text-purple-600">{bestConversion.day}</p>
+                        <p className="text-xs text-purple-600">{bestConversion.clickRate}% CTR</p>
+                      </div>
+                      <div className="text-center p-4 bg-gray-50 rounded-lg">
+                        <p className="text-sm text-gray-700 mb-1">Fewest Visitors</p>
+                        <p className="text-2xl font-bold text-gray-600">{worstDay.day}</p>
+                        <p className="text-xs text-gray-600">{worstDay.visitors} visitors</p>
+                      </div>
+                    </div>
+                  );
+                })()}
+
+                {/* Stacked Bar Chart */}
+                <div className="h-80">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart 
+                      data={data.dayOfWeek}
+                      margin={{ top: 10, right: 30, left: 0, bottom: 5 }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
+                      <XAxis 
+                        dataKey="day" 
+                        tick={{ fontSize: 12, fill: '#6B7280' }}
+                        axisLine={{ stroke: '#E5E7EB' }}
+                        tickFormatter={(value) => value.slice(0, 3)}
+                      />
+                      <YAxis 
+                        tick={{ fontSize: 12, fill: '#6B7280' }}
+                        axisLine={{ stroke: '#E5E7EB' }}
+                        allowDecimals={false}
+                      />
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: '#fff',
+                          border: '1px solid #E5E7EB',
+                          borderRadius: '8px',
+                          boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
+                        }}
+                        formatter={(value: number, name: string) => {
+                          const names: Record<string, string> = {
+                            visitors: 'Visitors',
+                            appointmentClicks: 'Appointment Clicks',
+                            formSubmits: 'Form Fills',
+                          };
+                          return [value.toLocaleString(), names[name] || name];
+                        }}
+                      />
+                      <Legend 
+                        formatter={(value) => {
+                          const names: Record<string, string> = {
+                            visitors: 'Visitors',
+                            appointmentClicks: 'Appointment Clicks',
+                            formSubmits: 'Form Fills',
+                          };
+                          return names[value] || value;
+                        }}
+                      />
+                      <Bar 
+                        dataKey="visitors" 
+                        name="visitors"
+                        fill="#3B82F6" 
+                        radius={[4, 4, 0, 0]}
+                      />
+                      <Bar 
+                        dataKey="appointmentClicks" 
+                        name="appointmentClicks"
+                        fill="#8B5CF6" 
+                        radius={[4, 4, 0, 0]}
+                      />
+                      <Bar 
+                        dataKey="formSubmits" 
+                        name="formSubmits"
+                        fill="#10B981" 
+                        radius={[4, 4, 0, 0]}
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+
+                {/* Click Rate by Day */}
+                <div className="mt-6 pt-4 border-t border-gray-100">
+                  <h4 className="text-sm font-semibold text-gray-700 mb-4">📉 Click-Through Rate by Day</h4>
+                  <div className="h-48">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart 
+                        data={data.dayOfWeek}
+                        margin={{ top: 5, right: 30, left: 0, bottom: 5 }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
+                        <XAxis 
+                          dataKey="day" 
+                          tick={{ fontSize: 12, fill: '#6B7280' }}
+                          tickFormatter={(value) => value.slice(0, 3)}
+                        />
+                        <YAxis 
+                          tick={{ fontSize: 12, fill: '#6B7280' }}
+                          domain={[0, 'auto']}
+                          tickFormatter={(value) => `${value}%`}
+                        />
+                        <Tooltip
+                          contentStyle={{
+                            backgroundColor: '#fff',
+                            border: '1px solid #E5E7EB',
+                            borderRadius: '8px',
+                          }}
+                          formatter={(value: number) => [`${value}%`, 'Click-Through Rate']}
+                        />
+                        <Line 
+                          type="monotone" 
+                          dataKey="clickRate" 
+                          stroke="#F59E0B" 
+                          strokeWidth={2}
+                          dot={{ fill: '#F59E0B', strokeWidth: 2, r: 4 }}
+                          activeDot={{ r: 6, fill: '#F59E0B' }}
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+
+                <p className="text-xs text-gray-400 mt-4 text-center">
+                  Aggregated from the last 30 days
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Time of Day Performance */}
+          {data?.timeOfDay && data.timeOfDay.length > 0 && (
+            <div className="mb-8">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                🕐 Time of Day Performance
+                <span className="text-sm font-normal text-gray-500 ml-2">(Last 30 Days)</span>
+              </h3>
+
+              <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                {/* Best Time Slot */}
+                {(() => {
+                  const sortedByVisitors = [...data.timeOfDay].sort((a, b) => b.visitors - a.visitors);
+                  const bestTraffic = sortedByVisitors[0];
+                  const sortedByClickRate = [...data.timeOfDay].sort((a, b) => b.clickRate - a.clickRate);
+                  const bestConversion = sortedByClickRate[0];
+                  const sortedByFills = [...data.timeOfDay].sort((a, b) => b.formSubmits - a.formSubmits);
+                  const mostFills = sortedByFills[0];
+
+                  return (
+                    <div className="grid grid-cols-3 gap-4 mb-6">
+                      <div className="text-center p-4 bg-blue-50 rounded-lg">
+                        <p className="text-sm text-blue-700 mb-1">Most Traffic</p>
+                        <p className="text-xl font-bold text-blue-600">{bestTraffic.bucket}</p>
+                        <p className="text-xs text-blue-500">{bestTraffic.timeRange}</p>
+                        <p className="text-xs text-blue-600 mt-1">{bestTraffic.visitors} visitors</p>
+                      </div>
+                      <div className="text-center p-4 bg-purple-50 rounded-lg">
+                        <p className="text-sm text-purple-700 mb-1">Best Click Rate</p>
+                        <p className="text-xl font-bold text-purple-600">{bestConversion.bucket}</p>
+                        <p className="text-xs text-purple-500">{bestConversion.timeRange}</p>
+                        <p className="text-xs text-purple-600 mt-1">{bestConversion.clickRate}% CTR</p>
+                      </div>
+                      <div className="text-center p-4 bg-green-50 rounded-lg">
+                        <p className="text-sm text-green-700 mb-1">Most Form Fills</p>
+                        <p className="text-xl font-bold text-green-600">{mostFills.bucket}</p>
+                        <p className="text-xs text-green-500">{mostFills.timeRange}</p>
+                        <p className="text-xs text-green-600 mt-1">{mostFills.formSubmits} fills</p>
+                      </div>
+                    </div>
+                  );
+                })()}
+
+                {/* Bar Chart */}
+                <div className="h-80">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart 
+                      data={data.timeOfDay}
+                      margin={{ top: 10, right: 30, left: 0, bottom: 5 }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
+                      <XAxis 
+                        dataKey="bucket" 
+                        tick={{ fontSize: 11, fill: '#6B7280' }}
+                        axisLine={{ stroke: '#E5E7EB' }}
+                      />
+                      <YAxis 
+                        tick={{ fontSize: 12, fill: '#6B7280' }}
+                        axisLine={{ stroke: '#E5E7EB' }}
+                        allowDecimals={false}
+                      />
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: '#fff',
+                          border: '1px solid #E5E7EB',
+                          borderRadius: '8px',
+                          boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
+                        }}
+                        formatter={(value: number, name: string) => {
+                          const names: Record<string, string> = {
+                            visitors: 'Visitors',
+                            appointmentClicks: 'Appointment Clicks',
+                            formSubmits: 'Form Fills',
+                          };
+                          return [value.toLocaleString(), names[name] || name];
+                        }}
+                        labelFormatter={(label, payload) => {
+                          const item = payload?.[0]?.payload as TimeOfDayDataPoint | undefined;
+                          return item ? `${label} (${item.timeRange})` : label;
+                        }}
+                      />
+                      <Legend 
+                        formatter={(value) => {
+                          const names: Record<string, string> = {
+                            visitors: 'Visitors',
+                            appointmentClicks: 'Appointment Clicks',
+                            formSubmits: 'Form Fills',
+                          };
+                          return names[value] || value;
+                        }}
+                      />
+                      <Bar 
+                        dataKey="visitors" 
+                        name="visitors"
+                        fill="#3B82F6" 
+                        radius={[4, 4, 0, 0]}
+                      />
+                      <Bar 
+                        dataKey="appointmentClicks" 
+                        name="appointmentClicks"
+                        fill="#8B5CF6" 
+                        radius={[4, 4, 0, 0]}
+                      />
+                      <Bar 
+                        dataKey="formSubmits" 
+                        name="formSubmits"
+                        fill="#10B981" 
+                        radius={[4, 4, 0, 0]}
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+
+                {/* Time Breakdown Table */}
+                <div className="mt-6 pt-4 border-t border-gray-100">
+                  <h4 className="text-sm font-semibold text-gray-700 mb-4">📊 Breakdown by Time Slot</h4>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="border-b border-gray-200">
+                          <th className="text-left py-2 px-3 font-medium text-gray-600">Time Slot</th>
+                          <th className="text-right py-2 px-3 font-medium text-gray-600">Visitors</th>
+                          <th className="text-right py-2 px-3 font-medium text-gray-600">Clicks</th>
+                          <th className="text-right py-2 px-3 font-medium text-gray-600">Fills</th>
+                          <th className="text-right py-2 px-3 font-medium text-gray-600">CTR</th>
+                          <th className="text-right py-2 px-3 font-medium text-gray-600">Conv.</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {data.timeOfDay.map((slot, i) => (
+                          <tr key={i} className="border-b border-gray-100 hover:bg-gray-50">
+                            <td className="py-2 px-3">
+                              <span className="font-medium text-gray-900">{slot.bucket}</span>
+                              <span className="text-gray-500 text-xs ml-2">({slot.timeRange})</span>
+                            </td>
+                            <td className="text-right py-2 px-3 text-gray-700">{slot.visitors.toLocaleString()}</td>
+                            <td className="text-right py-2 px-3 text-purple-600 font-medium">{slot.appointmentClicks}</td>
+                            <td className="text-right py-2 px-3 text-green-600 font-medium">{slot.formSubmits}</td>
+                            <td className="text-right py-2 px-3">
+                              <span className={`px-2 py-0.5 rounded text-xs font-medium ${
+                                slot.clickRate >= 10 ? 'bg-green-100 text-green-700' : 
+                                slot.clickRate >= 5 ? 'bg-yellow-100 text-yellow-700' : 
+                                'bg-gray-100 text-gray-600'
+                              }`}>
+                                {slot.clickRate}%
+                              </span>
+                            </td>
+                            <td className="text-right py-2 px-3">
+                              <span className={`px-2 py-0.5 rounded text-xs font-medium ${
+                                slot.conversionRate >= 50 ? 'bg-green-100 text-green-700' : 
+                                slot.conversionRate >= 25 ? 'bg-yellow-100 text-yellow-700' : 
+                                'bg-gray-100 text-gray-600'
+                              }`}>
+                                {slot.conversionRate}%
+                              </span>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <p className="text-xs text-gray-400 mt-4 text-center">
+                  Aggregated from the last 30 days • Times in your local timezone
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Day + Time Heatmap with Opportunities */}
+          {data?.dayTimeHeatmap && data.dayTimeHeatmap.length > 0 && (
+            <div className="mb-8">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                🎯 Booking Opportunity Finder
+                <span className="text-sm font-normal text-gray-500 ml-2">(Last 30 Days)</span>
+              </h3>
+
+              <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                {/* Opportunity Slots */}
+                {(() => {
+                  const opportunities = data.dayTimeHeatmap.filter(s => s.isOpportunity);
+                  const topSlots = [...data.dayTimeHeatmap]
+                    .filter(s => s.visitors > 0)
+                    .sort((a, b) => b.visitors - a.visitors)
+                    .slice(0, 3);
+
+                  return (
+                    <>
+                      {opportunities.length > 0 && (
+                        <div className="mb-6 p-4 bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg border border-amber-200">
+                          <h4 className="font-semibold text-amber-800 mb-3 flex items-center gap-2">
+                            <span>💡</span> Suggested Promo Slots (Low Traffic = Opportunity)
+                          </h4>
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                            {opportunities.slice(0, 6).map((slot, i) => (
+                              <div key={i} className="bg-white rounded-lg p-3 border border-amber-200 shadow-sm">
+                                <div className="flex items-center justify-between mb-1">
+                                  <span className="font-semibold text-gray-900">{slot.day}</span>
+                                  <span className="text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">
+                                    Low traffic
+                                  </span>
+                                </div>
+                                <p className="text-sm text-gray-600">{slot.bucket} ({slot.timeRange})</p>
+                                <p className="text-xs text-gray-500 mt-1">
+                                  Only {slot.visitors} visitors • Consider "Book Now" promo
+                                </p>
+                              </div>
+                            ))}
+                          </div>
+                          <p className="text-xs text-amber-700 mt-3">
+                            💡 These time slots have lower organic traffic — perfect for "Book during slow hours" promotions or discounts
+                          </p>
+                        </div>
+                      )}
+
+                      {/* Peak Times for reference */}
+                      <div className="mb-6 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border border-green-200">
+                        <h4 className="font-semibold text-green-800 mb-3 flex items-center gap-2">
+                          <span>🔥</span> Peak Times (High Demand)
+                        </h4>
+                        <div className="flex flex-wrap gap-3">
+                          {topSlots.map((slot, i) => (
+                            <div key={i} className="bg-white rounded-lg px-4 py-2 border border-green-200 shadow-sm">
+                              <span className="font-semibold text-gray-900">{slot.day}</span>
+                              <span className="text-gray-500 mx-2">•</span>
+                              <span className="text-gray-600">{slot.bucket}</span>
+                              <span className="text-green-600 font-medium ml-2">({slot.visitors} visitors)</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </>
+                  );
+                })()}
+
+                {/* Heatmap Grid */}
+                <h4 className="text-sm font-semibold text-gray-700 mb-3">📊 Traffic Heatmap by Day & Time</h4>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr>
+                        <th className="text-left py-2 px-3 font-medium text-gray-600 w-24">Day</th>
+                        <th className="text-center py-2 px-3 font-medium text-gray-600">Morning<br/><span className="text-xs font-normal">8am-11am</span></th>
+                        <th className="text-center py-2 px-3 font-medium text-gray-600">Lunch<br/><span className="text-xs font-normal">11am-2pm</span></th>
+                        <th className="text-center py-2 px-3 font-medium text-gray-600">Afternoon<br/><span className="text-xs font-normal">2pm-6pm</span></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map(day => {
+                        const daySlots = data.dayTimeHeatmap.filter(s => s.day === day);
+                        return (
+                          <tr key={day} className="border-t border-gray-100">
+                            <td className="py-2 px-3 font-medium text-gray-900">{day.slice(0, 3)}</td>
+                            {['Morning', 'Lunch', 'Afternoon'].map(bucket => {
+                              const slot = daySlots.find(s => s.bucket === bucket);
+                              if (!slot) return <td key={bucket} className="py-2 px-3 text-center">-</td>;
+                              
+                              // Color based on intensity
+                              const bgColor = slot.isOpportunity
+                                ? 'bg-amber-100 border-amber-300'
+                                : slot.intensity > 70
+                                ? 'bg-green-200 border-green-400'
+                                : slot.intensity > 40
+                                ? 'bg-blue-100 border-blue-300'
+                                : 'bg-gray-100 border-gray-300';
+
+                              return (
+                                <td key={bucket} className="py-2 px-2 text-center">
+                                  <div className={`rounded-lg p-2 border ${bgColor} relative`}>
+                                    <p className="font-bold text-gray-900">{slot.visitors}</p>
+                                    <p className="text-xs text-gray-600">visitors</p>
+                                    {slot.appointmentClicks > 0 && (
+                                      <p className="text-xs text-purple-600 mt-1">{slot.appointmentClicks} clicks</p>
+                                    )}
+                                    {slot.isOpportunity && (
+                                      <span className="absolute -top-1 -right-1 text-amber-500">💡</span>
+                                    )}
+                                  </div>
+                                </td>
+                              );
+                            })}
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Legend */}
+                <div className="mt-4 flex flex-wrap gap-4 justify-center text-xs">
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 rounded bg-green-200 border border-green-400"></div>
+                    <span className="text-gray-600">High traffic</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 rounded bg-blue-100 border border-blue-300"></div>
+                    <span className="text-gray-600">Medium traffic</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 rounded bg-gray-100 border border-gray-300"></div>
+                    <span className="text-gray-600">Low traffic</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 rounded bg-amber-100 border border-amber-300"></div>
+                    <span className="text-gray-600">💡 Promo opportunity</span>
+                  </div>
+                </div>
+
+                <p className="text-xs text-gray-400 mt-4 text-center">
+                  Based on last 30 days • Low traffic slots are opportunities for "Book Now" promotions
                 </p>
               </div>
             </div>
