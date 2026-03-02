@@ -22,6 +22,14 @@ export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [phoneCopied, setPhoneCopied] = useState(false);
+
+  const handleCopyPhone = () => {
+    navigator.clipboard.writeText('7277539302');
+    setPhoneCopied(true);
+    trackEvent('phone_copy', { location: 'header', intent: 'text' });
+    setTimeout(() => setPhoneCopied(false), 2000);
+  };
 
   // Track appointment button clicks
   const handleAppointmentClick = () => {
@@ -136,19 +144,41 @@ export default function Home() {
               </a>
               
               {/* Desktop Menu */}
-              <div className="hidden md:flex items-center space-x-8">
+              <div className="hidden md:flex items-center space-x-6">
                 <a href="#services" className="text-gray-700 transition-colors cursor-pointer" style={{color: '#2D5A87'}} onMouseEnter={(e) => e.currentTarget.style.color = '#3D6B9F'} onMouseLeave={(e) => e.currentTarget.style.color = '#2D5A87'}>Services</a>
                 <a href="#gallery" className="text-gray-700 transition-colors cursor-pointer" style={{color: '#2D5A87'}} onMouseEnter={(e) => e.currentTarget.style.color = '#3D6B9F'} onMouseLeave={(e) => e.currentTarget.style.color = '#2D5A87'}>Gallery</a>
                 <a href="#about" className="text-gray-700 transition-colors cursor-pointer" style={{color: '#2D5A87'}} onMouseEnter={(e) => e.currentTarget.style.color = '#3D6B9F'} onMouseLeave={(e) => e.currentTarget.style.color = '#2D5A87'}>About</a>
                 <a href="#contact" className="text-gray-700 transition-colors cursor-pointer" style={{color: '#2D5A87'}} onMouseEnter={(e) => e.currentTarget.style.color = '#3D6B9F'} onMouseLeave={(e) => e.currentTarget.style.color = '#2D5A87'}>Contact</a>
-                <a
-                  href="tel:727-753-9302"
-                  onClick={handlePhoneClick}
+                <div className="flex items-center gap-2">
+                  <a
+                    href="tel:727-753-9302"
+                    onClick={handlePhoneClick}
+                    className="text-sm font-medium cursor-pointer transition-colors"
+                    style={{color: '#2D5A87'}}
+                    onMouseEnter={(e) => e.currentTarget.style.color = '#3D6B9F'}
+                    onMouseLeave={(e) => e.currentTarget.style.color = '#2D5A87'}
+                  >
+                    📞 727-753-9302
+                  </a>
+                  <button
+                    onClick={handleCopyPhone}
+                    className="px-3 py-1 rounded-full text-xs font-semibold transition-colors cursor-pointer"
+                    style={{backgroundColor: '#22c55e', color: 'white'}}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#16a34a'}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#22c55e'}
+                  >
+                    {phoneCopied ? '✓ Copied!' : '💬 Text Us'}
+                  </button>
+                </div>
+                <button
+                  onClick={handleAppointmentClick}
                   className="px-4 py-2 rounded-full font-semibold transition-colors cursor-pointer"
                   style={{backgroundColor: '#2D5A87', color: 'white'}}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#3D6B9F'}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#2D5A87'}
                 >
-                  <span className="text-xs">Call/Text</span> <span className="font-bold">727-753-9302</span>
-                </a>
+                  Request Appointment
+                </button>
               </div>
 
               {/* Mobile Menu Button */}
@@ -173,14 +203,30 @@ export default function Home() {
                   <a href="#gallery" className="px-2 py-1 cursor-pointer transition-colors" style={{color: '#2D5A87'}} onMouseEnter={(e) => e.currentTarget.style.color = '#3D6B9F'} onMouseLeave={(e) => e.currentTarget.style.color = '#2D5A87'}>Gallery</a>
                   <a href="#about" className="px-2 py-1 cursor-pointer transition-colors" style={{color: '#2D5A87'}} onMouseEnter={(e) => e.currentTarget.style.color = '#3D6B9F'} onMouseLeave={(e) => e.currentTarget.style.color = '#2D5A87'}>About</a>
                   <a href="#contact" className="px-2 py-1 cursor-pointer transition-colors" style={{color: '#2D5A87'}} onMouseEnter={(e) => e.currentTarget.style.color = '#3D6B9F'} onMouseLeave={(e) => e.currentTarget.style.color = '#2D5A87'}>Contact</a>
-                  <a
-                    href="tel:727-753-9302"
-                    onClick={handlePhoneClick}
-                    className="px-4 py-2 rounded-full font-semibold transition-colors cursor-pointer mx-2 mt-2"
-                    style={{backgroundColor: '#2D5A87', color: 'white'}}
+                  <div className="flex items-center gap-2 mx-2 mt-2">
+                    <a
+                      href="tel:727-753-9302"
+                      onClick={handlePhoneClick}
+                      className="flex-1 px-4 py-2 rounded-full font-semibold transition-colors cursor-pointer text-center"
+                      style={{backgroundColor: '#2D5A87', color: 'white'}}
+                    >
+                      📞 Call Us <span className="font-bold">727-753-9302</span>
+                    </a>
+                    <button
+                      onClick={handleCopyPhone}
+                      className="px-3 py-2 rounded-full font-semibold transition-colors cursor-pointer text-sm whitespace-nowrap"
+                      style={{backgroundColor: '#22c55e', color: 'white'}}
+                    >
+                      {phoneCopied ? '✓ Copied!' : '💬 Text Us'}
+                    </button>
+                  </div>
+                  <button
+                    onClick={handleAppointmentClick}
+                    className="px-4 py-2 rounded-full font-semibold transition-colors cursor-pointer mx-2"
+                    style={{backgroundColor: '#C8E5F0', color: '#2D5A87'}}
                   >
-                    <span className="text-xs">Call/Text</span> <span className="font-bold">727-753-9302</span>
-                  </a>
+                    Request Appointment
+                  </button>
                 </div>
               </div>
             )}
