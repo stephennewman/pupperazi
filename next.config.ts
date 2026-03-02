@@ -26,6 +26,45 @@ const nextConfig: NextConfig = {
     optimizePackageImports: ['@vercel/analytics'],
   },
 
+  // Redirects: old Wix URLs → new pages (301 permanent)
+  async redirects() {
+    return [
+      // Old Wix homepage
+      { source: '/home', destination: '/', permanent: true },
+
+      // Service pages
+      { source: '/service-page/:path*', destination: '/our-services', permanent: true },
+      { source: '/full-service-grooming', destination: '/grooming', permanent: true },
+      { source: '/aromatherapy', destination: '/our-services', permanent: true },
+      { source: '/wash-n-go-baths-1', destination: '/wash-n-go-baths', permanent: true },
+
+      // Old Wix duplicated pages
+      { source: '/copy-of-training', destination: '/our-services', permanent: true },
+      { source: '/copy-of-dog-walking', destination: '/our-services', permanent: true },
+      { source: '/training', destination: '/our-services', permanent: true },
+      { source: '/dog-walking-1', destination: '/our-services', permanent: true },
+
+      // Booking / calendar
+      { source: '/book-online-1', destination: '/appointments', permanent: true },
+      { source: '/booking-calendar/:path*', destination: '/appointments', permanent: true },
+
+      // Hotel / boarding
+      { source: '/hotel-reservation-request', destination: '/#boarding', permanent: true },
+      { source: '/hotel', destination: '/#boarding', permanent: true },
+
+      // Products (no equivalent — send to homepage)
+      { source: '/cart-page', destination: '/', permanent: true },
+      { source: '/shop', destination: '/', permanent: true },
+      { source: '/cat-food', destination: '/', permanent: true },
+      { source: '/dog-food', destination: '/', permanent: true },
+      { source: '/supplements', destination: '/', permanent: true },
+
+      // Other old pages
+      { source: '/gallery', destination: '/photo-booth', permanent: true },
+      { source: '/specials', destination: '/', permanent: true },
+    ];
+  },
+
   // Headers for caching and security
   async headers() {
     return [
