@@ -85,8 +85,7 @@ export async function POST(request: NextRequest) {
             ${phone ? `
             <div style="margin-bottom: 15px;">
               <strong style="color: #667eea;">Phone:</strong>
-              <span style="margin-left: 10px; user-select: all; background: #f8f9fa; padding: 4px 8px; border-radius: 4px; font-family: monospace; border: 1px solid #e2e8f0;">${phone}</span>
-              <span style="color: #888; font-size: 11px; margin-left: 8px;">(copy to call/text)</span>
+              <a href="tel:${phone.replace(/\D/g, '')}" style="margin-left: 10px; color: #333; text-decoration: none; background: #f8f9fa; padding: 4px 12px; border-radius: 4px; font-family: monospace; font-size: 16px; border: 1px solid #e2e8f0; display: inline-block;">${phone}</a>
             </div>
             ` : ''}
           </div>
@@ -139,8 +138,11 @@ export async function POST(request: NextRequest) {
       });
     }
     
+    const customerStatus = isNewCustomer === 'yes' || message.includes('New Customer') 
+      ? 'New Customer' 
+      : 'Existing Customer';
     const subjectLine = isAppointmentRequest 
-      ? `🐾 New Appointment Request - ${name}` 
+      ? `New Appointment Request - ${name}, ${customerStatus}` 
       : `New Contact Form: ${serviceDisplay} - ${name}`;
 
     const { data, error } = await resend.emails.send({
