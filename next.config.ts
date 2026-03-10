@@ -70,7 +70,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/memos/:path*',
-        destination: 'https://paparazzi-petspa.contextmemo.com/:path*',
+        destination: 'https://pupperazi.contextmemo.com/:path*',
       },
     ];
   },
