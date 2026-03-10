@@ -65,6 +65,16 @@ const nextConfig: NextConfig = {
     ];
   },
 
+  // Proxy Context Memo pages under /memos
+  async rewrites() {
+    return [
+      {
+        source: '/memos/:path*',
+        destination: 'https://paparazzi-petspa.contextmemo.com/:path*',
+      },
+    ];
+  },
+
   // Headers for caching and security
   async headers() {
     return [
