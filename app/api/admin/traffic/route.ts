@@ -50,6 +50,7 @@ export async function GET(request: NextRequest) {
         sessions: todayData.sessions,
         appointmentClicks: todayData.appointmentClicks,
         phoneClicks: todayData.phoneClicks,
+        phoneCopies: todayData.phoneCopies,
         formSubmits: todayData.formSubmits,
       },
       week: {
@@ -58,6 +59,7 @@ export async function GET(request: NextRequest) {
         sessions: weekData.sessions,
         appointmentClicks: weekData.appointmentClicks,
         phoneClicks: weekData.phoneClicks,
+        phoneCopies: weekData.phoneCopies,
         formSubmits: weekData.formSubmits,
         avgSessionDuration: weekData.avgSessionDuration,
         bounceRate: weekData.bounceRate,
@@ -69,6 +71,7 @@ export async function GET(request: NextRequest) {
         sessions: monthData.sessions,
         appointmentClicks: monthData.appointmentClicks,
         phoneClicks: monthData.phoneClicks,
+        phoneCopies: monthData.phoneCopies,
         formSubmits: monthData.formSubmits,
         avgSessionDuration: monthData.avgSessionDuration,
         bounceRate: monthData.bounceRate,

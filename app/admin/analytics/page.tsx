@@ -41,6 +41,7 @@ interface AnalyticsData {
   topCities: { city: string; users: number }[];
   appointmentClicks: number;
   phoneClicks: number;
+  phoneCopies: number;
   formOpens: number;
   formStarts: number;
   formSubmits: number;
@@ -51,6 +52,7 @@ interface AnalyticsData {
     sessions: TrendData;
     appointmentClicks: TrendData;
     phoneClicks: TrendData;
+    phoneCopies: TrendData;
     formSubmits: TrendData;
   };
 }
@@ -310,6 +312,12 @@ export default function AnalyticsPage() {
                 <p className="text-sm font-medium opacity-90">Phone Clicks</p>
                 <p className="text-3xl font-bold mt-1">{currentData?.phoneClicks || 0}</p>
                 <TrendBadge trend={currentData?.trends?.phoneClicks} />
+              </div>
+
+              <div className="bg-gradient-to-br from-teal-500 to-green-600 rounded-xl shadow-sm p-5 text-white">
+                <p className="text-sm font-medium opacity-90">Text Us (Copy)</p>
+                <p className="text-3xl font-bold mt-1">{currentData?.phoneCopies || 0}</p>
+                <TrendBadge trend={currentData?.trends?.phoneCopies} />
               </div>
 
               <div className="bg-gradient-to-br from-blue-500 to-cyan-600 rounded-xl shadow-sm p-5 text-white">
